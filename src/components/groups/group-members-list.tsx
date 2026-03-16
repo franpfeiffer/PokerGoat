@@ -18,6 +18,7 @@ interface GroupMembersListProps {
   currentUserRole?: string;
   onRemove?: (userId: string) => void;
   onAssignTempLeader?: (userId: string) => void;
+  onRevokeTempLeader?: (userId: string) => void;
 }
 
 export function GroupMembersList({
@@ -25,6 +26,7 @@ export function GroupMembersList({
   currentUserRole,
   onRemove,
   onAssignTempLeader,
+  onRevokeTempLeader,
 }: GroupMembersListProps) {
   const t = useTranslations("groups");
   const isLeader = currentUserRole === "leader";
@@ -93,6 +95,15 @@ export function GroupMembersList({
                   </Button>
                 )}
               </div>
+            )}
+            {isLeader && member.role === "temporary_leader" && onRevokeTempLeader && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onRevokeTempLeader(member.userId)}
+              >
+                {t("demote")}
+              </Button>
             )}
           </li>
         ))}

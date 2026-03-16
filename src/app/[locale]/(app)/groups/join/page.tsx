@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { JoinGroupForm } from "@/components/groups/join-group-form";
 
@@ -7,8 +7,13 @@ export const metadata: Metadata = {
   title: "Unirse a grupo",
 };
 
-export default function JoinGroupPage() {
-  const t = useTranslations("groups.join");
+export default async function JoinGroupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ code?: string }>;
+}) {
+  const t = await getTranslations("groups.join");
+  const { code } = await searchParams;
 
   return (
     <div className="mx-auto max-w-lg">
@@ -17,7 +22,7 @@ export default function JoinGroupPage() {
           <h1 className="font-display text-xl font-bold">{t("title")}</h1>
         </CardHeader>
         <CardContent>
-          <JoinGroupForm />
+          <JoinGroupForm defaultInviteCode={code ?? ""} />
         </CardContent>
       </Card>
     </div>

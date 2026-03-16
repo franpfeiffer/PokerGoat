@@ -46,7 +46,7 @@ export default async function LocaleLayout({
 
   return (
     <div
-      className={`${playfairDisplay.variable} ${dmSans.variable} bg-background text-foreground antialiased`}
+      className={`${playfairDisplay.variable} ${dmSans.variable} min-h-svh overflow-x-clip bg-background text-foreground antialiased`}
     >
       <NextIntlClientProvider locale={locale} messages={messages}>
         <AuthProvider>{children}</AuthProvider>

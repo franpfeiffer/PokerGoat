@@ -253,3 +253,27 @@ export async function assignTemporaryLeader(
   revalidateLocalized(`/groups/${groupId}`);
   return { success: true };
 }
+
+export async function revokeTemporaryLeader(
+  groupId: string,
+  targetUserId: string,
+  leaderId: string
+) {
+  const leaderMembership = await getUserMembership(groupId, leaderId);
+  if (!leaderMembership || leaderMembership.role !== "leader") {
+    return { error: "Solo el líder puede remover líderes temporales" };
+  }
+
+  await db
+    .update(groupMembers)
+    .set({ role: "member" })
+    .where(
+      and(
+        eq(groupMembers.groupId, groupId),
+        eq(groupMembers.userId, targetUserId)
+      )
+    );
+
+  revalidateLocalized(`/groups/${groupId}`);
+  return { success: true };
+}

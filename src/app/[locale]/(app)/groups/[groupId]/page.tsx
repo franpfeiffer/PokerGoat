@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NightCard } from "@/components/nights/night-card";
 import { getGroupNights } from "@/lib/db/queries/nights";
+import { getGroupLeaderboard } from "@/lib/db/queries/leaderboard";
+import { LeaderboardTable } from "@/components/leaderboard/leaderboard-table";
 
 export default async function GroupOverviewPage({
   params,
@@ -14,21 +16,23 @@ export default async function GroupOverviewPage({
   const { locale, groupId } = await params;
   const t = await getTranslations("groups");
   const tNights = await getTranslations("nights");
-  const tCommon = await getTranslations("common");
   const nights = await getGroupNights(groupId);
+  const leaderboard = await getGroupLeaderboard(groupId);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold">Grupo</h1>
+    <div className="mx-auto w-full max-w-4xl space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="font-display text-2xl font-bold">{t("group")}</h1>
         <div className="flex gap-2">
           <Link href={`/groups/${groupId}/nights/new`}>
-            <Button size="sm">{tNights("create")}</Button>
+            <Button size="sm" className="min-h-11 sm:min-h-10">
+              {tNights("create")}
+            </Button>
           </Link>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <h2 className="font-display text-lg font-semibold">
@@ -43,7 +47,7 @@ export default async function GroupOverviewPage({
               />
             ) : (
               <div className="space-y-3">
-                {nights.slice(0, 3).map((night) => (
+                {nights.map((night) => (
                   <NightCard
                     key={night.id}
                     id={night.id}
@@ -66,7 +70,15 @@ export default async function GroupOverviewPage({
             </h2>
           </CardHeader>
           <CardContent>
-            <EmptyState title={tCommon("noResults")} />
+            {leaderboard.length === 0 ? (
+              <EmptyState title={t("leaderboard")} description={tNights("noNightsAction")} />
+            ) : (
+              <LeaderboardTable
+                entries={leaderboard}
+                locale={locale === "es" ? "es-ES" : "en-US"}
+                currency="ARS"
+              />
+            )}
           </CardContent>
         </Card>
       </div>

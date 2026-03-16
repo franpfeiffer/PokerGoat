@@ -7,7 +7,9 @@ import { pokerNights, pokerNightParticipants, pokerNightResults } from "@/lib/db
 import {
   calculateTotalInvested,
   calculateCashout,
+  calculateCashoutFromChipBreakdown,
   calculateProfitLoss,
+  parseNightMetadata,
 } from "@/lib/utils/chips";
 import { getUserMembership } from "@/lib/db/queries/groups";
 
@@ -43,12 +45,38 @@ export async function calculateAndSaveResults(
 
   const buyInAmount = Number(night.buyInAmount);
   const chipValue = Number(night.chipValue);
+  const chipValues = parseNightMetadata(night.notes, chipValue).chipValues;
 
   const results = participants
-    .filter((p) => p.totalChipsEnd !== null)
+    .filter(
+      (p) =>
+        p.totalChipsEnd !== null ||
+        p.chipsBlackEnd !== null ||
+        p.chipsWhiteEnd !== null ||
+        p.chipsRedEnd !== null ||
+        p.chipsGreenEnd !== null ||
+        p.chipsBlueEnd !== null
+    )
     .map((p) => {
       const totalInvested = calculateTotalInvested(p.buyInCount, buyInAmount);
-      const totalCashout = calculateCashout(p.totalChipsEnd!, chipValue);
+      const hasChipBreakdown =
+        p.chipsBlackEnd !== null ||
+        p.chipsWhiteEnd !== null ||
+        p.chipsRedEnd !== null ||
+        p.chipsGreenEnd !== null ||
+        p.chipsBlueEnd !== null;
+      const totalCashout = hasChipBreakdown
+        ? calculateCashoutFromChipBreakdown(
+            {
+              black: p.chipsBlackEnd ?? 0,
+              white: p.chipsWhiteEnd ?? 0,
+              red: p.chipsRedEnd ?? 0,
+              green: p.chipsGreenEnd ?? 0,
+              blue: p.chipsBlueEnd ?? 0,
+            },
+            chipValues
+          )
+        : calculateCashout(p.totalChipsEnd!, chipValue);
       const profitLoss = calculateProfitLoss(totalCashout, totalInvested);
       return {
         nightId,

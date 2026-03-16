@@ -17,7 +17,7 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 flex border-t border-velvet-700 bg-surface lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 flex max-w-svw border-t border-velvet-700 bg-surface pb-[max(env(safe-area-inset-bottom),0px)] lg:hidden"
       aria-label="Navegaci\u00f3n m\u00f3vil"
       style={{ touchAction: "manipulation" }}
     >

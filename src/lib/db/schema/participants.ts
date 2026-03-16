@@ -21,6 +21,11 @@ export const pokerNightParticipants = pgTable(
       .notNull()
       .references(() => userProfiles.id),
     buyInCount: integer("buy_in_count").notNull().default(1),
+    chipsBlackEnd: integer("chips_black_end"),
+    chipsWhiteEnd: integer("chips_white_end"),
+    chipsRedEnd: integer("chips_red_end"),
+    chipsGreenEnd: integer("chips_green_end"),
+    chipsBlueEnd: integer("chips_blue_end"),
     totalChipsEnd: integer("total_chips_end"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

@@ -23,7 +23,7 @@ export function LeaderboardTable({
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-3 px-3 py-2 text-xs uppercase tracking-wider text-velvet-400">
+      <div className="hidden items-center gap-3 px-3 py-2 text-xs uppercase tracking-wider text-velvet-400 sm:flex">
         <span className="w-8 text-center">{t("rank")}</span>
         <span className="w-7" />
         <span className="flex-1">{t("player")}</span>

@@ -8,7 +8,11 @@ import { requestJoinGroup } from "@/lib/actions/groups";
 import { authClient } from "@/lib/auth/client";
 import { getOrCreateProfile } from "@/lib/actions/profile";
 
-export function JoinGroupForm() {
+interface JoinGroupFormProps {
+  defaultInviteCode?: string;
+}
+
+export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
   const t = useTranslations("groups.join");
   const { data: session } = authClient.useSession();
   const [isPending, startTransition] = useTransition();
@@ -80,6 +84,7 @@ export function JoinGroupForm() {
         required
         autoComplete="off"
         placeholder="ABC12345"
+        defaultValue={defaultInviteCode}
       />
 
       <Button type="submit" disabled={isPending}>

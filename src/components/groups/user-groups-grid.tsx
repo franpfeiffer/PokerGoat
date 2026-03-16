@@ -20,14 +20,12 @@ type UserGroup = {
 export function UserGroupsGrid() {
   const t = useTranslations("dashboard");
   const { data: session, isPending: sessionPending } = authClient.useSession();
-  const [groups, setGroups] = useState<UserGroup[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [groups, setGroups] = useState<UserGroup[] | null>(null);
 
   useEffect(() => {
     if (sessionPending) return;
     const authUserId = session?.user?.id;
     if (typeof authUserId !== "string") {
-      setLoading(false);
       return;
     }
     const userId = authUserId;
@@ -35,11 +33,12 @@ export function UserGroupsGrid() {
     async function load() {
       const data = await getMyGroups(userId);
       setGroups(data as UserGroup[]);
-      setLoading(false);
     }
 
     load();
   }, [sessionPending, session]);
+
+  const loading = sessionPending || groups === null;
 
   if (loading) {
     return (
@@ -49,7 +48,7 @@ export function UserGroupsGrid() {
     );
   }
 
-  if (!groups.length) {
+  if (!session?.user || !groups?.length) {
     return (
       <EmptyState
         title={t("noGroups")}

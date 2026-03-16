@@ -12,6 +12,8 @@ import { getOrCreateProfile } from "@/lib/actions/profile";
 interface NightFormProps {
   groupId: string;
   defaults?: {
+    date?: string;
+    name?: string;
     chipValues: {
       black: number;
       white: number;
@@ -20,14 +22,21 @@ interface NightFormProps {
       blue: number;
     };
     buyIn: number;
+    maxRebuys?: number | null;
+    notes?: string;
   };
+  submitLabel?: "create" | "save";
   action: (
     userId: string,
     formData: FormData
-  ) => Promise<{ nightId?: string; error?: unknown }>;
+  ) => Promise<{ nightId?: string; success?: boolean; error?: unknown }>;
 }
 
-export function NightForm({ defaults, action }: NightFormProps) {
+export function NightForm({
+  defaults,
+  action,
+  submitLabel = "create",
+}: NightFormProps) {
   const t = useTranslations("nights");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -51,6 +60,8 @@ export function NightForm({ defaults, action }: NightFormProps) {
       });
       const result = await action(profile.id, formData);
       if (result.nightId) {
+        router.back();
+      } else if (result.success) {
         router.back();
       } else if (result.error) {
         setError(
@@ -78,13 +89,14 @@ export function NightForm({ defaults, action }: NightFormProps) {
         name="date"
         type="date"
         required
-        defaultValue={today}
+        defaultValue={defaults?.date ?? today}
       />
 
       <Input
         label={t("nameOptional")}
         name="name"
         type="text"
+        defaultValue={defaults?.name}
         autoComplete="off"
       />
 
@@ -160,6 +172,7 @@ export function NightForm({ defaults, action }: NightFormProps) {
         type="number"
         min="0"
         placeholder={t("unlimited")}
+        defaultValue={defaults?.maxRebuys ?? undefined}
         autoComplete="off"
       />
 
@@ -171,13 +184,16 @@ export function NightForm({ defaults, action }: NightFormProps) {
           id="notes"
           name="notes"
           rows={2}
+          defaultValue={defaults?.notes}
           className="focus-ring rounded-lg border border-velvet-700 bg-velvet-800 px-3 py-2 text-sm text-velvet-50 placeholder:text-velvet-500 transition-colors resize-none"
         />
       </div>
 
       <div className="flex gap-3 pt-2">
         <Button type="submit" disabled={isPending}>
-          {isPending ? `${tCommon("create")}\u2026` : tCommon("create")}
+          {isPending
+            ? `${tCommon(submitLabel)}\u2026`
+            : tCommon(submitLabel)}
         </Button>
         <Button
           type="button"

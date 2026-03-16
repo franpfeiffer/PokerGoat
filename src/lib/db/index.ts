@@ -4,10 +4,14 @@ import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
 
 function withRetry(sql: NeonQueryFunction<false, false>): NeonQueryFunction<false, false> {
+  const runQuery: (
+    ...args: Parameters<typeof sql>
+  ) => ReturnType<typeof sql> = (...args) => sql(...args);
+
   return (async (...args: Parameters<typeof sql>) => {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
-        return await (sql as Function)(...args);
+        return await runQuery(...args);
       } catch (e: unknown) {
         const isTimeout =
           e instanceof Error &&

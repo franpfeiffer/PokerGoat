@@ -6,14 +6,20 @@ import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/client";
 import { getOrCreateProfile } from "@/lib/actions/profile";
-import { startNight, completeNight } from "@/lib/actions/nights";
+import { startNight } from "@/lib/actions/nights";
+import { calculateAndSaveResults } from "@/lib/actions/results";
 
 interface NightStatusActionProps {
+  groupId: string;
   nightId: string;
   status: "scheduled" | "in_progress" | "completed" | "cancelled";
 }
 
-export function NightStatusAction({ nightId, status }: NightStatusActionProps) {
+export function NightStatusAction({
+  groupId,
+  nightId,
+  status,
+}: NightStatusActionProps) {
   const t = useTranslations("nights");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -39,10 +45,15 @@ export function NightStatusAction({ nightId, status }: NightStatusActionProps) {
       const result =
         status === "scheduled"
           ? await startNight(nightId, profile.id)
-          : await completeNight(nightId, profile.id);
+          : await calculateAndSaveResults(nightId, profile.id);
 
       if (result.error) {
         setError(typeof result.error === "string" ? result.error : tCommon("error"));
+        return;
+      }
+
+      if (status === "in_progress") {
+        router.push(`/groups/${groupId}/nights/${nightId}/results`);
         return;
       }
 
@@ -51,8 +62,13 @@ export function NightStatusAction({ nightId, status }: NightStatusActionProps) {
   }
 
   return (
-    <div className="flex flex-col items-end gap-2">
-      <Button onClick={handleClick} disabled={isPending} size="sm">
+    <div className="w-full space-y-2 sm:w-auto">
+      <Button
+        onClick={handleClick}
+        disabled={isPending}
+        size="sm"
+        className="min-h-11 w-full justify-center sm:min-h-10 sm:w-auto"
+      >
         {status === "scheduled"
           ? isPending
             ? `${t("start")}…`
@@ -61,7 +77,7 @@ export function NightStatusAction({ nightId, status }: NightStatusActionProps) {
             ? `${t("finish")}…`
             : t("finish")}
       </Button>
-      {error && <p className="text-xs text-loss">{error}</p>}
+      {error && <p className="text-xs text-loss sm:text-right">{error}</p>}
     </div>
   );
 }

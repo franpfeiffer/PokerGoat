@@ -13,11 +13,11 @@ export default async function AppLayout({
   return (
     <AuthGuard>
       <ToastProvider>
-        <div className="flex min-h-svh">
+        <div className="flex min-h-svh overflow-x-clip">
           <Sidebar />
-          <div className="flex flex-1 flex-col">
+          <div className="flex min-w-0 flex-1 flex-col">
             <Header />
-            <main className="flex-1 px-4 py-6 pb-20 lg:px-8 lg:pb-6">
+            <main className="flex-1 min-w-0 overflow-x-clip px-3 py-5 pb-24 sm:px-4 sm:py-6 sm:pb-24 lg:px-8 lg:pb-6">
               <Suspense
                 fallback={
                   <div className="flex items-center justify-center py-12">

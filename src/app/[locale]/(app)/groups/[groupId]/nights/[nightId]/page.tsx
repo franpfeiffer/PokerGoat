@@ -1,13 +1,15 @@
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { Link } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { EmptyState } from "@/components/ui/empty-state";
-import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { NightStatusAction } from "@/components/nights/night-status-action";
+import { NightParticipantsPanel } from "@/components/nights/night-participants-panel";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatShortDate } from "@/lib/utils/dates";
 import { getNightById, getNightParticipants } from "@/lib/db/queries/nights";
+import { getGroupMembers } from "@/lib/db/queries/groups";
 import { parseNightMetadata } from "@/lib/utils/chips";
 
 const statusVariants: Record<string, "default" | "gold" | "profit" | "muted"> = {
@@ -24,13 +26,17 @@ export default async function NightDetailPage({
 }) {
   const { locale, groupId, nightId } = await params;
   const t = await getTranslations("nights");
+  const tCommon = await getTranslations("common");
 
   const night = await getNightById(nightId);
   if (!night || night.groupId !== groupId) {
     notFound();
   }
 
-  const participants = await getNightParticipants(night.id);
+  const [participants, groupMembers] = await Promise.all([
+    getNightParticipants(night.id),
+    getGroupMembers(groupId),
+  ]);
   const moneyLocale = locale === "es" ? "es-ES" : "en-US";
   const metadata = parseNightMetadata(night.notes, Number(night.chipValue));
   const statusLabelKey = {
@@ -41,23 +47,54 @@ export default async function NightDetailPage({
   }[night.status];
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto w-full max-w-3xl space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <h1 className="font-display text-2xl font-bold">
           {night.name ?? t("nightOfDate", { date: formatShortDate(night.date, locale) })}
         </h1>
-        <div className="flex items-center gap-2">
-          <Badge variant={statusVariants[night.status]}>
+        <div className="w-full space-y-2 sm:w-auto sm:space-y-2 sm:text-right">
+          <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+            {night.status !== "completed" && (
+              <Link href={`/groups/${groupId}/nights/${night.id}/edit`} className="block">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="min-h-11 w-full justify-center sm:min-h-10 sm:w-auto"
+                >
+                  {tCommon("edit")}
+                </Button>
+              </Link>
+            )}
+            {night.status === "completed" && (
+              <Link
+                href={`/groups/${groupId}/nights/${night.id}/results`}
+                className="block"
+              >
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="min-h-11 w-full justify-center sm:min-h-10 sm:w-auto"
+                >
+                  {t("viewResults")}
+                </Button>
+              </Link>
+            )}
+          </div>
+          <Badge
+            variant={statusVariants[night.status]}
+            className="min-h-9 w-full justify-center px-3 py-1 sm:w-auto"
+          >
             {t(statusLabelKey)}
           </Badge>
           <NightStatusAction
+            groupId={groupId}
             nightId={night.id}
             status={night.status}
           />
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         <Card>
           <CardContent className="text-center py-4">
             <p className="text-xs text-velvet-400 uppercase tracking-wider">
@@ -85,7 +122,7 @@ export default async function NightDetailPage({
           <h2 className="font-display text-lg font-semibold">{t("chipValues")}</h2>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-3 sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
             {(
               [
                 ["black", t("chipBlack")],
@@ -116,30 +153,32 @@ export default async function NightDetailPage({
           </h2>
         </CardHeader>
         <CardContent>
-          {participants.length === 0 ? (
-            <EmptyState
-              title={t("noParticipants")}
-              description={t("addParticipantsToStart")}
-            />
-          ) : (
-            <ul className="space-y-3">
-              {participants.map((participant) => (
-                <li
-                  key={participant.id}
-                  className="flex items-center gap-3 border-b border-velvet-700/50 pb-3 last:border-0 last:pb-0"
-                >
-                  <Avatar
-                    src={participant.avatarUrl}
-                    name={participant.displayName}
-                    size="sm"
-                  />
-                  <span className="text-sm text-velvet-100">
-                    {participant.displayName}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <NightParticipantsPanel
+            nightId={night.id}
+            nightStatus={night.status}
+            buyInAmount={Number(night.buyInAmount)}
+            chipValue={Number(night.chipValue)}
+            chipValues={metadata.chipValues}
+            locale={moneyLocale}
+            members={groupMembers.map((member) => ({
+              userId: member.userId,
+              displayName: member.displayName,
+              avatarUrl: member.avatarUrl,
+            }))}
+            participants={participants.map((participant) => ({
+              id: participant.id,
+              userId: participant.userId,
+              displayName: participant.displayName,
+              avatarUrl: participant.avatarUrl,
+              buyInCount: participant.buyInCount,
+              totalChipsEnd: participant.totalChipsEnd,
+              chipsBlackEnd: participant.chipsBlackEnd,
+              chipsWhiteEnd: participant.chipsWhiteEnd,
+              chipsRedEnd: participant.chipsRedEnd,
+              chipsGreenEnd: participant.chipsGreenEnd,
+              chipsBlueEnd: participant.chipsBlueEnd,
+            }))}
+          />
         </CardContent>
       </Card>
     </div>

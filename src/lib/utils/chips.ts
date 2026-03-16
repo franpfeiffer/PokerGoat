@@ -13,6 +13,14 @@ export interface NightChipValues {
   blue: number;
 }
 
+export interface NightChipBreakdown {
+  black: number;
+  white: number;
+  red: number;
+  green: number;
+  blue: number;
+}
+
 interface NightMetadata {
   chipValues: NightChipValues;
   notes?: string;
@@ -23,6 +31,19 @@ export function calculateCashout(
   chipValue: number
 ): number {
   return totalChipsEnd * chipValue;
+}
+
+export function calculateCashoutFromChipBreakdown(
+  chipBreakdown: NightChipBreakdown,
+  chipValues: NightChipValues
+): number {
+  return (
+    chipBreakdown.black * chipValues.black +
+    chipBreakdown.white * chipValues.white +
+    chipBreakdown.red * chipValues.red +
+    chipBreakdown.green * chipValues.green +
+    chipBreakdown.blue * chipValues.blue
+  );
 }
 
 export function calculateProfitLoss(

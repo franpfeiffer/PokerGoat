@@ -1,4 +1,5 @@
 import { Avatar } from "@/components/ui/avatar";
+import { useTranslations } from "next-intl";
 import { ProfitBadge } from "./profit-badge";
 import { RankIndicator } from "./rank-indicator";
 
@@ -21,6 +22,7 @@ export function LeaderboardRow({
   locale = "es-ES",
   currency = "ARS",
 }: LeaderboardRowProps) {
+  const t = useTranslations("leaderboard");
   const isTop3 = rank <= 3;
 
   return (
@@ -33,7 +35,7 @@ export function LeaderboardRow({
     >
       <RankIndicator rank={rank} />
       <Avatar src={avatarUrl} name={displayName} size="sm" />
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <p
           className={`text-sm font-medium truncate ${
             isTop3 ? "text-velvet-50" : "text-velvet-200"
@@ -43,15 +45,13 @@ export function LeaderboardRow({
         </p>
         {nightsPlayed !== undefined && (
           <p className="text-xs text-velvet-400 tabular-nums">
-            {nightsPlayed} noches
+            {nightsPlayed} {t("nightsPlayed")}
           </p>
         )}
       </div>
-      <ProfitBadge
-        amount={totalProfitLoss}
-        locale={locale}
-        currency={currency}
-      />
+      <div className="shrink-0">
+        <ProfitBadge amount={totalProfitLoss} locale={locale} currency={currency} size="sm" />
+      </div>
     </div>
   );
 }
