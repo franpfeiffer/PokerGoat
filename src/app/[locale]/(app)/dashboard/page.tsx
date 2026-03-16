@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
+import { UserGroupsGrid } from "@/components/groups/user-groups-grid";
 
 export const metadata: Metadata = {
   title: "Panel de control",
@@ -36,34 +36,7 @@ export default function DashboardPage() {
         <h2 id="groups-heading" className="sr-only">
           {t("yourGroups")}
         </h2>
-        <EmptyState
-          icon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="56"
-              height="56"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-          }
-          title={t("noGroups")}
-          description={t("noGroupsAction")}
-          action={
-            <Link href="/groups/new">
-              <Button>{t("createGroup")}</Button>
-            </Link>
-          }
-        />
+        <UserGroupsGrid />
       </section>
     </div>
   );

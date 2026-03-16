@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/utils/currency";
 
 interface ChartData {
@@ -26,12 +27,14 @@ interface HistoricalChartInnerProps {
 export default function HistoricalChartInner({
   data,
   locale = "es-ES",
-  currency = "USD",
+  currency = "ARS",
 }: HistoricalChartInnerProps) {
+  const t = useTranslations("leaderboard");
+
   if (data.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center text-velvet-400">
-        Sin datos hist\u00f3ricos
+        {t("historicalNoData")}
       </div>
     );
   }
@@ -60,7 +63,7 @@ export default function HistoricalChartInner({
           }}
           formatter={(value: number) => [
             formatCurrency(value, locale, currency),
-            "Acumulado",
+            t("cumulative"),
           ]}
         />
         <Line

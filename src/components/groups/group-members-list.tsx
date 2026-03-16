@@ -20,12 +20,6 @@ interface GroupMembersListProps {
   onAssignTempLeader?: (userId: string) => void;
 }
 
-const roleLabels: Record<string, string> = {
-  leader: "L\u00edder",
-  temporary_leader: "L\u00edder temporal",
-  member: "Miembro",
-};
-
 export function GroupMembersList({
   members,
   currentUserRole,
@@ -34,6 +28,11 @@ export function GroupMembersList({
 }: GroupMembersListProps) {
   const t = useTranslations("groups");
   const isLeader = currentUserRole === "leader";
+  const roleLabels: Record<Member["role"], string> = {
+    leader: t("role.leader"),
+    temporary_leader: t("role.temporaryLeader"),
+    member: t("role.member"),
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -74,9 +73,11 @@ export function GroupMembersList({
                     variant="ghost"
                     size="sm"
                     onClick={() => onAssignTempLeader(member.userId)}
-                    aria-label={`Asignar l\u00edder temporal a ${member.displayName}`}
+                    aria-label={t("assignTempLeaderAria", {
+                      name: member.displayName,
+                    })}
                   >
-                    Promover
+                    {t("promote")}
                   </Button>
                 )}
                 {onRemove && (
@@ -84,9 +85,11 @@ export function GroupMembersList({
                     variant="danger"
                     size="sm"
                     onClick={() => onRemove(member.userId)}
-                    aria-label={`Eliminar a ${member.displayName}`}
+                    aria-label={t("removeMemberAria", {
+                      name: member.displayName,
+                    })}
                   >
-                    Eliminar
+                    {t("removeMember")}
                   </Button>
                 )}
               </div>

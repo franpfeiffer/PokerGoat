@@ -18,7 +18,7 @@ function getFormatter(locale: string, currency: string): Intl.NumberFormat {
 export function formatCurrency(
   amount: number,
   locale: string = "es-ES",
-  currency: string = "USD"
+  currency: string = "ARS"
 ): string {
   return getFormatter(locale, currency).format(amount);
 }
@@ -26,7 +26,7 @@ export function formatCurrency(
 export function formatProfitLoss(
   amount: number,
   locale: string = "es-ES",
-  currency: string = "USD"
+  currency: string = "ARS"
 ): string {
   const formatted = formatCurrency(Math.abs(amount), locale, currency);
   if (amount > 0) return `+${formatted}`;

@@ -8,6 +8,14 @@ import {
   getUserStats,
 } from "@/lib/db/queries/users";
 
+const LOCALES = ["es", "en"] as const;
+
+function revalidateLocalized(path: string) {
+  for (const locale of LOCALES) {
+    revalidatePath(`/${locale}${path}`);
+  }
+}
+
 export async function getOrCreateProfile(data: {
   authUserId: string;
   displayName: string;
@@ -37,7 +45,7 @@ export async function updateDisplayName(userId: string, formData: FormData) {
   }
 
   await updateUserProfile(userId, { displayName });
-  revalidatePath("/profile");
+  revalidateLocalized("/profile");
   return { success: true };
 }
 
@@ -47,12 +55,12 @@ export async function updateLocale(userId: string, locale: string) {
   }
 
   await updateUserProfile(userId, { locale });
-  revalidatePath("/settings");
+  revalidateLocalized("/settings");
   return { success: true };
 }
 
 export async function updateAvatar(userId: string, avatarUrl: string) {
   await updateUserProfile(userId, { avatarUrl });
-  revalidatePath("/profile");
+  revalidateLocalized("/profile");
   return { success: true };
 }

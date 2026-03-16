@@ -21,7 +21,7 @@ export function PlayerStatsCard({
   avgProfitLoss,
   winRate,
   locale = "es-ES",
-  currency = "USD",
+  currency = "ARS",
 }: PlayerStatsCardProps) {
   return (
     <Card>

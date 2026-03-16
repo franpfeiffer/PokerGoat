@@ -19,7 +19,7 @@ export function LeaderboardRow({
   totalProfitLoss,
   nightsPlayed,
   locale = "es-ES",
-  currency = "USD",
+  currency = "ARS",
 }: LeaderboardRowProps) {
   const isTop3 = rank <= 3;
 

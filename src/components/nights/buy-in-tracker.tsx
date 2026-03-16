@@ -14,7 +14,7 @@ export function BuyInTracker({
   buyInCount,
   buyInAmount,
   locale = "es-ES",
-  currency = "USD",
+  currency = "ARS",
 }: BuyInTrackerProps) {
   const total = calculateTotalInvested(buyInCount, buyInAmount);
 

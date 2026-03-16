@@ -25,8 +25,8 @@ export const groups = pgTable("groups", {
     .default("0.10"),
   defaultBuyIn: decimal("default_buy_in", { precision: 10, scale: 2 })
     .notNull()
-    .default("10.00"),
-  currency: varchar("currency", { length: 3 }).notNull().default("EUR"),
+    .default("5000.00"),
+  currency: varchar("currency", { length: 3 }).notNull().default("ARS"),
   createdBy: uuid("created_by")
     .notNull()
     .references(() => userProfiles.id),

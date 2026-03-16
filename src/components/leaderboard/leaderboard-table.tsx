@@ -12,12 +12,13 @@ interface LeaderboardTableProps {
 export function LeaderboardTable({
   entries,
   locale = "es-ES",
-  currency = "USD",
+  currency = "ARS",
 }: LeaderboardTableProps) {
   const t = useTranslations("leaderboard");
+  const tCommon = useTranslations("common");
 
   if (entries.length === 0) {
-    return <EmptyState title="Sin datos a\u00fan" />;
+    return <EmptyState title={tCommon("noResults")} />;
   }
 
   return (

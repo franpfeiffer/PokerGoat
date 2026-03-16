@@ -1,4 +1,5 @@
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatShortDate } from "@/lib/utils/dates";
@@ -20,13 +21,6 @@ const statusVariants: Record<string, "default" | "gold" | "profit" | "loss" | "m
   cancelled: "muted",
 };
 
-const statusLabels: Record<string, string> = {
-  scheduled: "Programada",
-  in_progress: "En curso",
-  completed: "Finalizada",
-  cancelled: "Cancelada",
-};
-
 export function NightCard({
   id,
   groupId,
@@ -36,6 +30,15 @@ export function NightCard({
   participantCount,
   locale = "es",
 }: NightCardProps) {
+  const t = useTranslations("nights");
+
+  const statusLabelKey = {
+    scheduled: "status.scheduled",
+    in_progress: "status.inProgress",
+    completed: "status.completed",
+    cancelled: "status.cancelled",
+  }[status];
+
   return (
     <Link
       href={`/groups/${groupId}/nights/${id}`}
@@ -53,16 +56,16 @@ export function NightCard({
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium text-velvet-100 truncate">
-              {name ?? `Noche del ${formatShortDate(date, locale)}`}
+              {name ?? t("nightOfDate", { date: formatShortDate(date, locale) })}
             </p>
             {participantCount !== undefined && (
               <p className="text-xs text-velvet-400">
-                {participantCount} participantes
+                {t("participantsCount", { count: participantCount })}
               </p>
             )}
           </div>
           <Badge variant={statusVariants[status]}>
-            {statusLabels[status]}
+            {t(statusLabelKey)}
           </Badge>
         </CardContent>
       </Card>

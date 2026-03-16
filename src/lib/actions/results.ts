@@ -11,6 +11,14 @@ import {
 } from "@/lib/utils/chips";
 import { getUserMembership } from "@/lib/db/queries/groups";
 
+const LOCALES = ["es", "en"] as const;
+
+function revalidateLocalized(path: string) {
+  for (const locale of LOCALES) {
+    revalidatePath(`/${locale}${path}`);
+  }
+}
+
 export async function calculateAndSaveResults(
   nightId: string,
   userId: string
@@ -79,7 +87,7 @@ export async function calculateAndSaveResults(
     .set({ status: "completed", updatedAt: new Date() })
     .where(eq(pokerNights.id, nightId));
 
-  revalidatePath(`/groups/${night.groupId}/nights/${nightId}`);
-  revalidatePath(`/groups/${night.groupId}`);
+  revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
+  revalidateLocalized(`/groups/${night.groupId}`);
   return { success: true, resultsCount: results.length };
 }

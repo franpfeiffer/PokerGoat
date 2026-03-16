@@ -14,9 +14,8 @@ export default async function NewNightPage({
 }) {
   const { groupId } = await params;
 
-  async function handleCreateNight(formData: FormData) {
+  async function handleCreateNight(userId: string, formData: FormData) {
     "use server";
-    const userId = "placeholder-user-id";
     return createNight(groupId, userId, formData);
   }
 
@@ -32,7 +31,16 @@ export default async function NewNightPage({
           <NightForm
             groupId={groupId}
             action={handleCreateNight}
-            defaults={{ chipValue: 0.1, buyIn: 10 }}
+            defaults={{
+              chipValues: {
+                black: 500,
+                white: 100,
+                red: 50,
+                green: 25,
+                blue: 10,
+              },
+              buyIn: 5000,
+            }}
           />
         </CardContent>
       </Card>

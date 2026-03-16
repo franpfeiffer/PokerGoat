@@ -11,9 +11,8 @@ export const metadata: Metadata = {
 export default function NewGroupPage() {
   const t = useTranslations("dashboard");
 
-  async function handleCreateGroup(formData: FormData) {
+  async function handleCreateGroup(userId: string, formData: FormData) {
     "use server";
-    const userId = "placeholder-user-id";
     return createGroup(userId, formData);
   }
 

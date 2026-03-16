@@ -5,9 +5,12 @@ import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { requestJoinGroup } from "@/lib/actions/groups";
+import { authClient } from "@/lib/auth/client";
+import { getOrCreateProfile } from "@/lib/actions/profile";
 
 export function JoinGroupForm() {
   const t = useTranslations("groups.join");
+  const { data: session } = authClient.useSession();
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<{
     success?: boolean;
@@ -20,8 +23,14 @@ export function JoinGroupForm() {
     const formData = new FormData(e.currentTarget);
 
     startTransition(async () => {
-      const userId = "placeholder-user-id";
-      const res = await requestJoinGroup(userId, formData);
+      if (!session?.user) return;
+
+      const profile = await getOrCreateProfile({
+        authUserId: session.user.id,
+        displayName: session.user.name || session.user.email.split("@")[0],
+        avatarUrl: session.user.image ?? undefined,
+      });
+      const res = await requestJoinGroup(profile.id, formData);
       setResult(res);
     });
   }

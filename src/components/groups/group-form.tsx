@@ -4,17 +4,19 @@ import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth/client";
+import { getOrCreateProfile } from "@/lib/actions/profile";
 
 interface GroupFormProps {
-  action: (formData: FormData) => Promise<{ groupId?: string; error?: unknown }>;
+  action: (
+    userId: string,
+    formData: FormData
+  ) => Promise<{ groupId?: string; error?: unknown }>;
   defaults?: {
     name?: string;
     description?: string;
-    defaultChipValue?: number;
     defaultBuyIn?: number;
-    currency?: string;
   };
 }
 
@@ -22,13 +24,21 @@ export function GroupForm({ action, defaults }: GroupFormProps) {
   const t = useTranslations("groups");
   const tCommon = useTranslations("common");
   const router = useRouter();
+  const { data: session } = authClient.useSession();
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
-      const result = await action(formData);
+      if (!session?.user) return;
+
+      const profile = await getOrCreateProfile({
+        authUserId: session.user.id,
+        displayName: session.user.name || session.user.email.split("@")[0],
+        avatarUrl: session.user.image ?? undefined,
+      });
+      const result = await action(profile.id, formData);
       if (result.groupId) {
         router.push(`/groups/${result.groupId}`);
       }
@@ -62,36 +72,14 @@ export function GroupForm({ action, defaults }: GroupFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          label={t("defaultChipValue")}
-          name="defaultChipValue"
-          type="number"
-          step="1"
-          min="1"
-          defaultValue={defaults?.defaultChipValue ?? 1}
-          autoComplete="off"
-        />
-        <Input
-          label={t("defaultBuyIn")}
-          name="defaultBuyIn"
-          type="number"
-          step="1"
-          min="1"
-          defaultValue={defaults?.defaultBuyIn ?? 10}
-          autoComplete="off"
-        />
-      </div>
-
-      <Select
-        label={t("currency")}
-        name="currency"
-        defaultValue={defaults?.currency ?? "USD"}
-        options={[
-          { value: "EUR", label: "EUR (\u20ac)" },
-          { value: "USD", label: "USD ($)" },
-          { value: "GBP", label: "GBP (\u00a3)" },
-        ]}
+      <Input
+        label={t("defaultBuyIn")}
+        name="defaultBuyIn"
+        type="number"
+        step="1"
+        min="1"
+        defaultValue={defaults?.defaultBuyIn ?? 5000}
+        autoComplete="off"
       />
 
       <div className="flex gap-3 pt-2">

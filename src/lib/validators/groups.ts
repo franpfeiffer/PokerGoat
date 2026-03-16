@@ -4,8 +4,8 @@ export const createGroupSchema = z.object({
   name: z.string().min(2).max(150),
   description: z.string().max(500).optional(),
   defaultChipValue: z.coerce.number().positive().default(0.1),
-  defaultBuyIn: z.coerce.number().positive().default(10),
-  currency: z.string().length(3).default("EUR"),
+  defaultBuyIn: z.coerce.number().positive().default(5000),
+  currency: z.literal("ARS").default("ARS"),
 });
 
 export const updateGroupSchema = createGroupSchema.partial();

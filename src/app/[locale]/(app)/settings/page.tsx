@@ -29,17 +29,6 @@ export default function SettingsPage() {
           </div>
         </CardContent>
       </Card>
-
-      <Card>
-        <CardHeader>
-          <h2 className="font-display text-lg font-semibold">{t("theme")}</h2>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-velvet-400">
-            Tema oscuro activo por defecto
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 }

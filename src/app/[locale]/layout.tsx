@@ -45,22 +45,12 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="dark">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-      </head>
-      <body
-        className={`${playfairDisplay.variable} ${dmSans.variable} bg-background text-foreground antialiased`}
-      >
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthProvider>{children}</AuthProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <div
+      className={`${playfairDisplay.variable} ${dmSans.variable} bg-background text-foreground antialiased`}
+    >
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <AuthProvider>{children}</AuthProvider>
+      </NextIntlClientProvider>
+    </div>
   );
 }

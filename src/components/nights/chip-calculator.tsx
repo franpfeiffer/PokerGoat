@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { formatCurrency, formatProfitLoss } from "@/lib/utils/currency";
 import {
   calculateCashout,
@@ -22,8 +23,9 @@ export function ChipCalculator({
   buyInAmount,
   buyInCount,
   locale = "es-ES",
-  currency = "USD",
+  currency = "ARS",
 }: ChipCalculatorProps) {
+  const t = useTranslations("nights");
   const [chips, setChips] = useState<number>(0);
 
   const totalInvested = calculateTotalInvested(buyInCount, buyInAmount);
@@ -44,7 +46,7 @@ export function ChipCalculator({
           htmlFor="chip-calc"
           className="text-xs font-medium text-velvet-400"
         >
-          Fichas finales
+          {t("scoring.chips")}
         </label>
         <input
           id="chip-calc"
@@ -58,28 +60,30 @@ export function ChipCalculator({
       </div>
 
       <div className="flex justify-between text-sm">
-        <span className="text-velvet-400">Valor de ficha</span>
+        <span className="text-velvet-400">{t("chipValue")}</span>
         <span className="tabular-nums text-velvet-200">
           {formatCurrency(chipValue, locale, currency)}
         </span>
       </div>
 
       <div className="flex justify-between text-sm">
-        <span className="text-velvet-400">Invertido</span>
+        <span className="text-velvet-400">{t("scoring.invested")}</span>
         <span className="tabular-nums text-velvet-200">
           {formatCurrency(totalInvested, locale, currency)}
         </span>
       </div>
 
       <div className="flex justify-between text-sm">
-        <span className="text-velvet-400">Cobro</span>
+        <span className="text-velvet-400">{t("scoring.cashout")}</span>
         <span className="tabular-nums text-velvet-200">
           {formatCurrency(cashout, locale, currency)}
         </span>
       </div>
 
       <div className="border-t border-velvet-700 pt-2 flex justify-between">
-        <span className="text-sm font-medium text-velvet-300">Resultado</span>
+        <span className="text-sm font-medium text-velvet-300">
+          {t("scoring.profit")}
+        </span>
         <span
           className={`text-lg font-bold tabular-nums ${plColors[plType]}`}
         >

@@ -1,25 +1,39 @@
 "use client";
 
 import { useTransition } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth/client";
+import { getOrCreateProfile } from "@/lib/actions/profile";
 
 interface NightFormProps {
   groupId: string;
   defaults?: {
-    chipValue: number;
+    chipValues: {
+      black: number;
+      white: number;
+      red: number;
+      green: number;
+      blue: number;
+    };
     buyIn: number;
   };
-  action: (formData: FormData) => Promise<{ nightId?: string; error?: unknown }>;
+  action: (
+    userId: string,
+    formData: FormData
+  ) => Promise<{ nightId?: string; error?: unknown }>;
 }
 
 export function NightForm({ defaults, action }: NightFormProps) {
   const t = useTranslations("nights");
   const tCommon = useTranslations("common");
   const router = useRouter();
+  const { data: session } = authClient.useSession();
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -27,15 +41,38 @@ export function NightForm({ defaults, action }: NightFormProps) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
-      const result = await action(formData);
+      if (!session?.user) return;
+      setError(null);
+
+      const profile = await getOrCreateProfile({
+        authUserId: session.user.id,
+        displayName: session.user.name || session.user.email.split("@")[0],
+        avatarUrl: session.user.image ?? undefined,
+      });
+      const result = await action(profile.id, formData);
       if (result.nightId) {
         router.back();
+      } else if (result.error) {
+        setError(
+          typeof result.error === "string"
+            ? result.error
+            : tCommon("error")
+        );
       }
     });
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {error && (
+        <div
+          role="alert"
+          className="rounded-lg border border-loss/30 bg-loss-muted/20 px-4 py-2 text-sm text-loss"
+        >
+          {error}
+        </div>
+      )}
+
       <Input
         label={t("date")}
         name="date"
@@ -45,7 +82,7 @@ export function NightForm({ defaults, action }: NightFormProps) {
       />
 
       <Input
-        label="Nombre (opcional)"
+        label={t("nameOptional")}
         name="name"
         type="text"
         autoComplete="off"
@@ -53,13 +90,56 @@ export function NightForm({ defaults, action }: NightFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <Input
-          label={t("chipValue")}
-          name="chipValue"
+          label={t("chipBlack")}
+          name="chipValueBlack"
           type="number"
-          step="1"
-          min="1"
+          step="0.01"
+          min="0.01"
           required
-          defaultValue={defaults?.chipValue ?? 1}
+          defaultValue={defaults?.chipValues.black ?? 500}
+          autoComplete="off"
+        />
+        <Input
+          label={t("chipWhite")}
+          name="chipValueWhite"
+          type="number"
+          step="0.01"
+          min="0.01"
+          required
+          defaultValue={defaults?.chipValues.white ?? 100}
+          autoComplete="off"
+        />
+        <Input
+          label={t("chipRed")}
+          name="chipValueRed"
+          type="number"
+          step="0.01"
+          min="0.01"
+          required
+          defaultValue={defaults?.chipValues.red ?? 50}
+          autoComplete="off"
+        />
+        <Input
+          label={t("chipGreen")}
+          name="chipValueGreen"
+          type="number"
+          step="0.01"
+          min="0.01"
+          required
+          defaultValue={defaults?.chipValues.green ?? 25}
+          autoComplete="off"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <Input
+          label={t("chipBlue")}
+          name="chipValueBlue"
+          type="number"
+          step="0.01"
+          min="0.01"
+          required
+          defaultValue={defaults?.chipValues.blue ?? 10}
           autoComplete="off"
         />
         <Input
@@ -69,7 +149,7 @@ export function NightForm({ defaults, action }: NightFormProps) {
           step="1"
           min="1"
           required
-          defaultValue={defaults?.buyIn ?? 10}
+          defaultValue={defaults?.buyIn ?? 5000}
           autoComplete="off"
         />
       </div>
@@ -85,7 +165,7 @@ export function NightForm({ defaults, action }: NightFormProps) {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="notes" className="text-sm font-medium text-velvet-200">
-          Notas
+          {t("notes")}
         </label>
         <textarea
           id="notes"

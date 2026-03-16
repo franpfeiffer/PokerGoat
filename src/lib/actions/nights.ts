@@ -6,6 +6,15 @@ import { db } from "@/lib/db";
 import { pokerNights, pokerNightParticipants } from "@/lib/db/schema";
 import { createNightSchema, updateParticipantSchema } from "@/lib/validators/nights";
 import { getUserMembership } from "@/lib/db/queries/groups";
+import { serializeNightMetadata } from "@/lib/utils/chips";
+
+const LOCALES = ["es", "en"] as const;
+
+function revalidateLocalized(path: string) {
+  for (const locale of LOCALES) {
+    revalidatePath(`/${locale}${path}`);
+  }
+}
 
 export async function createNight(
   groupId: string,
@@ -20,7 +29,11 @@ export async function createNight(
   const parsed = createNightSchema.safeParse({
     name: formData.get("name") || undefined,
     date: formData.get("date"),
-    chipValue: formData.get("chipValue"),
+    chipValueBlack: formData.get("chipValueBlack"),
+    chipValueWhite: formData.get("chipValueWhite"),
+    chipValueRed: formData.get("chipValueRed"),
+    chipValueGreen: formData.get("chipValueGreen"),
+    chipValueBlue: formData.get("chipValueBlue"),
     buyInAmount: formData.get("buyInAmount"),
     maxRebuys: formData.get("maxRebuys") || undefined,
     notes: formData.get("notes") || undefined,
@@ -30,21 +43,30 @@ export async function createNight(
     return { error: parsed.error.flatten().fieldErrors };
   }
 
+  const serializedMetadata = serializeNightMetadata(parsed.data.notes, {
+    black: parsed.data.chipValueBlack,
+    white: parsed.data.chipValueWhite,
+    red: parsed.data.chipValueRed,
+    green: parsed.data.chipValueGreen,
+    blue: parsed.data.chipValueBlue,
+  });
+
   const [night] = await db
     .insert(pokerNights)
     .values({
       groupId,
       name: parsed.data.name,
       date: parsed.data.date,
-      chipValue: String(parsed.data.chipValue),
+      // Keep legacy chip_value for backward-compatible calculations.
+      chipValue: String(parsed.data.chipValueWhite),
       buyInAmount: String(parsed.data.buyInAmount),
       maxRebuys: parsed.data.maxRebuys ?? null,
-      notes: parsed.data.notes,
+      notes: serializedMetadata,
       createdBy: userId,
     })
     .returning();
 
-  revalidatePath(`/groups/${groupId}`);
+  revalidateLocalized(`/groups/${groupId}`);
   return { nightId: night.id };
 }
 
@@ -67,7 +89,7 @@ export async function startNight(nightId: string, userId: string) {
     .set({ status: "in_progress", updatedAt: new Date() })
     .where(eq(pokerNights.id, nightId));
 
-  revalidatePath(`/groups/${night.groupId}/nights/${nightId}`);
+  revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   return { success: true };
 }
 
@@ -90,7 +112,7 @@ export async function completeNight(nightId: string, userId: string) {
     .set({ status: "completed", updatedAt: new Date() })
     .where(eq(pokerNights.id, nightId));
 
-  revalidatePath(`/groups/${night.groupId}/nights/${nightId}`);
+  revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   return { success: true };
 }
 
@@ -118,7 +140,7 @@ export async function addParticipant(
     buyInCount: 1,
   });
 
-  revalidatePath(`/groups/${night.groupId}/nights/${nightId}`);
+  revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   return { success: true };
 }
 
@@ -176,6 +198,6 @@ export async function removeParticipant(
     .delete(pokerNightParticipants)
     .where(eq(pokerNightParticipants.id, participantId));
 
-  revalidatePath(`/groups/${night.groupId}/nights/${night.id}`);
+  revalidateLocalized(`/groups/${night.groupId}/nights/${night.id}`);
   return { success: true };
 }

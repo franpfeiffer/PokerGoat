@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/avatar";
 import { formatCurrency, formatProfitLoss } from "@/lib/utils/currency";
 import {
@@ -34,10 +35,11 @@ export function ParticipantRow({
   chipValue,
   nightStatus,
   locale = "es-ES",
-  currency = "USD",
+  currency = "ARS",
   onUpdateBuyIn,
   onUpdateChips,
 }: ParticipantRowProps) {
+  const t = useTranslations("nights");
   const totalInvested = calculateTotalInvested(buyInCount, buyInAmount);
   const isActive = nightStatus === "in_progress" || nightStatus === "scheduled";
 
@@ -65,7 +67,8 @@ export function ParticipantRow({
           {displayName}
         </p>
         <p className="text-xs text-velvet-400 tabular-nums">
-          {buyInCount}x buy-in = {formatCurrency(totalInvested, locale, currency)}
+          {buyInCount}x {t("buyIn")} ={" "}
+          {formatCurrency(totalInvested, locale, currency)}
         </p>
       </div>
 
@@ -75,7 +78,7 @@ export function ParticipantRow({
             type="button"
             onClick={() => onUpdateBuyIn(id, Math.max(1, buyInCount - 1))}
             disabled={buyInCount <= 1}
-            aria-label="Reducir buy-in"
+            aria-label={t("decreaseBuyIn")}
             className="focus-ring flex h-7 w-7 items-center justify-center rounded-md border border-velvet-700 bg-velvet-800 text-sm text-velvet-300 hover:bg-velvet-700 disabled:opacity-30 transition-colors"
           >
             &minus;
@@ -86,7 +89,7 @@ export function ParticipantRow({
           <button
             type="button"
             onClick={() => onUpdateBuyIn(id, buyInCount + 1)}
-            aria-label="A\u00f1adir re-buy"
+            aria-label={t("addRebuy")}
             className="focus-ring flex h-7 w-7 items-center justify-center rounded-md border border-velvet-700 bg-velvet-800 text-sm text-velvet-300 hover:bg-velvet-700 transition-colors"
           >
             +
@@ -100,8 +103,8 @@ export function ParticipantRow({
             type="number"
             min="0"
             defaultValue={totalChipsEnd ?? ""}
-            placeholder="Fichas"
-            aria-label={`Fichas finales de ${displayName}`}
+            placeholder={t("scoring.chips")}
+            aria-label={t("finalChipsFor", { name: displayName })}
             onChange={(e) => {
               const val = parseInt(e.target.value, 10);
               if (!isNaN(val)) onUpdateChips(id, val);

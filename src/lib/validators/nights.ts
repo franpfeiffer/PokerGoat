@@ -3,7 +3,11 @@ import { z } from "zod";
 export const createNightSchema = z.object({
   name: z.string().max(200).optional(),
   date: z.string().min(1),
-  chipValue: z.coerce.number().positive(),
+  chipValueBlack: z.coerce.number().positive(),
+  chipValueWhite: z.coerce.number().positive(),
+  chipValueRed: z.coerce.number().positive(),
+  chipValueGreen: z.coerce.number().positive(),
+  chipValueBlue: z.coerce.number().positive(),
   buyInAmount: z.coerce.number().positive(),
   maxRebuys: z.coerce.number().int().min(0).optional(),
   notes: z.string().max(1000).optional(),

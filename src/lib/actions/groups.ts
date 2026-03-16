@@ -6,15 +6,26 @@ import { db } from "@/lib/db";
 import { groups, groupMembers, joinRequests } from "@/lib/db/schema";
 import { createGroupSchema, updateGroupSchema, joinGroupSchema } from "@/lib/validators/groups";
 import { generateInviteCode } from "@/lib/utils/chips";
-import { getGroupByInviteCode, getUserMembership } from "@/lib/db/queries/groups";
+import {
+  getGroupByInviteCode,
+  getUserGroups,
+  getUserMembership,
+} from "@/lib/db/queries/groups";
+import { getUserByAuthId } from "@/lib/db/queries/users";
+
+const LOCALES = ["es", "en"] as const;
+
+function revalidateLocalized(path: string) {
+  for (const locale of LOCALES) {
+    revalidatePath(`/${locale}${path}`);
+  }
+}
 
 export async function createGroup(userId: string, formData: FormData) {
   const parsed = createGroupSchema.safeParse({
     name: formData.get("name"),
     description: formData.get("description"),
-    defaultChipValue: formData.get("defaultChipValue"),
     defaultBuyIn: formData.get("defaultBuyIn"),
-    currency: formData.get("currency"),
   });
 
   if (!parsed.success) {
@@ -29,6 +40,7 @@ export async function createGroup(userId: string, formData: FormData) {
       ...parsed.data,
       defaultChipValue: String(parsed.data.defaultChipValue),
       defaultBuyIn: String(parsed.data.defaultBuyIn),
+      currency: "ARS",
       inviteCode,
       createdBy: userId,
     })
@@ -40,8 +52,15 @@ export async function createGroup(userId: string, formData: FormData) {
     role: "leader",
   });
 
-  revalidatePath("/dashboard");
+  revalidateLocalized("/dashboard");
+  revalidateLocalized("/groups");
   return { groupId: group.id };
+}
+
+export async function getMyGroups(authUserId: string) {
+  const profile = await getUserByAuthId(authUserId);
+  if (!profile) return [];
+  return getUserGroups(profile.id);
 }
 
 export async function updateGroup(
@@ -59,7 +78,6 @@ export async function updateGroup(
     description: formData.get("description") || undefined,
     defaultChipValue: formData.get("defaultChipValue") || undefined,
     defaultBuyIn: formData.get("defaultBuyIn") || undefined,
-    currency: formData.get("currency") || undefined,
   });
 
   if (!parsed.success) {
@@ -74,11 +92,10 @@ export async function updateGroup(
     updateData.defaultChipValue = String(parsed.data.defaultChipValue);
   if (parsed.data.defaultBuyIn)
     updateData.defaultBuyIn = String(parsed.data.defaultBuyIn);
-  if (parsed.data.currency) updateData.currency = parsed.data.currency;
 
   await db.update(groups).set(updateData).where(eq(groups.id, groupId));
 
-  revalidatePath(`/groups/${groupId}`);
+  revalidateLocalized(`/groups/${groupId}`);
   return { success: true };
 }
 
@@ -155,7 +172,7 @@ export async function approveJoinRequest(
     role: "member",
   });
 
-  revalidatePath(`/groups/${request.groupId}`);
+  revalidateLocalized(`/groups/${request.groupId}`);
   return { success: true };
 }
 
@@ -209,7 +226,7 @@ export async function removeMember(
       )
     );
 
-  revalidatePath(`/groups/${groupId}`);
+  revalidateLocalized(`/groups/${groupId}`);
   return { success: true };
 }
 
@@ -233,6 +250,6 @@ export async function assignTemporaryLeader(
       )
     );
 
-  revalidatePath(`/groups/${groupId}`);
+  revalidateLocalized(`/groups/${groupId}`);
   return { success: true };
 }

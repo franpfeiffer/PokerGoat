@@ -17,7 +17,7 @@ const sizeStyles = {
 export function ProfitBadge({
   amount,
   locale = "es-ES",
-  currency = "USD",
+  currency = "ARS",
   size = "md",
 }: ProfitBadgeProps) {
   const type = getProfitLossType(amount);

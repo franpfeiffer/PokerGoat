@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { updateDisplayName, updateAvatar } from "@/lib/actions/profile";
 import { formatCurrency } from "@/lib/utils/currency";
+import { DEFAULT_CURRENCY } from "@/lib/constants";
 
 interface ProfileContentProps {
   userId: string;
@@ -305,7 +306,7 @@ export function ProfileContent({
           }
         >
           <span className={`text-3xl font-bold tabular-nums ${profitColor}`}>
-            {formatCurrency(stats.totalProfit, locale, "USD")}
+            {formatCurrency(stats.totalProfit, locale, DEFAULT_CURRENCY)}
           </span>
         </StatCard>
 
