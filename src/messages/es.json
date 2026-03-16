@@ -1,0 +1,143 @@
+{
+  "common": {
+    "appName": "PokerGoat",
+    "loading": "Cargando…",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "back": "Volver",
+    "confirm": "Confirmar",
+    "search": "Buscar",
+    "noResults": "Sin resultados",
+    "error": "Algo salió mal",
+    "retry": "Reintentar"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "groups": "Grupos",
+    "profile": "Perfil",
+    "settings": "Ajustes",
+    "signOut": "Cerrar sesión"
+  },
+  "landing": {
+    "title": "Tu mesa de poker, tus reglas",
+    "subtitle": "Lleva el control de tus noches de poker con amigos. Clasificaciones, estadísticas y más.",
+    "cta": "Empezar ahora",
+    "signIn": "Iniciar sesión",
+    "features": {
+      "track": "Control de ganancias y pérdidas",
+      "leaderboard": "Clasificaciones globales y por noche",
+      "stats": "Estadísticas avanzadas",
+      "groups": "Grupos de amigos"
+    }
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "displayName": "Nombre de usuario",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "forgotPassword": "¿Olvidaste tu contraseña?"
+  },
+  "dashboard": {
+    "title": "Panel de control",
+    "yourGroups": "Tus grupos",
+    "createGroup": "Crear grupo",
+    "joinGroup": "Unirse a grupo",
+    "noGroups": "Aún no perteneces a ningún grupo",
+    "noGroupsAction": "Crea uno o únete con un código de invitación"
+  },
+  "groups": {
+    "title": "Grupos",
+    "name": "Nombre del grupo",
+    "description": "Descripción",
+    "members": "Miembros",
+    "nights": "Noches de poker",
+    "leaderboard": "Clasificación",
+    "settings": "Ajustes del grupo",
+    "inviteCode": "Código de invitación",
+    "copyInvite": "Copiar enlace",
+    "copied": "Copiado",
+    "defaultBuyIn": "Buy-in predeterminado",
+    "defaultChipValue": "Valor de ficha",
+    "currency": "Moneda",
+    "role": {
+      "leader": "Líder",
+      "temporaryLeader": "Líder temporal",
+      "member": "Miembro"
+    },
+    "join": {
+      "title": "Unirse a un grupo",
+      "enterCode": "Introduce el código de invitación",
+      "request": "Solicitar unión",
+      "pending": "Solicitud pendiente"
+    }
+  },
+  "nights": {
+    "title": "Noches de poker",
+    "create": "Nueva noche",
+    "date": "Fecha",
+    "buyIn": "Buy-in",
+    "chipValue": "Valor de ficha",
+    "maxRebuys": "Re-buys máximos",
+    "unlimited": "Ilimitado",
+    "participants": "Participantes",
+    "addParticipant": "Añadir participante",
+    "status": {
+      "scheduled": "Programada",
+      "inProgress": "En curso",
+      "completed": "Finalizada",
+      "cancelled": "Cancelada"
+    },
+    "scoring": {
+      "buyIns": "Buy-ins",
+      "chips": "Fichas finales",
+      "invested": "Invertido",
+      "cashout": "Cobro",
+      "profit": "Ganancia",
+      "loss": "Pérdida"
+    },
+    "noNights": "Aún no hay noches de poker",
+    "noNightsAction": "Crea la primera noche para empezar"
+  },
+  "leaderboard": {
+    "title": "Clasificación",
+    "rank": "Pos.",
+    "player": "Jugador",
+    "nightsPlayed": "Noches",
+    "totalProfit": "Beneficio total",
+    "avgProfit": "Promedio",
+    "biggestWin": "Mayor ganancia",
+    "worstNight": "Peor noche",
+    "allTime": "Histórico",
+    "monthly": "Mensual",
+    "season": "Temporada"
+  },
+  "profile": {
+    "title": "Perfil",
+    "displayName": "Nombre visible",
+    "avatar": "Avatar",
+    "stats": "Estadísticas",
+    "totalNights": "Noches jugadas",
+    "totalProfit": "Beneficio total",
+    "winRate": "Ratio de victorias",
+    "edit": "Editar",
+    "editName": "Editar nombre",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "resetAvatar": "Restaurar foto de Google",
+    "changeAvatar": "Cambiar foto"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "language": "Idioma",
+    "spanish": "Español",
+    "english": "Inglés",
+    "theme": "Tema"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "common": {
+    "appName": "PokerGoat",
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "confirm": "Confirm",
+    "search": "Search",
+    "noResults": "No results",
+    "error": "Something went wrong",
+    "retry": "Retry"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "groups": "Groups",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signOut": "Sign out"
+  },
+  "landing": {
+    "title": "Your poker table, your rules",
+    "subtitle": "Track your poker nights with friends. Leaderboards, stats, and more.",
+    "cta": "Get started",
+    "signIn": "Sign in",
+    "features": {
+      "track": "Track profits and losses",
+      "leaderboard": "Global and per-night leaderboards",
+      "stats": "Advanced statistics",
+      "groups": "Friend groups"
+    }
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "displayName": "Display name",
+    "noAccount": "Don’t have an account?",
+    "hasAccount": "Already have an account?",
+    "forgotPassword": "Forgot your password?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "yourGroups": "Your groups",
+    "createGroup": "Create group",
+    "joinGroup": "Join group",
+    "noGroups": "You don’t belong to any group yet",
+    "noGroupsAction": "Create one or join with an invite code"
+  },
+  "groups": {
+    "title": "Groups",
+    "name": "Group name",
+    "description": "Description",
+    "members": "Members",
+    "nights": "Poker nights",
+    "leaderboard": "Leaderboard",
+    "settings": "Group settings",
+    "inviteCode": "Invite code",
+    "copyInvite": "Copy link",
+    "copied": "Copied",
+    "defaultBuyIn": "Default buy-in",
+    "defaultChipValue": "Chip value",
+    "currency": "Currency",
+    "role": {
+      "leader": "Leader",
+      "temporaryLeader": "Temporary leader",
+      "member": "Member"
+    },
+    "join": {
+      "title": "Join a group",
+      "enterCode": "Enter invite code",
+      "request": "Request to join",
+      "pending": "Request pending"
+    }
+  },
+  "nights": {
+    "title": "Poker nights",
+    "create": "New night",
+    "date": "Date",
+    "buyIn": "Buy-in",
+    "chipValue": "Chip value",
+    "maxRebuys": "Max rebuys",
+    "unlimited": "Unlimited",
+    "participants": "Participants",
+    "addParticipant": "Add participant",
+    "status": {
+      "scheduled": "Scheduled",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "scoring": {
+      "buyIns": "Buy-ins",
+      "chips": "Final chips",
+      "invested": "Invested",
+      "cashout": "Cashout",
+      "profit": "Profit",
+      "loss": "Loss"
+    },
+    "noNights": "No poker nights yet",
+    "noNightsAction": "Create the first night to get started"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "rank": "Rank",
+    "player": "Player",
+    "nightsPlayed": "Nights",
+    "totalProfit": "Total profit",
+    "avgProfit": "Average",
+    "biggestWin": "Biggest win",
+    "worstNight": "Worst night",
+    "allTime": "All time",
+    "monthly": "Monthly",
+    "season": "Season"
+  },
+  "profile": {
+    "title": "Profile",
+    "displayName": "Display name",
+    "avatar": "Avatar",
+    "stats": "Statistics",
+    "totalNights": "Nights played",
+    "totalProfit": "Total profit",
+    "winRate": "Win rate",
+    "edit": "Edit",
+    "editName": "Edit name",
+    "save": "Save",
+    "cancel": "Cancel",
+    "resetAvatar": "Reset to Google photo",
+    "changeAvatar": "Change photo"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "spanish": "Spanish",
+    "english": "English",
+    "theme": "Theme"
+  }
+}

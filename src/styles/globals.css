@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-playfair);
+
+  --color-velvet-950: #0a0a0f;
+  --color-velvet-900: #111118;
+  --color-velvet-800: #1a1a24;
+  --color-velvet-700: #2a2a38;
+  --color-velvet-600: #3a3a4f;
+  --color-velvet-500: #555570;
+  --color-velvet-400: #8888a0;
+  --color-velvet-300: #a8a8c0;
+  --color-velvet-200: #c8c8d8;
+  --color-velvet-100: #e0e0ec;
+  --color-velvet-50: #f0f0f5;
+
+  --color-gold-700: #9a7820;
+  --color-gold-600: #b8922e;
+  --color-gold-500: #d4a847;
+  --color-gold-400: #e8c45a;
+  --color-gold-300: #f0d87a;
+
+  --color-profit: #22c55e;
+  --color-profit-muted: #166534;
+  --color-loss: #ef4444;
+  --color-loss-muted: #991b1b;
+  --color-even: #8888a0;
+
+  --color-suit-hearts: #dc2626;
+  --color-suit-diamonds: #dc2626;
+  --color-suit-clubs: #f0f0f5;
+  --color-suit-spades: #f0f0f5;
+
+  --color-background: var(--color-velvet-950);
+  --color-foreground: var(--color-velvet-50);
+  --color-surface: var(--color-velvet-900);
+  --color-surface-elevated: var(--color-velvet-800);
+  --color-border: var(--color-velvet-700);
+  --color-muted: var(--color-velvet-400);
+  --color-accent: var(--color-gold-500);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+*,
+*::before,
+*::after {
+  border-color: var(--color-border);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display), serif;
+  text-wrap: balance;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-gold-400);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.bg-card-pattern {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(212, 168, 71, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(212, 168, 71, 0.02) 0%, transparent 50%);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out both;
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.3s ease-out both;
+}
+
+.animate-count-up {
+  animation: count-up 0.2s ease-out both;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(212, 168, 71, 0.3), 0 0 24px rgba(212, 168, 71, 0.1); }
+  50% { box-shadow: 0 0 16px rgba(212, 168, 71, 0.5), 0 0 40px rgba(212, 168, 71, 0.15); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out both;
+}
+
+.avatar-gold-ring {
+  position: relative;
+  border-radius: 9999px;
+  padding: 3px;
+  background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-400), var(--color-gold-700));
+  box-shadow: 0 0 12px rgba(212, 168, 71, 0.25), 0 0 32px rgba(212, 168, 71, 0.08);
+}
+
+.avatar-gold-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, transparent 40%, rgba(240, 216, 122, 0.15) 50%, transparent 60%);
+  background-size: 200% 200%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.stat-card-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 71, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.profile-hero-bg {
+  background:
+    radial-gradient(ellipse at 50% -20%, rgba(212, 168, 71, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(212, 168, 71, 0.03) 0%, transparent 40%);
+}
