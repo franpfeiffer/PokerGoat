@@ -82,7 +82,7 @@ export function GroupForm({ action, defaults }: GroupFormProps) {
         autoComplete="off"
       />
 
-      <div className="flex gap-3 pt-2">
+      <div className="flex justify-center gap-3 pt-2">
         <Button type="submit" disabled={isPending}>
           {isPending ? `${tCommon("save")}\u2026` : tCommon("save")}
         </Button>

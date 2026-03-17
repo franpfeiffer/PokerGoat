@@ -33,7 +33,16 @@ export default async function GroupSettingsPage({
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="font-display text-2xl font-bold">{t("settings")}</h1>
+      <Card>
+        <CardHeader>
+          <h2 className="font-display text-lg font-semibold">
+            {t("inviteCode")}
+          </h2>
+        </CardHeader>
+        <CardContent>
+          <InviteLink inviteCode={group.inviteCode} />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -50,17 +59,6 @@ export default async function GroupSettingsPage({
               defaultBuyIn: Number(group.defaultBuyIn),
             }}
           />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <h2 className="font-display text-lg font-semibold">
-            {t("inviteCode")}
-          </h2>
-        </CardHeader>
-        <CardContent>
-          <InviteLink inviteCode={group.inviteCode} />
         </CardContent>
       </Card>
     </div>

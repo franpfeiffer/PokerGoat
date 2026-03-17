@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { updateDisplayName, updateAvatar } from "@/lib/actions/profile";
-import { formatCurrency } from "@/lib/utils/currency";
+import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
 
 interface ProfileContentProps {
@@ -77,6 +77,7 @@ export function ProfileContent({
         setLocalPreview(null);
         setError(result.error);
       } else {
+        window.dispatchEvent(new Event("profile-updated"));
         onUpdate?.();
       }
     });
@@ -126,6 +127,7 @@ export function ProfileContent({
             setLocalPreview(null);
             setError(result.error);
           } else {
+            window.dispatchEvent(new Event("profile-updated"));
             onUpdate?.();
           }
         });
@@ -173,12 +175,12 @@ export function ProfileContent({
         : "text-even";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Hero Card: Avatar + Identity */}
       <Card className="relative overflow-hidden">
         <CardContent className="flex flex-col items-center py-8 px-4 sm:py-10 sm:px-6">
           {/* Avatar with gold ring — clickable to change photo */}
-          <div className="avatar-gold-ring animate-fade-in">
+          <div className="animate-fade-in">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -190,7 +192,6 @@ export function ProfileContent({
                 src={imageUrl}
                 name={displayName}
                 size="2xl"
-                className="ring-2 ring-velvet-900"
               />
               <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/0 transition-colors group-hover:bg-black/50">
                 <svg
@@ -220,18 +221,6 @@ export function ProfileContent({
               aria-hidden="true"
             />
           </div>
-
-          {/* Reset avatar to Google photo */}
-          {googleImage && avatarUrl && avatarUrl !== googleImage && (
-            <button
-              type="button"
-              onClick={handleResetAvatar}
-              disabled={isPending}
-              className="focus-ring mt-3 rounded-full px-3 py-1 text-xs text-velvet-400 hover:text-gold-400 hover:bg-velvet-800/60 transition-colors disabled:opacity-50"
-            >
-              {t("resetAvatar")}
-            </button>
-          )}
 
           {/* Name + Edit */}
           <div className="mt-5 flex flex-col items-center gap-1 animate-fade-in" style={{ animationDelay: "0.1s" }}>
@@ -308,18 +297,22 @@ export function ProfileContent({
         </CardContent>
       </Card>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+      {/* Net Worth — full width */}
+      <StatCard
+        label={t("totalProfit")}
+        delay="0.15s"
+        className={profitBg}
+      >
+        <span className={`text-3xl font-bold tabular-nums sm:text-4xl ${profitColor}`}>
+          {formatProfitLoss(stats.totalProfit, locale, DEFAULT_CURRENCY)}
+        </span>
+      </StatCard>
+
+      {/* Nights + Winrate — side by side */}
+      <div className="grid grid-cols-2 gap-3">
         <StatCard
           label={t("totalNights")}
-          delay="0.15s"
-          icon={
-            <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M8 2v4" /><path d="M16 2v4" />
-              <rect width="18" height="18" x="3" y="4" rx="2" />
-              <path d="M3 10h18" />
-            </svg>
-          }
+          delay="0.2s"
         >
           <span className="text-2xl font-bold tabular-nums text-velvet-50 sm:text-3xl">
             {stats.nightsPlayed}
@@ -327,30 +320,8 @@ export function ProfileContent({
         </StatCard>
 
         <StatCard
-          label={t("totalProfit")}
-          delay="0.2s"
-          className={profitBg}
-          icon={
-            <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <line x1="12" x2="12" y1="2" y2="22" />
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
-          }
-        >
-          <span className={`text-2xl font-bold tabular-nums sm:text-3xl ${profitColor}`}>
-            {formatCurrency(stats.totalProfit, locale, DEFAULT_CURRENCY)}
-          </span>
-        </StatCard>
-
-        <StatCard
           label={t("winRate")}
           delay="0.25s"
-          icon={
-            <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-              <polyline points="16 7 22 7 22 13" />
-            </svg>
-          }
         >
           <span className={`text-2xl font-bold tabular-nums sm:text-3xl ${winRateColor}`}>
             {Math.round(stats.winRate * 100)}%

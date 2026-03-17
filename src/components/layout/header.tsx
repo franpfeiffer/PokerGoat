@@ -1,14 +1,44 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { UserMenu } from "@/components/auth/user-menu";
 import { LocaleSwitcher } from "./locale-switcher";
+import { getOrCreateProfile } from "@/lib/actions/profile";
 
 export function Header() {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending: sessionPending } = authClient.useSession();
+  const [profileAvatar, setProfileAvatar] = useState<string | null>(null);
 
   const displayName = session?.user?.name || "Usuario";
-  const avatarUrl = session?.user?.image;
+
+  const loadProfile = useCallback(async () => {
+    if (!session?.user) return;
+    const profile = await getOrCreateProfile({
+      authUserId: session.user.id,
+      displayName: session.user.name || session.user.email.split("@")[0],
+      avatarUrl: session.user.image ?? undefined,
+    });
+    if (profile?.avatarUrl) {
+      setProfileAvatar(profile.avatarUrl);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (sessionPending || !session?.user) return;
+    loadProfile();
+  }, [sessionPending, session, loadProfile]);
+
+  // Listen for profile updates from other components
+  useEffect(() => {
+    function handleProfileUpdate() {
+      loadProfile();
+    }
+    window.addEventListener("profile-updated", handleProfileUpdate);
+    return () => window.removeEventListener("profile-updated", handleProfileUpdate);
+  }, [loadProfile]);
+
+  const avatarUrl = profileAvatar || session?.user?.image;
 
   return (
     <header className="flex h-14 items-center justify-between border-b border-velvet-700/60 bg-velvet-900 px-4 lg:px-6">

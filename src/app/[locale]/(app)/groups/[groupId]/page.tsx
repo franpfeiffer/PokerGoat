@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { NightCard } from "@/components/nights/night-card";
 import { getGroupNights } from "@/lib/db/queries/nights";
 import { getGroupLeaderboard } from "@/lib/db/queries/leaderboard";
+import { getGroupById } from "@/lib/db/queries/groups";
 import { LeaderboardTable } from "@/components/leaderboard/leaderboard-table";
 
 export default async function GroupOverviewPage({
@@ -16,18 +17,28 @@ export default async function GroupOverviewPage({
   const { locale, groupId } = await params;
   const t = await getTranslations("groups");
   const tNights = await getTranslations("nights");
-  const nights = await getGroupNights(groupId);
-  const leaderboard = await getGroupLeaderboard(groupId);
+  const [group, nights, leaderboard] = await Promise.all([
+    getGroupById(groupId),
+    getGroupNights(groupId),
+    getGroupLeaderboard(groupId),
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-display text-2xl font-bold">{t("group")}</h1>
-        <Link href={`/groups/${groupId}/nights/new`} className="block">
-          <Button size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
-            {tNights("create")}
-          </Button>
-        </Link>
+        <h1 className="font-display text-2xl font-bold truncate">{group?.name ?? t("group")}</h1>
+        <div className="flex gap-2">
+          <Link href={`/groups/${groupId}/settings`} className="flex-1 sm:flex-none">
+            <Button variant="secondary" size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
+              {t("settings")}
+            </Button>
+          </Link>
+          <Link href={`/groups/${groupId}/nights/new`} className="flex-1 sm:flex-none">
+            <Button size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
+              {tNights("create")}
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
