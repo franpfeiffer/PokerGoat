@@ -7,11 +7,11 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  default: "bg-velvet-800 text-velvet-200 border-velvet-700",
-  profit: "bg-profit/10 text-profit border-profit/30",
-  loss: "bg-loss/10 text-loss border-loss/30",
-  gold: "bg-gold-500/10 text-gold-400 border-gold-500/30",
-  muted: "bg-velvet-800/50 text-velvet-400 border-velvet-700/50",
+  default: "bg-velvet-800/80 text-velvet-200 border-velvet-700/60",
+  profit: "bg-profit/8 text-profit border-profit/20",
+  loss: "bg-loss/8 text-loss border-loss/20",
+  gold: "bg-gold-500/8 text-gold-400 border-gold-500/20",
+  muted: "bg-velvet-800/40 text-velvet-400 border-velvet-700/40",
 };
 
 export function Badge({

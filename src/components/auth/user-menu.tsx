@@ -53,7 +53,7 @@ export function UserMenu({ displayName, avatarUrl }: UserMenuProps) {
         aria-expanded={open}
         aria-haspopup="true"
         aria-label={`Men\u00fa de ${displayName}`}
-        className="focus-ring flex h-9 w-9 items-center justify-center rounded-full bg-velvet-800 text-sm font-medium text-velvet-200 transition-colors hover:bg-velvet-700"
+        className="focus-ring flex h-8 w-8 items-center justify-center rounded-full bg-velvet-800 text-xs font-medium text-velvet-200 transition-colors hover:bg-velvet-700"
       >
         {avatarUrl ? (
           <img
@@ -69,8 +69,8 @@ export function UserMenu({ displayName, avatarUrl }: UserMenuProps) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-velvet-700 bg-surface-elevated p-1 shadow-xl animate-fade-in">
-          <div className="border-b border-velvet-700 px-3 py-2 mb-1">
+        <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-velvet-700/60 bg-velvet-800 p-1 shadow-xl shadow-black/30 animate-fade-in">
+          <div className="border-b border-velvet-700/40 px-3 py-2 mb-1">
             <p className="text-sm font-medium text-velvet-50 truncate">
               {displayName}
             </p>

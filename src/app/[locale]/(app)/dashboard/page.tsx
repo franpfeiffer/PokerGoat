@@ -31,7 +31,7 @@ export default function DashboardPage() {
 
       <section
         aria-labelledby="groups-heading"
-        className="animate-fade-in rounded-xl border border-velvet-700 bg-surface bg-card-pattern"
+        className="animate-fade-in rounded-xl border border-velvet-700/60 bg-velvet-900"
       >
         <h2 id="groups-heading" className="sr-only">
           {t("yourGroups")}

@@ -4,29 +4,29 @@
   --font-sans: var(--font-dm-sans);
   --font-display: var(--font-playfair);
 
-  --color-velvet-950: #0a0a0f;
-  --color-velvet-900: #111118;
-  --color-velvet-800: #1a1a24;
-  --color-velvet-700: #2a2a38;
-  --color-velvet-600: #3a3a4f;
-  --color-velvet-500: #555570;
-  --color-velvet-400: #8888a0;
-  --color-velvet-300: #a8a8c0;
-  --color-velvet-200: #c8c8d8;
-  --color-velvet-100: #e0e0ec;
+  --color-velvet-950: #08080d;
+  --color-velvet-900: #0f0f16;
+  --color-velvet-800: #18181f;
+  --color-velvet-700: #252530;
+  --color-velvet-600: #353545;
+  --color-velvet-500: #50506a;
+  --color-velvet-400: #7e7e98;
+  --color-velvet-300: #a0a0b8;
+  --color-velvet-200: #c4c4d4;
+  --color-velvet-100: #dddde8;
   --color-velvet-50: #f0f0f5;
 
-  --color-gold-700: #9a7820;
-  --color-gold-600: #b8922e;
-  --color-gold-500: #d4a847;
-  --color-gold-400: #e8c45a;
-  --color-gold-300: #f0d87a;
+  --color-gold-700: #8a6c1a;
+  --color-gold-600: #a8862a;
+  --color-gold-500: #c49a38;
+  --color-gold-400: #dab454;
+  --color-gold-300: #e8ca72;
 
-  --color-profit: #22c55e;
+  --color-profit: #34d375;
   --color-profit-muted: #166534;
-  --color-loss: #ef4444;
+  --color-loss: #f04848;
   --color-loss-muted: #991b1b;
-  --color-even: #8888a0;
+  --color-even: #7e7e98;
 
   --color-suit-hearts: #dc2626;
   --color-suit-diamonds: #dc2626;
@@ -104,74 +104,55 @@ h6 {
   }
 }
 
-.bg-card-pattern {
-  background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(212, 168, 71, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(212, 168, 71, 0.02) 0%, transparent 50%);
-}
+/* ── Animations ─────────────────────────────────── */
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(16px); }
+  from { opacity: 0; transform: translateX(12px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes count-up {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(3px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out both;
-}
-
-.animate-slide-in {
-  animation: slide-in-right 0.3s ease-out both;
-}
-
-.animate-count-up {
-  animation: count-up 0.2s ease-out both;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(212, 168, 71, 0.3), 0 0 24px rgba(212, 168, 71, 0.1); }
-  50% { box-shadow: 0 0 16px rgba(212, 168, 71, 0.5), 0 0 40px rgba(212, 168, 71, 0.15); }
-}
-
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.97); }
   to { opacity: 1; transform: scale(1); }
 }
 
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out both;
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.35s ease-out both;
+}
+
+.animate-count-up {
+  animation: count-up 0.25s ease-out both;
+}
+
 .animate-scale-in {
-  animation: scale-in 0.3s ease-out both;
+  animation: scale-in 0.25s ease-out both;
+}
+
+/* ── Component classes ──────────────────────────── */
+
+.bg-card-pattern {
+  /* Clean — no gradient noise */
 }
 
 .avatar-gold-ring {
   position: relative;
   border-radius: 9999px;
-  padding: 3px;
-  background: linear-gradient(135deg, var(--color-gold-700), var(--color-gold-400), var(--color-gold-700));
-  box-shadow: 0 0 12px rgba(212, 168, 71, 0.25), 0 0 32px rgba(212, 168, 71, 0.08);
-}
-
-.avatar-gold-ring::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: linear-gradient(135deg, transparent 40%, rgba(240, 216, 122, 0.15) 50%, transparent 60%);
-  background-size: 200% 200%;
-  animation: shimmer 3s ease-in-out infinite;
+  padding: 2px;
+  background: var(--color-gold-500);
 }
 
 .stat-card-glow {
@@ -182,13 +163,15 @@ h6 {
 .stat-card-glow::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 71, 0.06) 0%, transparent 70%);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-gold-500);
+  opacity: 0.2;
   pointer-events: none;
 }
 
 .profile-hero-bg {
-  background:
-    radial-gradient(ellipse at 50% -20%, rgba(212, 168, 71, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 80%, rgba(212, 168, 71, 0.03) 0%, transparent 40%);
+  /* Clean — no gradient */
 }

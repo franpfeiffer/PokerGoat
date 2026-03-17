@@ -26,11 +26,11 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-velvet-700 bg-surface p-6">
+    <div className="flex flex-col gap-4 rounded-xl border border-velvet-700/60 bg-velvet-900 p-6">
       {error && (
         <div
           role="alert"
-          className="rounded-lg bg-loss-muted/20 border border-loss/30 px-4 py-2 text-sm text-loss"
+          className="rounded-lg bg-loss/8 border border-loss/20 px-4 py-2 text-sm text-loss"
         >
           {error}
         </div>
@@ -40,7 +40,7 @@ export function SignUpForm() {
         type="button"
         onClick={handleGoogleSignIn}
         disabled={isPending}
-        className="focus-ring flex items-center justify-center gap-3 rounded-lg border border-velvet-600 bg-velvet-800/50 px-4 py-3 text-sm font-medium text-velvet-200 transition-colors hover:border-velvet-500 hover:bg-velvet-700/50 disabled:opacity-50"
+        className="focus-ring flex min-h-12 items-center justify-center gap-3 rounded-lg border border-velvet-600/80 bg-velvet-800/80 px-4 py-3 text-sm font-medium text-velvet-200 transition-all hover:border-velvet-500 hover:bg-velvet-700/80 disabled:opacity-40"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -51,7 +51,7 @@ export function SignUpForm() {
         {isPending ? "Conectando\u2026" : t("signUp")} con Google
       </button>
 
-      <p className="text-center text-sm text-velvet-400">
+      <p className="text-center text-sm text-velvet-500">
         {t("hasAccount")}{" "}
         <Link
           href="/sign-in"

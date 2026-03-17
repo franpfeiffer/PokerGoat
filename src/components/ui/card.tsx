@@ -8,10 +8,10 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   { variant = "default", className = "", ...props },
   ref
 ) {
-  const base = "rounded-xl border border-velvet-700";
+  const base = "rounded-xl border border-velvet-700/60";
   const variants = {
-    default: "bg-surface",
-    elevated: "bg-surface-elevated",
+    default: "bg-velvet-900",
+    elevated: "bg-velvet-800",
   };
 
   return (
@@ -29,7 +29,7 @@ export function CardHeader({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`border-b border-velvet-700 px-4 py-4 sm:px-5 ${className}`}
+      className={`border-b border-velvet-700/40 px-4 py-3.5 sm:px-5 ${className}`}
       {...props}
     />
   );

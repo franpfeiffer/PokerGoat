@@ -17,8 +17,8 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 flex max-w-svw border-t border-velvet-700 bg-surface pb-[max(env(safe-area-inset-bottom),0px)] lg:hidden"
-      aria-label="Navegaci\u00f3n m\u00f3vil"
+      className="fixed inset-x-0 bottom-0 z-40 flex max-w-svw border-t border-velvet-700 bg-velvet-900 pb-[max(env(safe-area-inset-bottom),0px)] lg:hidden"
+      aria-label="Navegación móvil"
       style={{ touchAction: "manipulation" }}
     >
       {navItems.map((item) => {
@@ -27,14 +27,17 @@ export function MobileNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`focus-ring flex flex-1 flex-col items-center gap-1 py-2.5 text-xs transition-colors ${
+            className={`focus-ring relative flex flex-1 flex-col items-center gap-1 py-2.5 text-xs transition-colors ${
               isActive
                 ? "text-gold-400"
-                : "text-velvet-400 hover:text-velvet-200"
+                : "text-velvet-500 hover:text-velvet-300"
             }`}
           >
+            {isActive && (
+              <span className="absolute inset-x-3 top-0 h-[2px] rounded-full bg-gold-500" />
+            )}
             <MobileNavIcon name={item.icon} active={isActive} />
-            <span>{t(item.translationKey)}</span>
+            <span className="font-medium">{t(item.translationKey)}</span>
           </Link>
         );
       })}
@@ -51,7 +54,7 @@ function MobileNavIcon({ name, active }: { name: string; active: boolean }) {
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: 2,
+    strokeWidth: active ? 2.5 : 1.5,
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
     className: color,

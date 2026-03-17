@@ -26,7 +26,7 @@ export function GroupCard({
 }: GroupCardProps) {
   return (
     <Link href={`/groups/${id}`} className="focus-ring block rounded-xl">
-      <Card className="transition-colors hover:border-velvet-600 hover:bg-surface-elevated/50">
+      <Card className="transition-all hover:border-velvet-600/60 hover:bg-velvet-800/50">
         <CardContent className="flex flex-col gap-3">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-display text-lg font-semibold text-velvet-50 truncate">

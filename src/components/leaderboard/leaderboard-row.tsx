@@ -27,10 +27,10 @@ export function LeaderboardRow({
 
   return (
     <div
-      className={`flex items-center gap-2 rounded-lg px-2 py-3 transition-colors sm:gap-3 sm:px-3 ${
+      className={`flex items-center gap-2 rounded-lg px-2 py-2.5 transition-colors sm:gap-3 sm:px-3 ${
         isTop3
-          ? "bg-gold-500/5 border border-gold-500/10"
-          : "border border-transparent hover:bg-velvet-800/30"
+          ? "bg-gold-500/4 border border-gold-500/10"
+          : "border border-transparent hover:bg-velvet-800/40"
       }`}
     >
       <RankIndicator rank={rank} />
@@ -44,7 +44,7 @@ export function LeaderboardRow({
           {displayName}
         </p>
         {nightsPlayed !== undefined && (
-          <p className="text-xs text-velvet-400 tabular-nums">
+          <p className="text-xs text-velvet-500 tabular-nums">
             {nightsPlayed} {t("nightsPlayed")}
           </p>
         )}

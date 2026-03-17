@@ -23,9 +23,9 @@ export function ProfitBadge({
   const type = getProfitLossType(amount);
 
   const styles = {
-    profit: "bg-profit/10 text-profit border-profit/30",
-    loss: "bg-loss/10 text-loss border-loss/30",
-    even: "bg-velvet-800/50 text-even border-velvet-700/50",
+    profit: "bg-profit/8 text-profit border-profit/20",
+    loss: "bg-loss/8 text-loss border-loss/20",
+    even: "bg-velvet-800/40 text-even border-velvet-700/40",
   };
 
   return (

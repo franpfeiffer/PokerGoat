@@ -60,7 +60,12 @@ export async function updateLocale(userId: string, locale: string) {
 }
 
 export async function updateAvatar(userId: string, avatarUrl: string) {
-  await updateUserProfile(userId, { avatarUrl });
-  revalidateLocalized("/profile");
-  return { success: true };
+  try {
+    await updateUserProfile(userId, { avatarUrl });
+    revalidateLocalized("/profile");
+    return { success: true };
+  } catch (e) {
+    console.error("updateAvatar failed:", e);
+    return { error: "Error al actualizar la imagen" };
+  }
 }

@@ -1,6 +1,5 @@
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatShortDate } from "@/lib/utils/dates";
 
@@ -42,33 +41,31 @@ export function NightCard({
   return (
     <Link
       href={`/groups/${groupId}/nights/${id}`}
-      className="focus-ring block rounded-xl"
+      className="focus-ring block rounded-lg"
     >
-      <Card className="transition-colors hover:border-velvet-600 hover:bg-surface-elevated/50">
-        <CardContent className="flex items-center gap-3 sm:gap-4">
-          <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-velvet-800 text-center sm:h-12 sm:w-12">
-            <span className="text-xs text-velvet-400">
+      <div className="flex items-center gap-3 rounded-lg border border-velvet-700/40 bg-velvet-800/40 px-3 py-3 transition-all hover:border-velvet-600/60 hover:bg-velvet-800/70">
+          <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-velvet-800 text-center">
+            <span className="text-[10px] leading-tight text-velvet-500">
               {formatShortDate(date, locale).split(" ")[0]}
             </span>
-            <span className="text-sm font-bold text-velvet-200 tabular-nums">
+            <span className="text-sm font-bold leading-tight text-velvet-200 tabular-nums">
               {new Date(date).getDate()}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-velvet-100 truncate">
+            <p className="text-sm font-medium text-velvet-100 truncate">
               {name ?? t("nightOfDate", { date: formatShortDate(date, locale) })}
             </p>
             {participantCount !== undefined && (
-              <p className="text-xs text-velvet-400">
+              <p className="text-xs text-velvet-500">
                 {t("participantsCount", { count: participantCount })}
               </p>
             )}
           </div>
-          <Badge variant={statusVariants[status]}>
+          <Badge variant={statusVariants[status]} className="shrink-0 text-[10px]">
             {t(statusLabelKey)}
           </Badge>
-        </CardContent>
-      </Card>
+      </div>
     </Link>
   );
 }

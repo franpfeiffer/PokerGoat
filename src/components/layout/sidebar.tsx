@@ -16,8 +16,8 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-velvet-700 lg:bg-surface">
-      <div className="flex h-16 items-center border-b border-velvet-700 px-6">
+    <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-velvet-700/60 lg:bg-velvet-900">
+      <div className="flex h-14 items-center border-b border-velvet-700/60 px-6">
         <Link
           href="/dashboard"
           className="focus-ring rounded font-display text-xl font-bold text-gold-500"

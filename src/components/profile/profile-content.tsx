@@ -42,7 +42,8 @@ export function ProfileContent({
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const imageUrl = avatarUrl || googleImage;
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
+  const imageUrl = localPreview || avatarUrl || googleImage;
 
   useEffect(() => {
     if (isEditingName && inputRef.current) {
@@ -68,9 +69,16 @@ export function ProfileContent({
 
   function handleResetAvatar() {
     if (!googleImage) return;
+    setError(null);
+    setLocalPreview(googleImage);
     startTransition(async () => {
-      await updateAvatar(userId, googleImage);
-      onUpdate?.();
+      const result = await updateAvatar(userId, googleImage);
+      if (result.error) {
+        setLocalPreview(null);
+        setError(result.error);
+      } else {
+        onUpdate?.();
+      }
     });
   }
 
@@ -78,36 +86,62 @@ export function ProfileContent({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) return;
+    if (!file.type.startsWith("image/")) {
+      setError("El archivo debe ser una imagen");
+      return;
+    }
     if (file.size > 5 * 1024 * 1024) {
       setError("La imagen debe ser menor a 5MB");
       return;
     }
 
-    // Resize to 256x256 and compress as JPEG
-    const img = new Image();
-    const objectUrl = URL.createObjectURL(file);
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-      const canvas = document.createElement("canvas");
-      const size = 256;
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext("2d")!;
+    setError(null);
 
-      // Center crop
-      const min = Math.min(img.width, img.height);
-      const sx = (img.width - min) / 2;
-      const sy = (img.height - min) / 2;
-      ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imgSrc = reader.result as string;
 
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
-      startTransition(async () => {
-        await updateAvatar(userId, dataUrl);
-        onUpdate?.();
-      });
+      const img = document.createElement("img");
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const size = 256;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d")!;
+
+        // Center crop
+        const min = Math.min(img.width, img.height);
+        const sx = (img.width - min) / 2;
+        const sy = (img.height - min) / 2;
+        ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+
+        // Show preview immediately
+        setLocalPreview(dataUrl);
+
+        startTransition(async () => {
+          const result = await updateAvatar(userId, dataUrl);
+          if (result.error) {
+            setLocalPreview(null);
+            setError(result.error);
+          } else {
+            onUpdate?.();
+          }
+        });
+      };
+      img.onerror = () => {
+        setError("No se pudo procesar la imagen");
+      };
+      img.src = imgSrc;
     };
-    img.src = objectUrl;
+    reader.onerror = () => {
+      setError("No se pudo leer el archivo");
+    };
+    reader.readAsDataURL(file);
+
+    // Reset input so the same file can be selected again
+    e.target.value = "";
   }
 
   function handleEditKeyDown(e: React.KeyboardEvent) {
@@ -141,7 +175,7 @@ export function ProfileContent({
   return (
     <div className="space-y-6">
       {/* Hero Card: Avatar + Identity */}
-      <Card className="relative overflow-hidden profile-hero-bg">
+      <Card className="relative overflow-hidden">
         <CardContent className="flex flex-col items-center py-8 px-4 sm:py-10 sm:px-6">
           {/* Avatar with gold ring — clickable to change photo */}
           <div className="avatar-gold-ring animate-fade-in">

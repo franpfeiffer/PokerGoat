@@ -23,13 +23,11 @@ export default async function GroupOverviewPage({
     <div className="mx-auto w-full max-w-4xl space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-2xl font-bold">{t("group")}</h1>
-        <div className="flex gap-2">
-          <Link href={`/groups/${groupId}/nights/new`}>
-            <Button size="sm" className="min-h-11 sm:min-h-10">
-              {tNights("create")}
-            </Button>
-          </Link>
-        </div>
+        <Link href={`/groups/${groupId}/nights/new`} className="block">
+          <Button size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
+            {tNights("create")}
+          </Button>
+        </Link>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -46,7 +44,7 @@ export default async function GroupOverviewPage({
                 description={tNights("noNightsAction")}
               />
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {nights.map((night) => (
                   <NightCard
                     key={night.id}
