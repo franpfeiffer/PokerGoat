@@ -45,7 +45,7 @@ export function GroupMembersList({
         {members.map((member) => (
           <li
             key={member.id}
-            className="flex items-center gap-3 py-3"
+            className="flex flex-wrap items-center gap-2 py-3 sm:gap-3"
           >
             <Avatar
               src={member.avatarUrl}
@@ -69,11 +69,12 @@ export function GroupMembersList({
               {roleLabels[member.role]}
             </Badge>
             {isLeader && member.role === "member" && (
-              <div className="flex gap-1">
+              <div className="flex w-full gap-2 sm:w-auto sm:gap-1">
                 {onAssignTempLeader && (
                   <Button
                     variant="ghost"
                     size="sm"
+                    className="min-h-11 flex-1 sm:min-h-10 sm:flex-none"
                     onClick={() => onAssignTempLeader(member.userId)}
                     aria-label={t("assignTempLeaderAria", {
                       name: member.displayName,
@@ -86,6 +87,7 @@ export function GroupMembersList({
                   <Button
                     variant="danger"
                     size="sm"
+                    className="min-h-11 flex-1 sm:min-h-10 sm:flex-none"
                     onClick={() => onRemove(member.userId)}
                     aria-label={t("removeMemberAria", {
                       name: member.displayName,
@@ -100,6 +102,7 @@ export function GroupMembersList({
               <Button
                 variant="ghost"
                 size="sm"
+                className="min-h-11 w-full sm:min-h-10 sm:w-auto"
                 onClick={() => onRevokeTempLeader(member.userId)}
               >
                 {t("demote")}

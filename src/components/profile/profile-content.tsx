@@ -142,7 +142,7 @@ export function ProfileContent({
     <div className="space-y-6">
       {/* Hero Card: Avatar + Identity */}
       <Card className="relative overflow-hidden profile-hero-bg">
-        <CardContent className="flex flex-col items-center py-10 px-6">
+        <CardContent className="flex flex-col items-center py-8 px-4 sm:py-10 sm:px-6">
           {/* Avatar with gold ring — clickable to change photo */}
           <div className="avatar-gold-ring animate-fade-in">
             <button
@@ -275,7 +275,7 @@ export function ProfileContent({
       </Card>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         <StatCard
           label={t("totalNights")}
           delay="0.15s"
@@ -287,7 +287,7 @@ export function ProfileContent({
             </svg>
           }
         >
-          <span className="text-3xl font-bold tabular-nums text-velvet-50">
+          <span className="text-2xl font-bold tabular-nums text-velvet-50 sm:text-3xl">
             {stats.nightsPlayed}
           </span>
         </StatCard>
@@ -303,7 +303,7 @@ export function ProfileContent({
             </svg>
           }
         >
-          <span className={`text-3xl font-bold tabular-nums ${profitColor}`}>
+          <span className={`text-2xl font-bold tabular-nums sm:text-3xl ${profitColor}`}>
             {formatCurrency(stats.totalProfit, locale, DEFAULT_CURRENCY)}
           </span>
         </StatCard>
@@ -318,7 +318,7 @@ export function ProfileContent({
             </svg>
           }
         >
-          <span className={`text-3xl font-bold tabular-nums ${winRateColor}`}>
+          <span className={`text-2xl font-bold tabular-nums sm:text-3xl ${winRateColor}`}>
             {Math.round(stats.winRate * 100)}%
           </span>
         </StatCard>
@@ -345,7 +345,7 @@ function StatCard({
       className={`stat-card-glow animate-fade-in ${className}`}
       style={{ animationDelay: delay }}
     >
-      <CardContent className="flex flex-col items-center gap-3 py-6 px-4 text-center">
+      <CardContent className="flex flex-col items-center gap-2 py-5 px-3 text-center sm:gap-3 sm:py-6 sm:px-4">
         {icon && (
           <div className="text-gold-500/60">{icon}</div>
         )}

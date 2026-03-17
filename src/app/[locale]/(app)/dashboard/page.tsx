@@ -13,18 +13,18 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-4xl py-2">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-display text-3xl font-bold tracking-tight text-velvet-50">
+      <div className="flex flex-col gap-3 mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="font-display text-2xl font-bold tracking-tight text-velvet-50 sm:text-3xl">
           {t("title")}
         </h1>
         <div className="flex gap-2">
-          <Link href="/groups/join">
-            <Button variant="secondary" size="sm">
+          <Link href="/groups/join" className="flex-1 sm:flex-none">
+            <Button variant="secondary" size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
               {t("joinGroup")}
             </Button>
           </Link>
-          <Link href="/groups/new">
-            <Button size="sm">{t("createGroup")}</Button>
+          <Link href="/groups/new" className="flex-1 sm:flex-none">
+            <Button size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">{t("createGroup")}</Button>
           </Link>
         </div>
       </div>

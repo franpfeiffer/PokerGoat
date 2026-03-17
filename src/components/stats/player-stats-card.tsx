@@ -25,7 +25,7 @@ export function PlayerStatsCard({
 }: PlayerStatsCardProps) {
   return (
     <Card>
-      <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-3 py-5">
+      <CardContent className="grid grid-cols-2 gap-3 py-5 sm:grid-cols-3 sm:gap-4">
         <StatItem label="Noches" value={String(nightsPlayed)} />
         <StatItem label="Beneficio total">
           <ProfitBadge
@@ -78,7 +78,7 @@ function StatItem({
         children
       ) : (
         <span
-          className={`text-lg font-bold tabular-nums ${className || "text-velvet-100"}`}
+          className={`text-base font-bold tabular-nums sm:text-lg ${className || "text-velvet-100"}`}
         >
           {value}
         </span>

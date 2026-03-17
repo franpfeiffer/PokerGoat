@@ -27,7 +27,7 @@ export function LeaderboardRow({
 
   return (
     <div
-      className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-colors ${
+      className={`flex items-center gap-2 rounded-lg px-2 py-3 transition-colors sm:gap-3 sm:px-3 ${
         isTop3
           ? "bg-gold-500/5 border border-gold-500/10"
           : "border border-transparent hover:bg-velvet-800/30"

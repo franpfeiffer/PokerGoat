@@ -45,8 +45,8 @@ export function NightCard({
       className="focus-ring block rounded-xl"
     >
       <Card className="transition-colors hover:border-velvet-600 hover:bg-surface-elevated/50">
-        <CardContent className="flex items-center gap-4">
-          <div className="flex h-12 w-12 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-velvet-800 text-center">
+        <CardContent className="flex items-center gap-3 sm:gap-4">
+          <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-velvet-800 text-center sm:h-12 sm:w-12">
             <span className="text-xs text-velvet-400">
               {formatShortDate(date, locale).split(" ")[0]}
             </span>

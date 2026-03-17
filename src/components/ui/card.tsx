@@ -29,7 +29,7 @@ export function CardHeader({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`border-b border-velvet-700 px-5 py-4 ${className}`}
+      className={`border-b border-velvet-700 px-4 py-4 sm:px-5 ${className}`}
       {...props}
     />
   );
@@ -39,5 +39,5 @@ export function CardContent({
   className = "",
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={`px-5 py-4 ${className}`} {...props} />;
+  return <div className={`px-4 py-4 sm:px-5 ${className}`} {...props} />;
 }

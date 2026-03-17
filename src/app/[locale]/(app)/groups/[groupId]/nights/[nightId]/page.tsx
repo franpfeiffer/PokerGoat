@@ -122,7 +122,7 @@ export default async function NightDetailPage({
           <h2 className="font-display text-lg font-semibold">{t("chipValues")}</h2>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 sm:gap-3">
             {(
               [
                 ["black", t("chipBlack")],
