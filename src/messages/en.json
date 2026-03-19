@@ -82,7 +82,11 @@
       "enterCode": "Enter invite code",
       "request": "Request to join",
       "pending": "Request pending"
-    }
+    },
+    "pendingRequests": "Pending requests",
+    "noPendingRequests": "No pending requests",
+    "approve": "Approve",
+    "reject": "Reject"
   },
   "nights": {
     "title": "Poker nights",

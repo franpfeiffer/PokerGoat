@@ -1,6 +1,6 @@
 import { eq, and, desc } from "drizzle-orm";
 import { db } from "..";
-import { groups, groupMembers, userProfiles } from "../schema";
+import { groups, groupMembers, userProfiles, joinRequests } from "../schema";
 
 export async function getUserGroups(userId: string) {
   return db
@@ -54,6 +54,26 @@ export async function getGroupMembers(groupId: string) {
     .innerJoin(userProfiles, eq(groupMembers.userId, userProfiles.id))
     .where(eq(groupMembers.groupId, groupId))
     .orderBy(groupMembers.joinedAt);
+}
+
+export async function getPendingJoinRequests(groupId: string) {
+  return db
+    .select({
+      id: joinRequests.id,
+      userId: joinRequests.userId,
+      displayName: userProfiles.displayName,
+      avatarUrl: userProfiles.avatarUrl,
+      createdAt: joinRequests.createdAt,
+    })
+    .from(joinRequests)
+    .innerJoin(userProfiles, eq(joinRequests.userId, userProfiles.id))
+    .where(
+      and(
+        eq(joinRequests.groupId, groupId),
+        eq(joinRequests.status, "pending")
+      )
+    )
+    .orderBy(desc(joinRequests.createdAt));
 }
 
 export async function getUserMembership(groupId: string, userId: string) {

@@ -28,6 +28,11 @@ export default async function GroupOverviewPage({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-2xl font-bold truncate">{group?.name ?? t("group")}</h1>
         <div className="flex gap-2">
+          <Link href={`/groups/${groupId}/members`} className="flex-1 sm:flex-none">
+            <Button variant="secondary" size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
+              {t("members")}
+            </Button>
+          </Link>
           <Link href={`/groups/${groupId}/settings`} className="flex-1 sm:flex-none">
             <Button variant="secondary" size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
               {t("settings")}

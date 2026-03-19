@@ -82,7 +82,11 @@
       "enterCode": "Introduce el código de invitación",
       "request": "Solicitar unión",
       "pending": "Solicitud pendiente"
-    }
+    },
+    "pendingRequests": "Solicitudes pendientes",
+    "noPendingRequests": "No hay solicitudes pendientes",
+    "approve": "Aprobar",
+    "reject": "Rechazar"
   },
   "nights": {
     "title": "Noches de poker",

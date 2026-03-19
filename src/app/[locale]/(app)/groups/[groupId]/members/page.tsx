@@ -3,7 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { GroupMembersPanel } from "@/components/groups/group-members-panel";
-import { getGroupById, getGroupMembers } from "@/lib/db/queries/groups";
+import { JoinRequestsModal } from "@/components/groups/join-requests-modal";
+import { getGroupById, getGroupMembers, getPendingJoinRequests } from "@/lib/db/queries/groups";
 import { auth } from "@/lib/auth/server";
 import { getUserByAuthId } from "@/lib/db/queries/users";
 
@@ -21,10 +22,11 @@ export default async function GroupMembersPage({
     getTranslations("groups"),
     auth!.getSession(),
   ]);
-  const [group, members, currentUser] = await Promise.all([
+  const [group, members, currentUser, pendingRequests] = await Promise.all([
     getGroupById(groupId),
     getGroupMembers(groupId),
     session?.user ? getUserByAuthId(session.user.id) : null,
+    getPendingJoinRequests(groupId),
   ]);
 
   if (!group) {
@@ -35,9 +37,14 @@ export default async function GroupMembersPage({
     ? members.find((m) => m.userId === currentUser.id)?.role
     : undefined;
 
+  const isLeader = currentUserRole === "leader" || currentUserRole === "temporary_leader";
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <h1 className="font-display text-2xl font-bold mb-6">{t("members")}</h1>
+    <div className="mx-auto max-w-2xl space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-2xl font-bold">{t("members")}</h1>
+        {isLeader && <JoinRequestsModal requests={pendingRequests} />}
+      </div>
       <Card>
         <CardContent className="pt-2">
           <GroupMembersPanel
