@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth/client";
 import { getMyGroups } from "@/lib/actions/groups";
+import { checkIsAdmin } from "@/lib/actions/admin";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { GroupCard } from "@/components/groups/group-card";
@@ -21,6 +22,7 @@ export function UserGroupsGrid() {
   const t = useTranslations("dashboard");
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const [groups, setGroups] = useState<UserGroup[] | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (sessionPending) return;
@@ -31,8 +33,12 @@ export function UserGroupsGrid() {
     const userId = authUserId;
 
     async function load() {
-      const data = await getMyGroups(userId);
+      const [data, admin] = await Promise.all([
+        getMyGroups(userId),
+        checkIsAdmin(),
+      ]);
       setGroups(data as UserGroup[]);
+      setIsAdmin(admin);
     }
 
     load();
@@ -54,9 +60,11 @@ export function UserGroupsGrid() {
         title={t("noGroups")}
         description={t("noGroupsAction")}
         action={
-          <Link href="/groups/new">
-            <Button>{t("createGroup")}</Button>
-          </Link>
+          isAdmin ? (
+            <Link href="/groups/new">
+              <Button>{t("createGroup")}</Button>
+            </Link>
+          ) : undefined
         }
       />
     );

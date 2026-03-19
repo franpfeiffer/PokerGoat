@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/avatar";
 import { formatCurrency, formatProfitLoss } from "@/lib/utils/currency";
@@ -66,16 +67,18 @@ export function ParticipantRow({
   const totalInvested = calculateTotalInvested(buyInCount, buyInAmount);
   const isActive = nightStatus === "in_progress" || nightStatus === "scheduled";
 
-  let profitLoss: number | null = null;
-  let plType: "profit" | "loss" | "even" = "even";
-  const hasChipBreakdown =
-    chipsBlackEnd !== null ||
-    chipsWhiteEnd !== null ||
-    chipsRedEnd !== null ||
-    chipsGreenEnd !== null ||
-    chipsBlueEnd !== null;
+  const { profitLoss, plType } = useMemo(() => {
+    const hasChipBreakdown =
+      chipsBlackEnd !== null ||
+      chipsWhiteEnd !== null ||
+      chipsRedEnd !== null ||
+      chipsGreenEnd !== null ||
+      chipsBlueEnd !== null;
 
-  if (hasChipBreakdown || totalChipsEnd !== null) {
+    if (!hasChipBreakdown && totalChipsEnd === null) {
+      return { profitLoss: null as number | null, plType: "even" as const };
+    }
+
     const cashout = hasChipBreakdown
       ? calculateCashoutFromChipBreakdown(
           {
@@ -88,15 +91,15 @@ export function ParticipantRow({
           chipValues
         )
       : calculateCashout(totalChipsEnd!, chipValue);
-    profitLoss = calculateProfitLoss(cashout, totalInvested);
-    plType = getProfitLossType(profitLoss);
-  }
+    const pl = calculateProfitLoss(cashout, totalInvested);
+    return { profitLoss: pl, plType: getProfitLossType(pl) };
+  }, [buyInCount, buyInAmount, totalChipsEnd, chipsBlackEnd, chipsWhiteEnd, chipsRedEnd, chipsGreenEnd, chipsBlueEnd, chipValue, chipValues, totalInvested]);
 
   const plColors = {
     profit: "text-profit",
     loss: "text-loss",
     even: "text-even",
-  };
+  } as const;
 
   return (
     <div className="space-y-3 border-b border-velvet-700/50 py-3 last:border-0">

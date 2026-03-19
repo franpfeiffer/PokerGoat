@@ -1,7 +1,6 @@
 "use server";
 
 import { eq, and } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { groups, groupMembers, joinRequests } from "@/lib/db/schema";
 import { createGroupSchema, updateGroupSchema, joinGroupSchema } from "@/lib/validators/groups";
@@ -12,16 +11,15 @@ import {
   getUserMembership,
 } from "@/lib/db/queries/groups";
 import { getUserByAuthId } from "@/lib/db/queries/users";
-
-const LOCALES = ["es", "en"] as const;
-
-function revalidateLocalized(path: string) {
-  for (const locale of LOCALES) {
-    revalidatePath(`/${locale}${path}`);
-  }
-}
+import { auth } from "@/lib/auth/server";
+import { revalidateLocalized } from "@/lib/utils/revalidate";
 
 export async function createGroup(userId: string, formData: FormData) {
+  const { data: session } = await auth!.getSession();
+  if (session?.user?.email !== process.env.ADMIN_EMAIL) {
+    return { error: "No tienes permisos para crear grupos" };
+  }
+
   const parsed = createGroupSchema.safeParse({
     name: formData.get("name"),
     description: formData.get("description"),

@@ -22,20 +22,18 @@ export function Header() {
     if (profile?.avatarUrl) {
       setProfileAvatar(profile.avatarUrl);
     }
-  }, [session]);
+  }, [session?.user?.id, session?.user?.name, session?.user?.email, session?.user?.image]);
 
+  // Only fetch profile on mount to get custom avatar
   useEffect(() => {
     if (sessionPending || !session?.user) return;
     loadProfile();
-  }, [sessionPending, session, loadProfile]);
+  }, [sessionPending, session?.user?.id, loadProfile]);
 
-  // Listen for profile updates from other components
+  // Refresh avatar when user updates profile from another component
   useEffect(() => {
-    function handleProfileUpdate() {
-      loadProfile();
-    }
-    window.addEventListener("profile-updated", handleProfileUpdate);
-    return () => window.removeEventListener("profile-updated", handleProfileUpdate);
+    window.addEventListener("profile-updated", loadProfile);
+    return () => window.removeEventListener("profile-updated", loadProfile);
   }, [loadProfile]);
 
   const avatarUrl = profileAvatar || session?.user?.image;

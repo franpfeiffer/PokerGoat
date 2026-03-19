@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { UserGroupsGrid } from "@/components/groups/user-groups-grid";
 import { LoginNotifier } from "@/components/auth/login-notifier";
+import { CreateGroupButton } from "@/components/groups/create-group-button";
 
 export const metadata: Metadata = {
   title: "Panel de control",
@@ -25,9 +26,7 @@ export default function DashboardPage() {
               {t("joinGroup")}
             </Button>
           </Link>
-          <Link href="/groups/new" className="flex-1 sm:flex-none">
-            <Button size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">{t("createGroup")}</Button>
-          </Link>
+          <CreateGroupButton />
         </div>
       </div>
 

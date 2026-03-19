@@ -61,6 +61,8 @@ export function UserMenu({ displayName, avatarUrl }: UserMenuProps) {
             alt=""
             width={36}
             height={36}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full rounded-full object-cover"
           />
         ) : (

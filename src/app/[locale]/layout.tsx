@@ -4,7 +4,6 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { playfairDisplay, dmSans } from "@/styles/fonts";
-import { AuthProvider } from "@/components/providers/auth-provider";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -49,7 +48,7 @@ export default async function LocaleLayout({
       className={`${playfairDisplay.variable} ${dmSans.variable} min-h-svh overflow-x-clip bg-background text-foreground antialiased`}
     >
       <NextIntlClientProvider locale={locale} messages={messages}>
-        <AuthProvider>{children}</AuthProvider>
+        {children}
       </NextIntlClientProvider>
     </div>
   );

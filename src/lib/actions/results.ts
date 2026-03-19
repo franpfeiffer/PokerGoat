@@ -1,7 +1,6 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { pokerNights, pokerNightParticipants, pokerNightResults } from "@/lib/db/schema";
 import {
@@ -12,14 +11,7 @@ import {
   parseNightMetadata,
 } from "@/lib/utils/chips";
 import { getUserMembership } from "@/lib/db/queries/groups";
-
-const LOCALES = ["es", "en"] as const;
-
-function revalidateLocalized(path: string) {
-  for (const locale of LOCALES) {
-    revalidatePath(`/${locale}${path}`);
-  }
-}
+import { revalidateLocalized } from "@/lib/utils/revalidate";
 
 export async function calculateAndSaveResults(
   nightId: string,

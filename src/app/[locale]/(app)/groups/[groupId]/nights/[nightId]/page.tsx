@@ -28,15 +28,14 @@ export default async function NightDetailPage({
   const t = await getTranslations("nights");
   const tCommon = await getTranslations("common");
 
-  const night = await getNightById(nightId);
+  const [night, participants, groupMembersResult] = await Promise.all([
+    getNightById(nightId),
+    getNightParticipants(nightId),
+    getGroupMembers(groupId),
+  ]);
   if (!night || night.groupId !== groupId) {
     notFound();
   }
-
-  const [participants, groupMembers] = await Promise.all([
-    getNightParticipants(night.id),
-    getGroupMembers(groupId),
-  ]);
   const moneyLocale = locale === "es" ? "es-ES" : "en-US";
   const metadata = parseNightMetadata(night.notes, Number(night.chipValue));
   const statusLabelKey = {
@@ -160,7 +159,7 @@ export default async function NightDetailPage({
             chipValue={Number(night.chipValue)}
             chipValues={metadata.chipValues}
             locale={moneyLocale}
-            members={groupMembers.map((member) => ({
+            members={groupMembersResult.map((member) => ({
               userId: member.userId,
               displayName: member.displayName,
               avatarUrl: member.avatarUrl,

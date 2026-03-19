@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth/client";
@@ -23,36 +23,15 @@ interface Member {
 interface GroupMembersPanelProps {
   groupId: string;
   members: Member[];
+  currentUserRole?: string;
 }
 
-export function GroupMembersPanel({ groupId, members }: GroupMembersPanelProps) {
+export function GroupMembersPanel({ groupId, members, currentUserRole }: GroupMembersPanelProps) {
   const tCommon = useTranslations("common");
   const { data: session } = authClient.useSession();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [currentUserRole, setCurrentUserRole] = useState<string | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    let isMounted = true;
-    async function loadRole() {
-      if (!session?.user) return;
-      const profile = await getOrCreateProfile({
-        authUserId: session.user.id,
-        displayName: session.user.name || session.user.email.split("@")[0],
-        avatarUrl: session.user.image ?? undefined,
-      });
-      if (!isMounted) return;
-      const membership = members.find((member) => member.userId === profile.id);
-      setCurrentUserRole(membership?.role);
-    }
-    loadRole();
-    return () => {
-      isMounted = false;
-    };
-  }, [members, session]);
 
   function withProfileAction(
     callback: (profileId: string) => Promise<{ error?: unknown; success?: boolean }>

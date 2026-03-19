@@ -1,20 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
-import { useLocale } from "next-intl";
 import { authClient } from "@/lib/auth/client";
 import { useRouter } from "@/i18n/navigation";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
-  const locale = useLocale();
 
   useEffect(() => {
     if (!isPending && !session?.user) {
       router.replace("/sign-in");
     }
-  }, [isPending, session, router, locale]);
+  }, [isPending, session, router]);
 
   if (isPending) {
     return (

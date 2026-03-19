@@ -1,20 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import {
   getUserByAuthId,
   createUserProfile,
   updateUserProfile,
   getUserStats,
 } from "@/lib/db/queries/users";
-
-const LOCALES = ["es", "en"] as const;
-
-function revalidateLocalized(path: string) {
-  for (const locale of LOCALES) {
-    revalidatePath(`/${locale}${path}`);
-  }
-}
+import { revalidateLocalized } from "@/lib/utils/revalidate";
 
 export async function getOrCreateProfile(data: {
   authUserId: string;
