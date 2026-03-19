@@ -42,7 +42,7 @@ export default async function GroupOverviewPage({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
+        <Card className="order-2 lg:order-1">
           <CardHeader>
             <h2 className="font-display text-lg font-semibold">
               {tNights("title")}
@@ -72,7 +72,7 @@ export default async function GroupOverviewPage({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="order-1 lg:order-2">
           <CardHeader>
             <h2 className="font-display text-lg font-semibold">
               {t("leaderboard")}
