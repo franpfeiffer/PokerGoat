@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NightStatusAction } from "@/components/nights/night-status-action";
 import { NightParticipantsPanel } from "@/components/nights/night-participants-panel";
+import { ChipReconciliationPanel } from "@/components/nights/chip-reconciliation-panel";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatShortDate } from "@/lib/utils/dates";
 import { getNightById, getNightParticipants } from "@/lib/db/queries/nights";
@@ -89,6 +90,16 @@ export default async function NightDetailPage({
             groupId={groupId}
             nightId={night.id}
             status={night.status}
+            chipQuantities={metadata.chipQuantities}
+            chipValues={metadata.chipValues}
+            participants={participants.map((p) => ({
+              buyInCount: p.buyInCount,
+              chipsBlackEnd: p.chipsBlackEnd,
+              chipsWhiteEnd: p.chipsWhiteEnd,
+              chipsRedEnd: p.chipsRedEnd,
+              chipsGreenEnd: p.chipsGreenEnd,
+              chipsBlueEnd: p.chipsBlueEnd,
+            }))}
           />
         </div>
       </div>
@@ -139,11 +150,41 @@ export default async function NightDetailPage({
                 <p className="text-sm font-semibold tabular-nums text-velvet-100">
                   {formatCurrency(metadata.chipValues[color], moneyLocale, "ARS")}
                 </p>
+                {metadata.chipQuantities && (
+                  <p className="text-xs tabular-nums text-velvet-500">
+                    ×{metadata.chipQuantities[color]}
+                  </p>
+                )}
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+
+      {night.status === "in_progress" && metadata.chipQuantities && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-display text-lg font-semibold">
+              {t("reconciliation.title")}
+            </h2>
+          </CardHeader>
+          <CardContent>
+            <ChipReconciliationPanel
+              chipQuantities={metadata.chipQuantities}
+              chipValues={metadata.chipValues}
+              participants={participants.map((p) => ({
+                buyInCount: p.buyInCount,
+                chipsBlackEnd: p.chipsBlackEnd,
+                chipsWhiteEnd: p.chipsWhiteEnd,
+                chipsRedEnd: p.chipsRedEnd,
+                chipsGreenEnd: p.chipsGreenEnd,
+                chipsBlueEnd: p.chipsBlueEnd,
+              }))}
+              locale={moneyLocale}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
@@ -158,6 +199,7 @@ export default async function NightDetailPage({
             buyInAmount={Number(night.buyInAmount)}
             chipValue={Number(night.chipValue)}
             chipValues={metadata.chipValues}
+            chipQuantities={metadata.chipQuantities}
             locale={moneyLocale}
             members={groupMembersResult.map((member) => ({
               userId: member.userId,

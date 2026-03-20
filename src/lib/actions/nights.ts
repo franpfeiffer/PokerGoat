@@ -44,19 +44,45 @@ export async function createNight(
     buyInAmount: formData.get("buyInAmount"),
     maxRebuys: formData.get("maxRebuys") || undefined,
     notes: formData.get("notes") || undefined,
+    chipQtyBlack: formData.get("chipQtyBlack") || undefined,
+    chipQtyWhite: formData.get("chipQtyWhite") || undefined,
+    chipQtyRed: formData.get("chipQtyRed") || undefined,
+    chipQtyGreen: formData.get("chipQtyGreen") || undefined,
+    chipQtyBlue: formData.get("chipQtyBlue") || undefined,
   });
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
   }
 
-  const serializedMetadata = serializeNightMetadata(parsed.data.notes, {
-    black: parsed.data.chipValueBlack,
-    white: parsed.data.chipValueWhite,
-    red: parsed.data.chipValueRed,
-    green: parsed.data.chipValueGreen,
-    blue: parsed.data.chipValueBlue,
-  });
+  const hasChipQty =
+    parsed.data.chipQtyBlack !== undefined ||
+    parsed.data.chipQtyWhite !== undefined ||
+    parsed.data.chipQtyRed !== undefined ||
+    parsed.data.chipQtyGreen !== undefined ||
+    parsed.data.chipQtyBlue !== undefined;
+
+  const chipQuantities = hasChipQty
+    ? {
+        black: parsed.data.chipQtyBlack ?? 0,
+        white: parsed.data.chipQtyWhite ?? 0,
+        red: parsed.data.chipQtyRed ?? 0,
+        green: parsed.data.chipQtyGreen ?? 0,
+        blue: parsed.data.chipQtyBlue ?? 0,
+      }
+    : undefined;
+
+  const serializedMetadata = serializeNightMetadata(
+    parsed.data.notes,
+    {
+      black: parsed.data.chipValueBlack,
+      white: parsed.data.chipValueWhite,
+      red: parsed.data.chipValueRed,
+      green: parsed.data.chipValueGreen,
+      blue: parsed.data.chipValueBlue,
+    },
+    chipQuantities
+  );
 
   const [night] = await db
     .insert(pokerNights)
@@ -155,19 +181,45 @@ export async function updateNight(
     buyInAmount: formData.get("buyInAmount"),
     maxRebuys: formData.get("maxRebuys") || undefined,
     notes: formData.get("notes") || undefined,
+    chipQtyBlack: formData.get("chipQtyBlack") || undefined,
+    chipQtyWhite: formData.get("chipQtyWhite") || undefined,
+    chipQtyRed: formData.get("chipQtyRed") || undefined,
+    chipQtyGreen: formData.get("chipQtyGreen") || undefined,
+    chipQtyBlue: formData.get("chipQtyBlue") || undefined,
   });
 
   if (!parsed.success) {
     return { error: parsed.error.flatten().fieldErrors };
   }
 
-  const serializedMetadata = serializeNightMetadata(parsed.data.notes, {
-    black: parsed.data.chipValueBlack,
-    white: parsed.data.chipValueWhite,
-    red: parsed.data.chipValueRed,
-    green: parsed.data.chipValueGreen,
-    blue: parsed.data.chipValueBlue,
-  });
+  const hasChipQty =
+    parsed.data.chipQtyBlack !== undefined ||
+    parsed.data.chipQtyWhite !== undefined ||
+    parsed.data.chipQtyRed !== undefined ||
+    parsed.data.chipQtyGreen !== undefined ||
+    parsed.data.chipQtyBlue !== undefined;
+
+  const chipQuantities = hasChipQty
+    ? {
+        black: parsed.data.chipQtyBlack ?? 0,
+        white: parsed.data.chipQtyWhite ?? 0,
+        red: parsed.data.chipQtyRed ?? 0,
+        green: parsed.data.chipQtyGreen ?? 0,
+        blue: parsed.data.chipQtyBlue ?? 0,
+      }
+    : undefined;
+
+  const serializedMetadata = serializeNightMetadata(
+    parsed.data.notes,
+    {
+      black: parsed.data.chipValueBlack,
+      white: parsed.data.chipValueWhite,
+      red: parsed.data.chipValueRed,
+      green: parsed.data.chipValueGreen,
+      blue: parsed.data.chipValueBlue,
+    },
+    chipQuantities
+  );
 
   await db
     .update(pokerNights)

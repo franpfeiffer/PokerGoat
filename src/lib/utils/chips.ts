@@ -21,8 +21,9 @@ export interface NightChipBreakdown {
   blue: number;
 }
 
-interface NightMetadata {
+export interface NightMetadata {
   chipValues: NightChipValues;
+  chipQuantities?: NightChipValues;
   notes?: string;
 }
 
@@ -66,10 +67,12 @@ export function generateInviteCode(): string {
 
 export function serializeNightMetadata(
   notes: string | undefined,
-  chipValues: NightChipValues
+  chipValues: NightChipValues,
+  chipQuantities?: NightChipValues
 ): string {
   const payload: NightMetadata = {
     chipValues,
+    ...(chipQuantities ? { chipQuantities } : {}),
     ...(notes ? { notes } : {}),
   };
   return JSON.stringify(payload);
@@ -105,11 +108,100 @@ export function parseNightMetadata(
     ) {
       return fallback;
     }
-    return {
+    const result: NightMetadata = {
       chipValues: values,
       ...(parsed.notes ? { notes: parsed.notes } : {}),
     };
+    if (
+      parsed.chipQuantities &&
+      typeof parsed.chipQuantities.black === "number" &&
+      typeof parsed.chipQuantities.white === "number" &&
+      typeof parsed.chipQuantities.red === "number" &&
+      typeof parsed.chipQuantities.green === "number" &&
+      typeof parsed.chipQuantities.blue === "number"
+    ) {
+      result.chipQuantities = parsed.chipQuantities;
+    }
+    return result;
   } catch {
     return fallback;
   }
+}
+
+export interface ChipReconciliation {
+  perColor: Array<{
+    color: keyof NightChipValues;
+    expected: number;
+    reported: number;
+    difference: number;
+  }>;
+  isBalanced: boolean;
+  totalExpectedValue: number;
+  totalReportedValue: number;
+  valueDifference: number;
+}
+
+export function calculateReconciliation(
+  chipQuantities: NightChipValues,
+  chipValues: NightChipValues,
+  participants: Array<{
+    buyInCount: number;
+    chipsBlackEnd: number | null;
+    chipsWhiteEnd: number | null;
+    chipsRedEnd: number | null;
+    chipsGreenEnd: number | null;
+    chipsBlueEnd: number | null;
+  }>
+): ChipReconciliation {
+  const totalBuyIns = participants.reduce((sum, p) => sum + p.buyInCount, 0);
+  const colors: Array<keyof NightChipValues> = ["black", "white", "red", "green", "blue"];
+  const colorToField = {
+    black: "chipsBlackEnd",
+    white: "chipsWhiteEnd",
+    red: "chipsRedEnd",
+    green: "chipsGreenEnd",
+    blue: "chipsBlueEnd",
+  } as const;
+
+  let totalExpectedValue = 0;
+  let totalReportedValue = 0;
+
+  const perColor = colors.map((color) => {
+    const expected = totalBuyIns * chipQuantities[color];
+    const reported = participants.reduce(
+      (sum, p) => sum + (p[colorToField[color]] ?? 0),
+      0
+    );
+    const difference = reported - expected;
+    totalExpectedValue += expected * chipValues[color];
+    totalReportedValue += reported * chipValues[color];
+    return { color, expected, reported, difference };
+  });
+
+  return {
+    perColor,
+    isBalanced: perColor.every((c) => c.difference === 0),
+    totalExpectedValue,
+    totalReportedValue,
+    valueDifference: totalReportedValue - totalExpectedValue,
+  };
+}
+
+export function allParticipantsHaveChips(
+  participants: Array<{
+    chipsBlackEnd: number | null;
+    chipsWhiteEnd: number | null;
+    chipsRedEnd: number | null;
+    chipsGreenEnd: number | null;
+    chipsBlueEnd: number | null;
+  }>
+): boolean {
+  return participants.every(
+    (p) =>
+      p.chipsBlackEnd !== null &&
+      p.chipsWhiteEnd !== null &&
+      p.chipsRedEnd !== null &&
+      p.chipsGreenEnd !== null &&
+      p.chipsBlueEnd !== null
+  );
 }

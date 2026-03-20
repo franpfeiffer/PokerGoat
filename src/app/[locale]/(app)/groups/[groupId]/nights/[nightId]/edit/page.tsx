@@ -48,6 +48,7 @@ export default async function EditNightPage({
               buyIn: Number(night.buyInAmount),
               maxRebuys: night.maxRebuys,
               notes: metadata.notes,
+              chipQuantities: metadata.chipQuantities,
             }}
           />
         </CardContent>

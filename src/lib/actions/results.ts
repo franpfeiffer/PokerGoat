@@ -9,13 +9,16 @@ import {
   calculateCashoutFromChipBreakdown,
   calculateProfitLoss,
   parseNightMetadata,
+  calculateReconciliation,
+  allParticipantsHaveChips,
 } from "@/lib/utils/chips";
 import { getUserMembership } from "@/lib/db/queries/groups";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 
 export async function calculateAndSaveResults(
   nightId: string,
-  userId: string
+  userId: string,
+  forceFinish?: boolean
 ) {
   const [night] = await db
     .select()
@@ -37,7 +40,22 @@ export async function calculateAndSaveResults(
 
   const buyInAmount = Number(night.buyInAmount);
   const chipValue = Number(night.chipValue);
-  const chipValues = parseNightMetadata(night.notes, chipValue).chipValues;
+  const metadata = parseNightMetadata(night.notes, chipValue);
+  const chipValues = metadata.chipValues;
+
+  if (metadata.chipQuantities) {
+    if (!allParticipantsHaveChips(participants)) {
+      return { error: "reconciliation_all_must_enter" };
+    }
+    const reconciliation = calculateReconciliation(
+      metadata.chipQuantities,
+      chipValues,
+      participants
+    );
+    if (!reconciliation.isBalanced && !forceFinish) {
+      return { error: "reconciliation_failed", reconciliation };
+    }
+  }
 
   const results = participants
     .filter(

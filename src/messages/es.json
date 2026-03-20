@@ -132,7 +132,34 @@
       "loss": "Pérdida"
     },
     "noNights": "Aún no hay noches de poker",
-    "noNightsAction": "Crea la primera noche para empezar"
+    "noNightsAction": "Crea la primera noche para empezar",
+    "chipBlackQty": "Negras",
+    "chipWhiteQty": "Blancas",
+    "chipRedQty": "Rojas",
+    "chipGreenQty": "Verdes",
+    "chipBlueQty": "Azules",
+    "initialChipQuantities": "Cantidad inicial de fichas (por buy-in)",
+    "chipsPerBuyIn": "Fichas por buy-in",
+    "totalChipsReported": "Total fichas reportadas",
+    "buyInValueCheck": "Valor calculado del buy-in",
+    "buyInValueMismatch": "El valor de las fichas no coincide con el buy-in",
+    "reconciliation": {
+      "title": "Conciliación de fichas",
+      "expected": "Esperadas",
+      "reported": "Reportadas",
+      "difference": "Diferencia",
+      "balanced": "Cuadra",
+      "extra": "sobran",
+      "missing": "faltan",
+      "allBalanced": "Todas las fichas cuadran",
+      "discrepancyFound": "Se encontraron discrepancias",
+      "waitingForPlayers": "Esperando que todos ingresen fichas ({current} de {total})",
+      "valueDifference": "Diferencia monetaria",
+      "finishAnyway": "Finalizar de todos modos",
+      "goBackAndFix": "Volver y corregir",
+      "confirmDiscrepancy": "Las fichas no cuadran. ¿Finalizar de todos modos?",
+      "allMustEnterChips": "Todos los participantes deben ingresar sus fichas finales"
+    }
   },
   "leaderboard": {
     "title": "Clasificación",

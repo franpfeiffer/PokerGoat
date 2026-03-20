@@ -132,7 +132,34 @@
       "loss": "Loss"
     },
     "noNights": "No poker nights yet",
-    "noNightsAction": "Create the first night to get started"
+    "noNightsAction": "Create the first night to get started",
+    "chipBlackQty": "Black",
+    "chipWhiteQty": "White",
+    "chipRedQty": "Red",
+    "chipGreenQty": "Green",
+    "chipBlueQty": "Blue",
+    "initialChipQuantities": "Initial chip quantities (per buy-in)",
+    "chipsPerBuyIn": "Chips per buy-in",
+    "totalChipsReported": "Total chips reported",
+    "buyInValueCheck": "Calculated buy-in value",
+    "buyInValueMismatch": "Chip values don't match the buy-in amount",
+    "reconciliation": {
+      "title": "Chip reconciliation",
+      "expected": "Expected",
+      "reported": "Reported",
+      "difference": "Difference",
+      "balanced": "Balanced",
+      "extra": "extra",
+      "missing": "missing",
+      "allBalanced": "All chips are balanced",
+      "discrepancyFound": "Discrepancies found",
+      "waitingForPlayers": "Waiting for all players to enter chips ({current} of {total})",
+      "valueDifference": "Value difference",
+      "finishAnyway": "Finish anyway",
+      "goBackAndFix": "Go back and fix",
+      "confirmDiscrepancy": "Chips don't balance. Finish anyway?",
+      "allMustEnterChips": "All participants must enter their final chips"
+    }
   },
   "leaderboard": {
     "title": "Leaderboard",

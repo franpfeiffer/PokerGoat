@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/client";
 import { getOrCreateProfile } from "@/lib/actions/profile";
+import type { NightChipValues } from "@/lib/utils/chips";
 
 interface NightFormProps {
   groupId: string;
@@ -24,6 +25,7 @@ interface NightFormProps {
     buyIn: number;
     maxRebuys?: number | null;
     notes?: string;
+    chipQuantities?: NightChipValues;
   };
   submitLabel?: "create" | "save";
   action: (
@@ -45,6 +47,28 @@ export function NightForm({
   const [error, setError] = useState<string | null>(null);
 
   const today = new Date().toISOString().split("T")[0];
+
+  const [chipQtyBlack, setChipQtyBlack] = useState(defaults?.chipQuantities?.black ?? 0);
+  const [chipQtyWhite, setChipQtyWhite] = useState(defaults?.chipQuantities?.white ?? 0);
+  const [chipQtyRed, setChipQtyRed] = useState(defaults?.chipQuantities?.red ?? 0);
+  const [chipQtyGreen, setChipQtyGreen] = useState(defaults?.chipQuantities?.green ?? 0);
+  const [chipQtyBlue, setChipQtyBlue] = useState(defaults?.chipQuantities?.blue ?? 0);
+
+  const [chipValBlack, setChipValBlack] = useState(defaults?.chipValues.black ?? 500);
+  const [chipValWhite, setChipValWhite] = useState(defaults?.chipValues.white ?? 100);
+  const [chipValRed, setChipValRed] = useState(defaults?.chipValues.red ?? 50);
+  const [chipValGreen, setChipValGreen] = useState(defaults?.chipValues.green ?? 25);
+  const [chipValBlue, setChipValBlue] = useState(defaults?.chipValues.blue ?? 10);
+  const [buyInVal, setBuyInVal] = useState(defaults?.buyIn ?? 5000);
+
+  const hasAnyQty = chipQtyBlack > 0 || chipQtyWhite > 0 || chipQtyRed > 0 || chipQtyGreen > 0 || chipQtyBlue > 0;
+  const calculatedBuyInValue =
+    chipQtyBlack * chipValBlack +
+    chipQtyWhite * chipValWhite +
+    chipQtyRed * chipValRed +
+    chipQtyGreen * chipValGreen +
+    chipQtyBlue * chipValBlue;
+  const buyInMismatch = hasAnyQty && calculatedBuyInValue !== buyInVal;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -108,7 +132,8 @@ export function NightForm({
           step="0.01"
           min="0.01"
           required
-          defaultValue={defaults?.chipValues.black ?? 500}
+          value={chipValBlack}
+          onChange={(e) => setChipValBlack(Number(e.target.value) || 0)}
           autoComplete="off"
         />
         <Input
@@ -118,7 +143,8 @@ export function NightForm({
           step="0.01"
           min="0.01"
           required
-          defaultValue={defaults?.chipValues.white ?? 100}
+          value={chipValWhite}
+          onChange={(e) => setChipValWhite(Number(e.target.value) || 0)}
           autoComplete="off"
         />
         <Input
@@ -128,7 +154,8 @@ export function NightForm({
           step="0.01"
           min="0.01"
           required
-          defaultValue={defaults?.chipValues.red ?? 50}
+          value={chipValRed}
+          onChange={(e) => setChipValRed(Number(e.target.value) || 0)}
           autoComplete="off"
         />
         <Input
@@ -138,7 +165,8 @@ export function NightForm({
           step="0.01"
           min="0.01"
           required
-          defaultValue={defaults?.chipValues.green ?? 25}
+          value={chipValGreen}
+          onChange={(e) => setChipValGreen(Number(e.target.value) || 0)}
           autoComplete="off"
         />
       </div>
@@ -151,7 +179,8 @@ export function NightForm({
           step="0.01"
           min="0.01"
           required
-          defaultValue={defaults?.chipValues.blue ?? 10}
+          value={chipValBlue}
+          onChange={(e) => setChipValBlue(Number(e.target.value) || 0)}
           autoComplete="off"
         />
         <Input
@@ -161,7 +190,8 @@ export function NightForm({
           step="1"
           min="1"
           required
-          defaultValue={defaults?.buyIn ?? 5000}
+          value={buyInVal}
+          onChange={(e) => setBuyInVal(Number(e.target.value) || 0)}
           autoComplete="off"
         />
       </div>
@@ -175,6 +205,84 @@ export function NightForm({
         defaultValue={defaults?.maxRebuys ?? undefined}
         autoComplete="off"
       />
+
+      <details
+        className="rounded-lg border border-velvet-700/60 bg-velvet-900/40"
+        open={hasAnyQty || undefined}
+      >
+        <summary className="cursor-pointer px-3 py-2 text-sm font-medium text-velvet-200 select-none">
+          {t("initialChipQuantities")}
+        </summary>
+        <div className="space-y-3 px-3 pb-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <Input
+              label={t("chipBlackQty")}
+              name="chipQtyBlack"
+              type="number"
+              min="0"
+              step="1"
+              value={chipQtyBlack}
+              onChange={(e) => setChipQtyBlack(Number(e.target.value) || 0)}
+              autoComplete="off"
+            />
+            <Input
+              label={t("chipWhiteQty")}
+              name="chipQtyWhite"
+              type="number"
+              min="0"
+              step="1"
+              value={chipQtyWhite}
+              onChange={(e) => setChipQtyWhite(Number(e.target.value) || 0)}
+              autoComplete="off"
+            />
+            <Input
+              label={t("chipRedQty")}
+              name="chipQtyRed"
+              type="number"
+              min="0"
+              step="1"
+              value={chipQtyRed}
+              onChange={(e) => setChipQtyRed(Number(e.target.value) || 0)}
+              autoComplete="off"
+            />
+            <Input
+              label={t("chipGreenQty")}
+              name="chipQtyGreen"
+              type="number"
+              min="0"
+              step="1"
+              value={chipQtyGreen}
+              onChange={(e) => setChipQtyGreen(Number(e.target.value) || 0)}
+              autoComplete="off"
+            />
+            <Input
+              label={t("chipBlueQty")}
+              name="chipQtyBlue"
+              type="number"
+              min="0"
+              step="1"
+              value={chipQtyBlue}
+              onChange={(e) => setChipQtyBlue(Number(e.target.value) || 0)}
+              autoComplete="off"
+            />
+          </div>
+          {hasAnyQty && (
+            <div className="space-y-1">
+              <p className="text-xs text-velvet-400">
+                {t("buyInValueCheck")}:{" "}
+                <span className="font-semibold text-velvet-200 tabular-nums">
+                  ${calculatedBuyInValue.toLocaleString()}
+                </span>
+              </p>
+              {buyInMismatch && (
+                <p className="text-xs text-amber-400">
+                  {t("buyInValueMismatch")}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </details>
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="notes" className="text-sm font-medium text-velvet-200">

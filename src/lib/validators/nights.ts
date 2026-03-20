@@ -11,6 +11,11 @@ export const createNightSchema = z.object({
   buyInAmount: z.coerce.number().positive(),
   maxRebuys: z.coerce.number().int().min(0).optional(),
   notes: z.string().max(1000).optional(),
+  chipQtyBlack: z.coerce.number().int().min(0).optional(),
+  chipQtyWhite: z.coerce.number().int().min(0).optional(),
+  chipQtyRed: z.coerce.number().int().min(0).optional(),
+  chipQtyGreen: z.coerce.number().int().min(0).optional(),
+  chipQtyBlue: z.coerce.number().int().min(0).optional(),
 });
 
 export const updateNightSchema = createNightSchema;

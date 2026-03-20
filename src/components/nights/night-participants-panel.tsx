@@ -40,6 +40,7 @@ interface NightParticipantsPanelProps {
   buyInAmount: number;
   chipValue: number;
   chipValues: NightChipValues;
+  chipQuantities?: NightChipValues;
   locale: string;
   members: GroupMember[];
   participants: Participant[];
@@ -51,6 +52,7 @@ export function NightParticipantsPanel({
   buyInAmount,
   chipValue,
   chipValues,
+  chipQuantities,
   locale,
   members,
   participants,
@@ -237,6 +239,76 @@ export function NightParticipantsPanel({
           ))}
         </div>
       )}
+
+      {chipQuantities && nightStatus === "in_progress" && participants.length > 0 && (
+        <ChipTotalsSummary
+          chipQuantities={chipQuantities}
+          participants={participants}
+        />
+      )}
+    </div>
+  );
+}
+
+function ChipTotalsSummary({
+  chipQuantities,
+  participants,
+}: {
+  chipQuantities: NightChipValues;
+  participants: Participant[];
+}) {
+  const t = useTranslations("nights");
+  const totalBuyIns = participants.reduce((sum, p) => sum + p.buyInCount, 0);
+
+  const colors: Array<{ key: keyof NightChipValues; label: string }> = [
+    { key: "black", label: t("chipBlack") },
+    { key: "white", label: t("chipWhite") },
+    { key: "red", label: t("chipRed") },
+    { key: "green", label: t("chipGreen") },
+    { key: "blue", label: t("chipBlue") },
+  ];
+
+  const colorToField = {
+    black: "chipsBlackEnd",
+    white: "chipsWhiteEnd",
+    red: "chipsRedEnd",
+    green: "chipsGreenEnd",
+    blue: "chipsBlueEnd",
+  } as const;
+
+  const allEntered = participants.every(
+    (p) =>
+      p.chipsBlackEnd !== null &&
+      p.chipsWhiteEnd !== null &&
+      p.chipsRedEnd !== null &&
+      p.chipsGreenEnd !== null &&
+      p.chipsBlueEnd !== null
+  );
+
+  return (
+    <div className="flex flex-wrap gap-2 rounded-lg border border-velvet-700/50 bg-velvet-900/40 px-3 py-2">
+      {colors.map(({ key, label }) => {
+        const expected = totalBuyIns * chipQuantities[key];
+        const reported = participants.reduce(
+          (sum, p) => sum + (p[colorToField[key]] ?? 0),
+          0
+        );
+        const balanced = reported === expected;
+        return (
+          <span
+            key={key}
+            className={`text-xs tabular-nums ${
+              !allEntered
+                ? "text-velvet-500"
+                : balanced
+                  ? "text-profit"
+                  : "text-loss"
+            }`}
+          >
+            {label}: {reported}/{expected}
+          </span>
+        );
+      })}
     </div>
   );
 }
