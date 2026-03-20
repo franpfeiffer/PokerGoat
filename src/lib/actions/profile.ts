@@ -14,6 +14,7 @@ export async function getOrCreateProfile(data: {
   avatarUrl?: string;
 }) {
   let profile = await getUserByAuthId(data.authUserId);
+  let isNew = false;
 
   if (!profile) {
     profile = await createUserProfile({
@@ -21,9 +22,10 @@ export async function getOrCreateProfile(data: {
       displayName: data.displayName,
       avatarUrl: data.avatarUrl,
     });
+    isNew = true;
   }
 
-  return profile;
+  return { profile, isNew };
 }
 
 export async function getProfileStats(userId: string) {

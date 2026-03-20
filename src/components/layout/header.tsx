@@ -14,13 +14,23 @@ export function Header() {
 
   const loadProfile = useCallback(async () => {
     if (!session?.user) return;
-    const profile = await getOrCreateProfile({
+    const { profile, isNew } = await getOrCreateProfile({
       authUserId: session.user.id,
       displayName: session.user.name || session.user.email.split("@")[0],
       avatarUrl: session.user.image ?? undefined,
     });
     if (profile?.avatarUrl) {
       setProfileAvatar(profile.avatarUrl);
+    }
+    if (isNew) {
+      fetch("/api/notify-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: session.user.name ?? "Usuario",
+          email: session.user.email,
+        }),
+      }).catch(() => {});
     }
   }, [session?.user?.id, session?.user?.name, session?.user?.email, session?.user?.image]);
 

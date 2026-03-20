@@ -3,7 +3,6 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { UserGroupsGrid } from "@/components/groups/user-groups-grid";
-import { LoginNotifier } from "@/components/auth/login-notifier";
 import { CreateGroupButton } from "@/components/groups/create-group-button";
 
 export const metadata: Metadata = {
@@ -15,7 +14,6 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-4xl py-2">
-      <LoginNotifier />
       <div className="flex flex-col gap-3 mb-8 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-2xl font-bold tracking-tight text-velvet-50 sm:text-3xl">
           {t("title")}

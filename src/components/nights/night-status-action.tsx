@@ -36,7 +36,7 @@ export function NightStatusAction({
       if (!session?.user) return;
       setError(null);
 
-      const profile = await getOrCreateProfile({
+      const { profile } = await getOrCreateProfile({
         authUserId: session.user.id,
         displayName: session.user.name || session.user.email.split("@")[0],
         avatarUrl: session.user.image ?? undefined,

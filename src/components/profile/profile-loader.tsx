@@ -27,7 +27,7 @@ export function ProfileLoader() {
     if (sessionPending || !session?.user) return;
 
     async function load() {
-      const p = await getOrCreateProfile({
+      const { profile: p } = await getOrCreateProfile({
         authUserId: session!.user.id,
         displayName: session!.user.name || session!.user.email.split("@")[0],
         avatarUrl: session!.user.image ?? undefined,
