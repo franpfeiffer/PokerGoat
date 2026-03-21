@@ -322,8 +322,7 @@ export async function updateParticipant(formData: FormData) {
   const parsed = updateParticipantSchema.safeParse({
     participantId: formData.get("participantId"),
     buyInCount: formData.get("buyInCount") || undefined,
-    customBuyInAmount: formData.get("customBuyInAmount") || undefined,
-    clearCustomBuyIn: formData.get("clearCustomBuyIn") || undefined,
+    rebuyAmount: formData.get("rebuyAmount") || undefined,
     totalChipsEnd: formData.get("totalChipsEnd") || undefined,
     chipsBlackEnd: formData.get("chipsBlackEnd") || undefined,
     chipsWhiteEnd: formData.get("chipsWhiteEnd") || undefined,
@@ -339,10 +338,8 @@ export async function updateParticipant(formData: FormData) {
   const updateData: Record<string, unknown> = { updatedAt: new Date() };
   if (parsed.data.buyInCount !== undefined)
     updateData.buyInCount = parsed.data.buyInCount;
-  if (parsed.data.customBuyInAmount !== undefined)
-    updateData.customBuyInAmount = String(parsed.data.customBuyInAmount);
-  if (parsed.data.clearCustomBuyIn)
-    updateData.customBuyInAmount = null;
+  if (parsed.data.rebuyAmount !== undefined)
+    updateData.rebuyTotal = String(parsed.data.rebuyAmount);
   if (parsed.data.totalChipsEnd !== undefined)
     updateData.totalChipsEnd = parsed.data.totalChipsEnd;
   if (parsed.data.chipsBlackEnd !== undefined)

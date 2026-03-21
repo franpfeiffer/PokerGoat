@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/avatar";
 import { formatCurrency, formatProfitLoss } from "@/lib/utils/currency";
@@ -18,7 +18,7 @@ interface ParticipantRowProps {
   displayName: string;
   avatarUrl: string | null;
   buyInCount: number;
-  customBuyInAmount: number | null;
+  rebuyTotal: number;
   totalChipsEnd: number | null;
   chipsBlackEnd: number | null;
   chipsWhiteEnd: number | null;
@@ -31,8 +31,8 @@ interface ParticipantRowProps {
   nightStatus: string;
   locale?: string;
   currency?: string;
-  onUpdateBuyIn?: (participantId: string, count: number) => void;
-  onUpdateCustomBuyIn?: (participantId: string, amount: number | null) => void;
+  onAddRebuy?: (participantId: string, rebuyAmount: number) => void;
+  onRemoveRebuy?: (participantId: string, rebuyAmount: number) => void;
   onUpdateChips?: (
     participantId: string,
     chipBreakdown: {
@@ -50,7 +50,7 @@ export function ParticipantRow({
   displayName,
   avatarUrl,
   buyInCount,
-  customBuyInAmount,
+  rebuyTotal,
   totalChipsEnd,
   chipsBlackEnd,
   chipsWhiteEnd,
@@ -63,14 +63,14 @@ export function ParticipantRow({
   nightStatus,
   locale = "es-ES",
   currency = "ARS",
-  onUpdateBuyIn,
-  onUpdateCustomBuyIn,
+  onAddRebuy,
+  onRemoveRebuy,
   onUpdateChips,
 }: ParticipantRowProps) {
   const t = useTranslations("nights");
-  const effectiveBuyIn = customBuyInAmount ?? buyInAmount;
-  const totalInvested = calculateTotalInvested(buyInCount, effectiveBuyIn);
+  const totalInvested = calculateTotalInvested(buyInAmount, rebuyTotal);
   const isActive = nightStatus === "in_progress" || nightStatus === "scheduled";
+  const [rebuyInput, setRebuyInput] = useState(buyInAmount);
 
   const { profitLoss, plType } = useMemo(() => {
     const hasChipBreakdown =
@@ -98,7 +98,7 @@ export function ParticipantRow({
       : calculateCashout(totalChipsEnd!, chipValue);
     const pl = calculateProfitLoss(cashout, totalInvested);
     return { profitLoss: pl, plType: getProfitLossType(pl) };
-  }, [buyInCount, buyInAmount, customBuyInAmount, totalChipsEnd, chipsBlackEnd, chipsWhiteEnd, chipsRedEnd, chipsGreenEnd, chipsBlueEnd, chipValue, chipValues, totalInvested]);
+  }, [rebuyTotal, buyInAmount, totalChipsEnd, chipsBlackEnd, chipsWhiteEnd, chipsRedEnd, chipsGreenEnd, chipsBlueEnd, chipValue, chipValues, totalInvested]);
 
   const plColors = {
     profit: "text-profit",
@@ -113,11 +113,12 @@ export function ParticipantRow({
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-velvet-100">{displayName}</p>
           <p className="text-xs text-velvet-400 tabular-nums">
-            {buyInCount}x {formatCurrency(effectiveBuyIn, locale, currency)}
-            {customBuyInAmount !== null && (
-              <span className="ml-1 text-amber-400">({t("customBuyIn")})</span>
+            {buyInCount}x {t("buyIn")} = {formatCurrency(totalInvested, locale, currency)}
+            {rebuyTotal > 0 && buyInCount > 1 && (
+              <span className="ml-1 text-velvet-500">
+                ({formatCurrency(buyInAmount, locale, currency)} + {formatCurrency(rebuyTotal, locale, currency)})
+              </span>
             )}
-            {" = "}{formatCurrency(totalInvested, locale, currency)}
           </p>
         </div>
         {profitLoss !== null && (
@@ -129,13 +130,13 @@ export function ParticipantRow({
         )}
       </div>
 
-      {(isActive && onUpdateBuyIn) || (isActive && onUpdateChips) ? (
+      {(isActive && onAddRebuy) || (isActive && onUpdateChips) ? (
         <div className="space-y-2">
-          {isActive && onUpdateBuyIn && (
+          {isActive && onAddRebuy && onRemoveRebuy && (
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => onUpdateBuyIn(id, Math.max(1, buyInCount - 1))}
+                onClick={() => onRemoveRebuy(id, rebuyInput)}
                 disabled={buyInCount <= 1}
                 aria-label={t("decreaseBuyIn")}
                 className="focus-ring flex h-10 w-10 items-center justify-center rounded-md border border-velvet-700 bg-velvet-800 text-base text-velvet-300 hover:bg-velvet-700 disabled:opacity-30 transition-colors sm:h-8 sm:w-8"
@@ -147,44 +148,24 @@ export function ParticipantRow({
               </span>
               <button
                 type="button"
-                onClick={() => onUpdateBuyIn(id, buyInCount + 1)}
+                onClick={() => onAddRebuy(id, rebuyInput)}
                 aria-label={t("addRebuy")}
                 className="focus-ring flex h-10 w-10 items-center justify-center rounded-md border border-velvet-700 bg-velvet-800 text-base text-velvet-300 hover:bg-velvet-700 transition-colors sm:h-8 sm:w-8"
               >
                 +
               </button>
-            </div>
-          )}
-
-          {isActive && onUpdateCustomBuyIn && (
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-velvet-400 whitespace-nowrap">
-                {t("buyInAmount")}:
-              </label>
               <input
                 type="number"
                 min="1"
                 step="any"
-                defaultValue={customBuyInAmount ?? buyInAmount}
-                aria-label={t("customBuyInFor", { name: displayName })}
+                value={rebuyInput}
                 onChange={(e) => {
                   const val = parseFloat(e.target.value);
-                  if (!isNaN(val) && val > 0) {
-                    onUpdateCustomBuyIn(id, val === buyInAmount ? null : val);
-                  }
+                  if (!isNaN(val) && val > 0) setRebuyInput(val);
                 }}
-                className="focus-ring h-10 w-28 rounded-md border border-velvet-700 bg-velvet-800 px-2 py-2 text-right text-xs tabular-nums text-velvet-50 sm:h-8"
+                aria-label={t("rebuyAmount")}
+                className="focus-ring h-10 w-24 rounded-md border border-velvet-700 bg-velvet-800 px-2 py-2 text-right text-xs tabular-nums text-velvet-50 sm:h-8"
               />
-              {customBuyInAmount !== null && (
-                <button
-                  type="button"
-                  onClick={() => onUpdateCustomBuyIn(id, null)}
-                  className="text-xs text-velvet-400 hover:text-velvet-200 transition-colors"
-                  aria-label={t("resetBuyIn")}
-                >
-                  reset
-                </button>
-              )}
             </div>
           )}
 

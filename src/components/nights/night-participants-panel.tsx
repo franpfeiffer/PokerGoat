@@ -26,7 +26,7 @@ interface Participant {
   displayName: string;
   avatarUrl: string | null;
   buyInCount: number;
-  customBuyInAmount: number | null;
+  rebuyTotal: number;
   totalChipsEnd: number | null;
   chipsBlackEnd: number | null;
   chipsWhiteEnd: number | null;
@@ -116,13 +116,14 @@ export function NightParticipantsPanel({
     });
   }
 
-  function handleUpdateBuyIn(participantId: string, count: number) {
+  function handleAddRebuy(participantId: string, rebuyAmount: number, currentRebuyTotal: number, currentBuyInCount: number) {
     startTransition(async () => {
       setError(null);
       const ok = await runWithProfile(async () => {
         const formData = new FormData();
         formData.set("participantId", participantId);
-        formData.set("buyInCount", String(count));
+        formData.set("buyInCount", String(currentBuyInCount + 1));
+        formData.set("rebuyAmount", String(currentRebuyTotal + rebuyAmount));
         return updateParticipant(formData);
       });
       if (!ok) return;
@@ -130,17 +131,15 @@ export function NightParticipantsPanel({
     });
   }
 
-  function handleUpdateCustomBuyIn(participantId: string, amount: number | null) {
+  function handleRemoveRebuy(participantId: string, rebuyAmount: number, currentRebuyTotal: number, currentBuyInCount: number) {
+    if (currentBuyInCount <= 1) return;
     startTransition(async () => {
       setError(null);
       const ok = await runWithProfile(async () => {
         const formData = new FormData();
         formData.set("participantId", participantId);
-        if (amount !== null) {
-          formData.set("customBuyInAmount", String(amount));
-        } else {
-          formData.set("clearCustomBuyIn", "true");
-        }
+        formData.set("buyInCount", String(currentBuyInCount - 1));
+        formData.set("rebuyAmount", String(Math.max(0, currentRebuyTotal - rebuyAmount)));
         return updateParticipant(formData);
       });
       if (!ok) return;
@@ -225,7 +224,7 @@ export function NightParticipantsPanel({
                 displayName={participant.displayName}
                 avatarUrl={participant.avatarUrl}
                 buyInCount={participant.buyInCount}
-                customBuyInAmount={participant.customBuyInAmount}
+                rebuyTotal={participant.rebuyTotal}
                 totalChipsEnd={participant.totalChipsEnd}
                 chipsBlackEnd={participant.chipsBlackEnd}
                 chipsWhiteEnd={participant.chipsWhiteEnd}
@@ -238,8 +237,8 @@ export function NightParticipantsPanel({
                 nightStatus={nightStatus}
                 locale={locale}
                 currency="ARS"
-                onUpdateBuyIn={isEditable ? handleUpdateBuyIn : undefined}
-                onUpdateCustomBuyIn={isEditable ? handleUpdateCustomBuyIn : undefined}
+                onAddRebuy={isEditable ? (id, amount) => handleAddRebuy(id, amount, participant.rebuyTotal, participant.buyInCount) : undefined}
+                onRemoveRebuy={isEditable ? (id, amount) => handleRemoveRebuy(id, amount, participant.rebuyTotal, participant.buyInCount) : undefined}
                 onUpdateChips={isEditable ? handleUpdateChips : undefined}
               />
               {isEditable && (

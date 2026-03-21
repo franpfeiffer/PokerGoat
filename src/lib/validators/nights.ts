@@ -23,8 +23,7 @@ export const updateNightSchema = createNightSchema;
 export const updateParticipantSchema = z.object({
   participantId: z.string().uuid(),
   buyInCount: z.coerce.number().int().min(1).optional(),
-  customBuyInAmount: z.coerce.number().positive().optional(),
-  clearCustomBuyIn: z.coerce.boolean().optional(),
+  rebuyAmount: z.coerce.number().positive().optional(),
   totalChipsEnd: z.coerce.number().int().min(0).optional(),
   chipsBlackEnd: z.coerce.number().int().min(0).optional(),
   chipsWhiteEnd: z.coerce.number().int().min(0).optional(),

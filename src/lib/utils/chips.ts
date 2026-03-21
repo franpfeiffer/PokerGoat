@@ -1,8 +1,8 @@
 export function calculateTotalInvested(
-  buyInCount: number,
-  buyInAmount: number
+  buyInAmount: number,
+  rebuyTotal: number
 ): number {
-  return buyInCount * buyInAmount;
+  return buyInAmount + rebuyTotal;
 }
 
 export interface NightChipValues {
