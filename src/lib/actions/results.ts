@@ -68,7 +68,8 @@ export async function calculateAndSaveResults(
         p.chipsBlueEnd !== null
     )
     .map((p) => {
-      const totalInvested = calculateTotalInvested(p.buyInCount, buyInAmount);
+      const effectiveBuyIn = p.customBuyInAmount ? Number(p.customBuyInAmount) : buyInAmount;
+      const totalInvested = calculateTotalInvested(p.buyInCount, effectiveBuyIn);
       const hasChipBreakdown =
         p.chipsBlackEnd !== null ||
         p.chipsWhiteEnd !== null ||

@@ -30,6 +30,7 @@ export async function getNightParticipants(nightId: string) {
       nightId: pokerNightParticipants.nightId,
       userId: pokerNightParticipants.userId,
       buyInCount: pokerNightParticipants.buyInCount,
+      customBuyInAmount: pokerNightParticipants.customBuyInAmount,
       chipsBlackEnd: pokerNightParticipants.chipsBlackEnd,
       chipsWhiteEnd: pokerNightParticipants.chipsWhiteEnd,
       chipsRedEnd: pokerNightParticipants.chipsRedEnd,

@@ -18,6 +18,7 @@ interface ParticipantRowProps {
   displayName: string;
   avatarUrl: string | null;
   buyInCount: number;
+  customBuyInAmount: number | null;
   totalChipsEnd: number | null;
   chipsBlackEnd: number | null;
   chipsWhiteEnd: number | null;
@@ -31,6 +32,7 @@ interface ParticipantRowProps {
   locale?: string;
   currency?: string;
   onUpdateBuyIn?: (participantId: string, count: number) => void;
+  onUpdateCustomBuyIn?: (participantId: string, amount: number | null) => void;
   onUpdateChips?: (
     participantId: string,
     chipBreakdown: {
@@ -48,6 +50,7 @@ export function ParticipantRow({
   displayName,
   avatarUrl,
   buyInCount,
+  customBuyInAmount,
   totalChipsEnd,
   chipsBlackEnd,
   chipsWhiteEnd,
@@ -61,10 +64,12 @@ export function ParticipantRow({
   locale = "es-ES",
   currency = "ARS",
   onUpdateBuyIn,
+  onUpdateCustomBuyIn,
   onUpdateChips,
 }: ParticipantRowProps) {
   const t = useTranslations("nights");
-  const totalInvested = calculateTotalInvested(buyInCount, buyInAmount);
+  const effectiveBuyIn = customBuyInAmount ?? buyInAmount;
+  const totalInvested = calculateTotalInvested(buyInCount, effectiveBuyIn);
   const isActive = nightStatus === "in_progress" || nightStatus === "scheduled";
 
   const { profitLoss, plType } = useMemo(() => {
@@ -93,7 +98,7 @@ export function ParticipantRow({
       : calculateCashout(totalChipsEnd!, chipValue);
     const pl = calculateProfitLoss(cashout, totalInvested);
     return { profitLoss: pl, plType: getProfitLossType(pl) };
-  }, [buyInCount, buyInAmount, totalChipsEnd, chipsBlackEnd, chipsWhiteEnd, chipsRedEnd, chipsGreenEnd, chipsBlueEnd, chipValue, chipValues, totalInvested]);
+  }, [buyInCount, buyInAmount, customBuyInAmount, totalChipsEnd, chipsBlackEnd, chipsWhiteEnd, chipsRedEnd, chipsGreenEnd, chipsBlueEnd, chipValue, chipValues, totalInvested]);
 
   const plColors = {
     profit: "text-profit",
@@ -108,7 +113,11 @@ export function ParticipantRow({
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-velvet-100">{displayName}</p>
           <p className="text-xs text-velvet-400 tabular-nums">
-            {buyInCount}x {t("buyIn")} = {formatCurrency(totalInvested, locale, currency)}
+            {buyInCount}x {formatCurrency(effectiveBuyIn, locale, currency)}
+            {customBuyInAmount !== null && (
+              <span className="ml-1 text-amber-400">({t("customBuyIn")})</span>
+            )}
+            {" = "}{formatCurrency(totalInvested, locale, currency)}
           </p>
         </div>
         {profitLoss !== null && (
@@ -144,6 +153,38 @@ export function ParticipantRow({
               >
                 +
               </button>
+            </div>
+          )}
+
+          {isActive && onUpdateCustomBuyIn && (
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-velvet-400 whitespace-nowrap">
+                {t("buyInAmount")}:
+              </label>
+              <input
+                type="number"
+                min="1"
+                step="any"
+                defaultValue={customBuyInAmount ?? buyInAmount}
+                aria-label={t("customBuyInFor", { name: displayName })}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (!isNaN(val) && val > 0) {
+                    onUpdateCustomBuyIn(id, val === buyInAmount ? null : val);
+                  }
+                }}
+                className="focus-ring h-10 w-28 rounded-md border border-velvet-700 bg-velvet-800 px-2 py-2 text-right text-xs tabular-nums text-velvet-50 sm:h-8"
+              />
+              {customBuyInAmount !== null && (
+                <button
+                  type="button"
+                  onClick={() => onUpdateCustomBuyIn(id, null)}
+                  className="text-xs text-velvet-400 hover:text-velvet-200 transition-colors"
+                  aria-label={t("resetBuyIn")}
+                >
+                  reset
+                </button>
+              )}
             </div>
           )}
 

@@ -26,6 +26,7 @@ interface Participant {
   displayName: string;
   avatarUrl: string | null;
   buyInCount: number;
+  customBuyInAmount: number | null;
   totalChipsEnd: number | null;
   chipsBlackEnd: number | null;
   chipsWhiteEnd: number | null;
@@ -129,6 +130,24 @@ export function NightParticipantsPanel({
     });
   }
 
+  function handleUpdateCustomBuyIn(participantId: string, amount: number | null) {
+    startTransition(async () => {
+      setError(null);
+      const ok = await runWithProfile(async () => {
+        const formData = new FormData();
+        formData.set("participantId", participantId);
+        if (amount !== null) {
+          formData.set("customBuyInAmount", String(amount));
+        } else {
+          formData.set("clearCustomBuyIn", "true");
+        }
+        return updateParticipant(formData);
+      });
+      if (!ok) return;
+      router.refresh();
+    });
+  }
+
   function handleUpdateChips(
     participantId: string,
     chipBreakdown: {
@@ -206,6 +225,7 @@ export function NightParticipantsPanel({
                 displayName={participant.displayName}
                 avatarUrl={participant.avatarUrl}
                 buyInCount={participant.buyInCount}
+                customBuyInAmount={participant.customBuyInAmount}
                 totalChipsEnd={participant.totalChipsEnd}
                 chipsBlackEnd={participant.chipsBlackEnd}
                 chipsWhiteEnd={participant.chipsWhiteEnd}
@@ -219,6 +239,7 @@ export function NightParticipantsPanel({
                 locale={locale}
                 currency="ARS"
                 onUpdateBuyIn={isEditable ? handleUpdateBuyIn : undefined}
+                onUpdateCustomBuyIn={isEditable ? handleUpdateCustomBuyIn : undefined}
                 onUpdateChips={isEditable ? handleUpdateChips : undefined}
               />
               {isEditable && (

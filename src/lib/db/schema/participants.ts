@@ -2,6 +2,7 @@ import {
   pgTable,
   uuid,
   integer,
+  decimal,
   timestamp,
   unique,
 } from "drizzle-orm/pg-core";
@@ -21,6 +22,7 @@ export const pokerNightParticipants = pgTable(
       .notNull()
       .references(() => userProfiles.id),
     buyInCount: integer("buy_in_count").notNull().default(1),
+    customBuyInAmount: decimal("custom_buy_in_amount", { precision: 10, scale: 2 }),
     chipsBlackEnd: integer("chips_black_end"),
     chipsWhiteEnd: integer("chips_white_end"),
     chipsRedEnd: integer("chips_red_end"),

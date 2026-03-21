@@ -212,6 +212,7 @@ export default async function NightDetailPage({
               displayName: participant.displayName,
               avatarUrl: participant.avatarUrl,
               buyInCount: participant.buyInCount,
+              customBuyInAmount: participant.customBuyInAmount ? Number(participant.customBuyInAmount) : null,
               totalChipsEnd: participant.totalChipsEnd,
               chipsBlackEnd: participant.chipsBlackEnd,
               chipsWhiteEnd: participant.chipsWhiteEnd,
