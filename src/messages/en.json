@@ -199,5 +199,26 @@
     "spanish": "Spanish",
     "english": "English",
     "theme": "Theme"
+  },
+  "subscription": {
+    "title": "PokerGoat PRO",
+    "perMonth": "month",
+    "subscribe": "Subscribe",
+    "cancel": "Cancel subscription",
+    "cancelling": "Cancelling…",
+    "processing": "Processing…",
+    "renewsOn": "Renews on {date}",
+    "pendingHint": "Your subscription is being processed by Mercado Pago.",
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "pending": "Pending",
+      "inactive": "Inactive"
+    },
+    "features": {
+      "unlimited": "Unlimited groups and nights",
+      "stats": "Advanced stats and charts",
+      "priority": "Priority support"
+    }
   }
 }

@@ -20,3 +20,8 @@ export {
   joinRequestsRelations,
   requestStatusEnum,
 } from "./join-requests";
+export {
+  subscriptions,
+  subscriptionsRelations,
+  subscriptionStatusEnum,
+} from "./subscriptions";
