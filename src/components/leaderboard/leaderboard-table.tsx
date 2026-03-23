@@ -33,6 +33,7 @@ export function LeaderboardTable({
         <LeaderboardRow
           key={entry.userId}
           rank={entry.rank}
+          userId={entry.userId}
           displayName={entry.displayName}
           avatarUrl={entry.avatarUrl}
           totalProfitLoss={entry.totalProfitLoss}

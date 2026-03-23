@@ -2,9 +2,11 @@ import { Avatar } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { ProfitBadge } from "./profit-badge";
 import { RankIndicator } from "./rank-indicator";
+import Link from "next/link";
 
 interface LeaderboardRowProps {
   rank: number;
+  userId: string;
   displayName: string;
   avatarUrl: string | null;
   totalProfitLoss: number;
@@ -15,6 +17,7 @@ interface LeaderboardRowProps {
 
 export function LeaderboardRow({
   rank,
+  userId,
   displayName,
   avatarUrl,
   totalProfitLoss,
@@ -34,15 +37,18 @@ export function LeaderboardRow({
       }`}
     >
       <RankIndicator rank={rank} />
-      <Avatar src={avatarUrl} name={displayName} size="sm" />
+      <Link href={`/users/${userId}`} className="focus-ring rounded-full">
+        <Avatar src={avatarUrl} name={displayName} size="sm" />
+      </Link>
       <div className="min-w-0 flex-1">
-        <p
-          className={`text-sm font-medium truncate ${
-            isTop3 ? "text-velvet-50" : "text-velvet-200"
+        <Link
+          href={`/users/${userId}`}
+          className={`text-sm font-medium truncate block ${
+            isTop3 ? "text-velvet-50" : "text-velvet-200 hover:text-gold-400"
           }`}
         >
           {displayName}
-        </p>
+        </Link>
         {nightsPlayed !== undefined && (
           <p className="text-xs text-velvet-500 tabular-nums">
             {nightsPlayed} {t("nightsPlayed")}
