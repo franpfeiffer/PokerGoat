@@ -14,6 +14,7 @@ import {
 } from "@/lib/utils/chips";
 import { getUserMembership } from "@/lib/db/queries/groups";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
+import { revalidateTag } from "next/cache";
 
 export async function calculateAndSaveResults(
   nightId: string,
@@ -128,5 +129,8 @@ export async function calculateAndSaveResults(
 
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   revalidateLocalized(`/groups/${night.groupId}`);
+  revalidateTag(`night-${nightId}`, "max");
+  revalidateTag(`group-${night.groupId}`, "max");
+  results.forEach((r) => revalidateTag(`user-${r.userId}`, "max"));
   return { success: true, resultsCount: results.length };
 }

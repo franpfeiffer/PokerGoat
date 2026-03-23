@@ -5,6 +5,7 @@ import type {
   PreflopScenarioAction,
 } from "@/lib/preflop/types";
 import { getPositionsForPlayers } from "@/lib/preflop/positions";
+import { getTemplate, setTemplate } from "@/lib/indexeddb";
 
 const actionTemplates: Record<PreflopScenarioAction, string> = {
   rfi: "rfi_late_100bb.json",
@@ -56,12 +57,20 @@ async function loadTemplate(fileName: string): Promise<PreflopRangeFile> {
     return cached;
   }
 
-  const request = fetch(cacheKey).then(async (response) => {
+  const request = (async () => {
+    const cachedData = await getTemplate(fileName);
+    if (cachedData) {
+      return cachedData as PreflopRangeFile;
+    }
+
+    const response = await fetch(cacheKey);
     if (!response.ok) {
       throw new Error(`Unable to load preflop template: ${fileName}`);
     }
-    return (await response.json()) as PreflopRangeFile;
-  });
+    const data = (await response.json()) as PreflopRangeFile;
+    await setTemplate(fileName, data);
+    return data;
+  })();
 
   templateCache.set(cacheKey, request);
   return request;

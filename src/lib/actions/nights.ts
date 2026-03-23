@@ -11,6 +11,7 @@ import {
 import { getUserMembership } from "@/lib/db/queries/groups";
 import { serializeNightMetadata } from "@/lib/utils/chips";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
+import { revalidateTag } from "next/cache";
 
 async function ensureNightCreatorParticipant(nightId: string, creatorUserId: string) {
   await db
@@ -109,6 +110,7 @@ export async function createNight(
     .onConflictDoNothing();
 
   revalidateLocalized(`/groups/${groupId}`);
+  revalidateTag(`group-${groupId}`, "max");
   return { nightId: night.id };
 }
 
@@ -149,6 +151,7 @@ export async function startNight(nightId: string, userId: string) {
     .where(eq(pokerNights.id, nightId));
 
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
+  revalidateTag(`night-${nightId}`, "max");
   return { success: true };
 }
 
@@ -237,6 +240,8 @@ export async function updateNight(
   revalidateLocalized(`/groups/${night.groupId}`);
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   revalidateLocalized(`/groups/${night.groupId}/nights`);
+  revalidateTag(`night-${nightId}`, "max");
+  revalidateTag(`group-${night.groupId}`, "max");
   return { success: true };
 }
 
@@ -267,6 +272,7 @@ export async function completeNight(nightId: string, userId: string) {
     .where(eq(pokerNights.id, nightId));
 
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
+  revalidateTag(`night-${nightId}`, "max");
   return { success: true };
 }
 
@@ -315,6 +321,7 @@ export async function addParticipant(
   });
 
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
+  revalidateTag(`night-${nightId}`, "max");
   return { success: true };
 }
 
@@ -395,5 +402,6 @@ export async function removeParticipant(
     .where(eq(pokerNightParticipants.id, participantId));
 
   revalidateLocalized(`/groups/${night.groupId}/nights/${night.id}`);
+  revalidateTag(`night-${night.id}`, "max");
   return { success: true };
 }
