@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "players": 6,
+    "position": "CO",
+    "action": "vs_3bet",
+    "stackBB": 100,
+    "source": "Public consensus (free 4bet/call preflop charts)",
+    "note": "Generalized continue range after facing a 3-bet."
+  },
+  "ranges": {
+    "AA": { "raise": 1 },
+    "KK": { "raise": 1 },
+    "QQ": { "raise": 0.85, "call": 0.15 },
+    "JJ": { "call": 0.8, "marginal": 0.2 },
+    "TT": { "call": 0.65, "marginal": 0.35 },
+    "99": { "call": 0.5, "marginal": 0.5 },
+    "AKs": { "raise": 0.6, "call": 0.4 },
+    "AQs": { "call": 0.75, "marginal": 0.25 },
+    "AJs": { "call": 0.6, "marginal": 0.4 },
+    "ATs": { "call": 0.4, "marginal": 0.6 },
+    "A5s": { "raise": 0.45, "call": 0.15, "marginal": 0.4 },
+    "A4s": { "raise": 0.35, "call": 0.15, "marginal": 0.5 },
+    "KQs": { "call": 0.7, "marginal": 0.3 },
+    "KJs": { "call": 0.5, "marginal": 0.5 },
+    "QJs": { "call": 0.5, "marginal": 0.5 },
+    "JTs": { "call": 0.45, "marginal": 0.55 },
+    "T9s": { "call": 0.35, "marginal": 0.65 },
+    "AKo": { "raise": 0.45, "call": 0.55 },
+    "AQo": { "call": 0.6, "marginal": 0.4 },
+    "AJo": { "call": 0.35, "marginal": 0.65 },
+    "KQo": { "call": 0.5, "marginal": 0.5 }
+  }
+}

@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 
 const navItems = [
   { href: "/dashboard", icon: "home", translationKey: "dashboard" },
+  { href: "/goat-eye", icon: "goatEye", translationKey: "goatEye" },
   { href: "/groups", icon: "groups", translationKey: "groups" },
   { href: "/profile", icon: "profile", translationKey: "profile" },
   { href: "/settings", icon: "settings", translationKey: "settings" },
@@ -76,6 +77,13 @@ function MobileNavIcon({ name, active }: { name: string; active: boolean }) {
           <circle cx="9" cy="7" r="4" />
           <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      );
+    case "goatEye":
+      return (
+        <svg {...props}>
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
         </svg>
       );
     case "profile":

@@ -16,6 +16,7 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "goatEye": "GoatEye",
     "groups": "Groups",
     "profile": "Profile",
     "settings": "Settings",
@@ -199,5 +200,54 @@
     "spanish": "Spanish",
     "english": "English",
     "theme": "Theme"
+  },
+  "goatEye": {
+    "title": "GoatEye",
+    "subtitle": "Browse cash-game ranges with configurable table size and effective stack.",
+    "loadError": "Could not load this scenario. Please try again.",
+    "sourcePrefix": "Base source:",
+    "labels": {
+      "players": "Players at table",
+      "position": "Your position",
+      "sequence": "Sequence",
+      "stack": "Effective stack",
+      "bbInput": "BB value",
+      "stackInput": "Your stack",
+      "calculated": "Computed BB"
+    },
+    "actions": {
+      "rfi": "Open Raise",
+      "vs_open": "vs Open",
+      "vs_3bet": "vs 3Bet",
+      "vs_4bet": "vs 4Bet"
+    },
+    "legend": {
+      "title": "Legend",
+      "raise": "Raise/Open",
+      "call": "Call",
+      "marginal": "Marginal",
+      "fold": "Fold"
+    }
+  },
+  "subscription": {
+    "title": "PokerGoat PRO",
+    "perMonth": "month",
+    "subscribe": "Subscribe",
+    "cancel": "Cancel subscription",
+    "cancelling": "Cancelling…",
+    "processing": "Processing…",
+    "renewsOn": "Renews on {date}",
+    "pendingHint": "Your subscription is being processed by Mercado Pago.",
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "pending": "Pending",
+      "inactive": "Inactive"
+    },
+    "features": {
+      "unlimited": "Unlimited groups and nights",
+      "stats": "Advanced stats and charts",
+      "priority": "Priority support"
+    }
   }
 }

@@ -48,27 +48,65 @@ export function NightForm({
 
   const today = new Date().toISOString().split("T")[0];
 
-  const [chipQtyBlack, setChipQtyBlack] = useState(defaults?.chipQuantities?.black ?? 0);
-  const [chipQtyWhite, setChipQtyWhite] = useState(defaults?.chipQuantities?.white ?? 0);
-  const [chipQtyRed, setChipQtyRed] = useState(defaults?.chipQuantities?.red ?? 0);
-  const [chipQtyGreen, setChipQtyGreen] = useState(defaults?.chipQuantities?.green ?? 0);
-  const [chipQtyBlue, setChipQtyBlue] = useState(defaults?.chipQuantities?.blue ?? 0);
+  const [chipQtyBlack, setChipQtyBlack] = useState(
+    defaults?.chipQuantities?.black?.toString() ?? ""
+  );
+  const [chipQtyWhite, setChipQtyWhite] = useState(
+    defaults?.chipQuantities?.white?.toString() ?? ""
+  );
+  const [chipQtyRed, setChipQtyRed] = useState(
+    defaults?.chipQuantities?.red?.toString() ?? ""
+  );
+  const [chipQtyGreen, setChipQtyGreen] = useState(
+    defaults?.chipQuantities?.green?.toString() ?? ""
+  );
+  const [chipQtyBlue, setChipQtyBlue] = useState(
+    defaults?.chipQuantities?.blue?.toString() ?? ""
+  );
 
-  const [chipValBlack, setChipValBlack] = useState(defaults?.chipValues.black ?? 500);
-  const [chipValWhite, setChipValWhite] = useState(defaults?.chipValues.white ?? 100);
-  const [chipValRed, setChipValRed] = useState(defaults?.chipValues.red ?? 50);
-  const [chipValGreen, setChipValGreen] = useState(defaults?.chipValues.green ?? 25);
-  const [chipValBlue, setChipValBlue] = useState(defaults?.chipValues.blue ?? 10);
-  const [buyInVal, setBuyInVal] = useState(defaults?.buyIn ?? 5000);
+  const [chipValBlack, setChipValBlack] = useState(
+    defaults?.chipValues.black?.toString() ?? ""
+  );
+  const [chipValWhite, setChipValWhite] = useState(
+    defaults?.chipValues.white?.toString() ?? ""
+  );
+  const [chipValRed, setChipValRed] = useState(
+    defaults?.chipValues.red?.toString() ?? ""
+  );
+  const [chipValGreen, setChipValGreen] = useState(
+    defaults?.chipValues.green?.toString() ?? ""
+  );
+  const [chipValBlue, setChipValBlue] = useState(
+    defaults?.chipValues.blue?.toString() ?? ""
+  );
+  const [buyInVal, setBuyInVal] = useState(defaults?.buyIn?.toString() ?? "");
 
-  const hasAnyQty = chipQtyBlack > 0 || chipQtyWhite > 0 || chipQtyRed > 0 || chipQtyGreen > 0 || chipQtyBlue > 0;
+  const chipQtyBlackNum = toNumber(chipQtyBlack);
+  const chipQtyWhiteNum = toNumber(chipQtyWhite);
+  const chipQtyRedNum = toNumber(chipQtyRed);
+  const chipQtyGreenNum = toNumber(chipQtyGreen);
+  const chipQtyBlueNum = toNumber(chipQtyBlue);
+  const chipValBlackNum = toNumber(chipValBlack);
+  const chipValWhiteNum = toNumber(chipValWhite);
+  const chipValRedNum = toNumber(chipValRed);
+  const chipValGreenNum = toNumber(chipValGreen);
+  const chipValBlueNum = toNumber(chipValBlue);
+  const buyInValNum = toNumber(buyInVal);
+
+  const hasAnyQty =
+    chipQtyBlackNum > 0 ||
+    chipQtyWhiteNum > 0 ||
+    chipQtyRedNum > 0 ||
+    chipQtyGreenNum > 0 ||
+    chipQtyBlueNum > 0;
   const calculatedBuyInValue =
-    chipQtyBlack * chipValBlack +
-    chipQtyWhite * chipValWhite +
-    chipQtyRed * chipValRed +
-    chipQtyGreen * chipValGreen +
-    chipQtyBlue * chipValBlue;
-  const buyInMismatch = hasAnyQty && calculatedBuyInValue !== buyInVal;
+    chipQtyBlackNum * chipValBlackNum +
+    chipQtyWhiteNum * chipValWhiteNum +
+    chipQtyRedNum * chipValRedNum +
+    chipQtyGreenNum * chipValGreenNum +
+    chipQtyBlueNum * chipValBlueNum;
+  const buyInMismatch =
+    hasAnyQty && buyInValNum > 0 && calculatedBuyInValue !== buyInValNum;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -133,7 +171,7 @@ export function NightForm({
           min="0.01"
           required
           value={chipValBlack}
-          onChange={(e) => setChipValBlack(Number(e.target.value) || 0)}
+          onChange={(e) => setChipValBlack(e.target.value)}
           autoComplete="off"
         />
         <Input
@@ -144,7 +182,7 @@ export function NightForm({
           min="0.01"
           required
           value={chipValWhite}
-          onChange={(e) => setChipValWhite(Number(e.target.value) || 0)}
+          onChange={(e) => setChipValWhite(e.target.value)}
           autoComplete="off"
         />
         <Input
@@ -155,7 +193,7 @@ export function NightForm({
           min="0.01"
           required
           value={chipValRed}
-          onChange={(e) => setChipValRed(Number(e.target.value) || 0)}
+          onChange={(e) => setChipValRed(e.target.value)}
           autoComplete="off"
         />
         <Input
@@ -166,7 +204,7 @@ export function NightForm({
           min="0.01"
           required
           value={chipValGreen}
-          onChange={(e) => setChipValGreen(Number(e.target.value) || 0)}
+          onChange={(e) => setChipValGreen(e.target.value)}
           autoComplete="off"
         />
       </div>
@@ -180,7 +218,7 @@ export function NightForm({
           min="0.01"
           required
           value={chipValBlue}
-          onChange={(e) => setChipValBlue(Number(e.target.value) || 0)}
+          onChange={(e) => setChipValBlue(e.target.value)}
           autoComplete="off"
         />
         <Input
@@ -191,7 +229,7 @@ export function NightForm({
           min="1"
           required
           value={buyInVal}
-          onChange={(e) => setBuyInVal(Number(e.target.value) || 0)}
+          onChange={(e) => setBuyInVal(e.target.value)}
           autoComplete="off"
         />
       </div>
@@ -222,7 +260,7 @@ export function NightForm({
               min="0"
               step="1"
               value={chipQtyBlack}
-              onChange={(e) => setChipQtyBlack(Number(e.target.value) || 0)}
+              onChange={(e) => setChipQtyBlack(e.target.value)}
               autoComplete="off"
             />
             <Input
@@ -232,7 +270,7 @@ export function NightForm({
               min="0"
               step="1"
               value={chipQtyWhite}
-              onChange={(e) => setChipQtyWhite(Number(e.target.value) || 0)}
+              onChange={(e) => setChipQtyWhite(e.target.value)}
               autoComplete="off"
             />
             <Input
@@ -242,7 +280,7 @@ export function NightForm({
               min="0"
               step="1"
               value={chipQtyRed}
-              onChange={(e) => setChipQtyRed(Number(e.target.value) || 0)}
+              onChange={(e) => setChipQtyRed(e.target.value)}
               autoComplete="off"
             />
             <Input
@@ -252,7 +290,7 @@ export function NightForm({
               min="0"
               step="1"
               value={chipQtyGreen}
-              onChange={(e) => setChipQtyGreen(Number(e.target.value) || 0)}
+              onChange={(e) => setChipQtyGreen(e.target.value)}
               autoComplete="off"
             />
             <Input
@@ -262,7 +300,7 @@ export function NightForm({
               min="0"
               step="1"
               value={chipQtyBlue}
-              onChange={(e) => setChipQtyBlue(Number(e.target.value) || 0)}
+              onChange={(e) => setChipQtyBlue(e.target.value)}
               autoComplete="off"
             />
           </div>
@@ -313,4 +351,9 @@ export function NightForm({
       </div>
     </form>
   );
+}
+
+function toNumber(value: string): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
 }

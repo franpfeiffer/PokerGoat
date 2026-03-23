@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "players": 6,
+    "position": "CO",
+    "action": "vs_4bet",
+    "stackBB": 100,
+    "source": "Public consensus (free high-level 5bet/call ranges)",
+    "note": "Narrow continue range after facing a 4-bet."
+  },
+  "ranges": {
+    "AA": { "raise": 1 },
+    "KK": { "raise": 0.65, "call": 0.35 },
+    "QQ": { "call": 0.65, "marginal": 0.35 },
+    "AKs": { "raise": 0.45, "call": 0.55 },
+    "AQs": { "call": 0.35, "marginal": 0.65 },
+    "A5s": { "raise": 0.4, "marginal": 0.6 },
+    "AKo": { "call": 0.65, "marginal": 0.35 }
+  }
+}

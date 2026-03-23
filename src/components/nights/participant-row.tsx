@@ -70,7 +70,7 @@ export function ParticipantRow({
   const t = useTranslations("nights");
   const totalInvested = calculateTotalInvested(buyInAmount, rebuyTotal);
   const isActive = nightStatus === "in_progress" || nightStatus === "scheduled";
-  const [rebuyInput, setRebuyInput] = useState(buyInAmount);
+  const [rebuyInput, setRebuyInput] = useState("");
 
   const { profitLoss, plType } = useMemo(() => {
     const hasChipBreakdown =
@@ -136,7 +136,7 @@ export function ParticipantRow({
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => onRemoveRebuy(id, rebuyInput)}
+                onClick={() => onRemoveRebuy(id, parsePositiveNumber(rebuyInput, buyInAmount))}
                 disabled={buyInCount <= 1}
                 aria-label={t("decreaseBuyIn")}
                 className="focus-ring flex h-10 w-10 items-center justify-center rounded-md border border-velvet-700 bg-velvet-800 text-base text-velvet-300 hover:bg-velvet-700 disabled:opacity-30 transition-colors sm:h-8 sm:w-8"
@@ -148,7 +148,7 @@ export function ParticipantRow({
               </span>
               <button
                 type="button"
-                onClick={() => onAddRebuy(id, rebuyInput)}
+                onClick={() => onAddRebuy(id, parsePositiveNumber(rebuyInput, buyInAmount))}
                 aria-label={t("addRebuy")}
                 className="focus-ring flex h-10 w-10 items-center justify-center rounded-md border border-velvet-700 bg-velvet-800 text-base text-velvet-300 hover:bg-velvet-700 transition-colors sm:h-8 sm:w-8"
               >
@@ -159,10 +159,7 @@ export function ParticipantRow({
                 min="1"
                 step="any"
                 value={rebuyInput}
-                onChange={(e) => {
-                  const val = parseFloat(e.target.value);
-                  if (!isNaN(val) && val > 0) setRebuyInput(val);
-                }}
+                onChange={(e) => setRebuyInput(e.target.value)}
                 aria-label={t("rebuyAmount")}
                 className="focus-ring h-10 w-24 rounded-md border border-velvet-700 bg-velvet-800 px-2 py-2 text-right text-xs tabular-nums text-velvet-50 sm:h-8"
               />
@@ -204,4 +201,12 @@ export function ParticipantRow({
       ) : null}
     </div>
   );
+}
+
+function parsePositiveNumber(value: string, fallback: number): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallback;
+  }
+  return parsed;
 }

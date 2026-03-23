@@ -31,16 +31,6 @@ export default async function NewNightPage({
           <NightForm
             groupId={groupId}
             action={handleCreateNight}
-            defaults={{
-              chipValues: {
-                black: 500,
-                white: 100,
-                red: 50,
-                green: 25,
-                blue: 10,
-              },
-              buyIn: 5000,
-            }}
           />
         </CardContent>
       </Card>

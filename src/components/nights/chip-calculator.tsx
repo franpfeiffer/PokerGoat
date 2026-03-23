@@ -26,10 +26,12 @@ export function ChipCalculator({
   currency = "ARS",
 }: ChipCalculatorProps) {
   const t = useTranslations("nights");
-  const [chips, setChips] = useState<number>(0);
+  const [chips, setChips] = useState("");
+  const chipsValue = Number(chips);
+  const safeChips = Number.isFinite(chipsValue) ? chipsValue : 0;
 
   const totalInvested = calculateTotalInvested(buyInCount, buyInAmount);
-  const cashout = calculateCashout(chips, chipValue);
+  const cashout = calculateCashout(safeChips, chipValue);
   const profitLoss = calculateProfitLoss(cashout, totalInvested);
   const plType = getProfitLossType(profitLoss);
 
@@ -52,8 +54,8 @@ export function ChipCalculator({
           id="chip-calc"
           type="number"
           min="0"
-          value={chips || ""}
-          onChange={(e) => setChips(parseInt(e.target.value, 10) || 0)}
+          value={chips}
+          onChange={(e) => setChips(e.target.value)}
           className="focus-ring rounded-md border border-velvet-700 bg-velvet-900 px-3 py-2 text-right text-lg tabular-nums text-velvet-50"
           placeholder="0"
         />

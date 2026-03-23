@@ -78,7 +78,7 @@ export function GroupForm({ action, defaults }: GroupFormProps) {
         type="number"
         step="1"
         min="1"
-        defaultValue={defaults?.defaultBuyIn ?? 5000}
+        defaultValue={defaults?.defaultBuyIn}
         autoComplete="off"
       />
 

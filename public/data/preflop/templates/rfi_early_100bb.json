@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "players": 6,
+    "position": "UTG",
+    "action": "rfi",
+    "stackBB": 100,
+    "source": "Public consensus (Upswing free charts + standard cash preflop ranges)",
+    "note": "Tight early-position open range."
+  },
+  "ranges": {
+    "AA": { "raise": 1 },
+    "KK": { "raise": 1 },
+    "QQ": { "raise": 1 },
+    "JJ": { "raise": 1 },
+    "TT": { "raise": 1 },
+    "99": { "raise": 1 },
+    "88": { "raise": 1 },
+    "77": { "raise": 0.7, "marginal": 0.3 },
+    "66": { "raise": 0.45, "marginal": 0.55 },
+    "AKs": { "raise": 1 },
+    "AQs": { "raise": 1 },
+    "AJs": { "raise": 0.9, "marginal": 0.1 },
+    "ATs": { "raise": 0.7, "marginal": 0.3 },
+    "A5s": { "raise": 0.45, "marginal": 0.55 },
+    "A4s": { "raise": 0.35, "marginal": 0.65 },
+    "KQs": { "raise": 1 },
+    "KJs": { "raise": 0.7, "marginal": 0.3 },
+    "QJs": { "raise": 0.75, "marginal": 0.25 },
+    "JTs": { "raise": 0.7, "marginal": 0.3 },
+    "T9s": { "raise": 0.45, "marginal": 0.55 },
+    "98s": { "raise": 0.3, "marginal": 0.7 },
+    "AKo": { "raise": 1 },
+    "AQo": { "raise": 0.95, "marginal": 0.05 },
+    "AJo": { "raise": 0.45, "marginal": 0.55 },
+    "KQo": { "raise": 0.55, "marginal": 0.45 }
+  }
+}
