@@ -38,6 +38,9 @@ export function LeaderboardTable({
           avatarUrl={entry.avatarUrl}
           totalProfitLoss={entry.totalProfitLoss}
           nightsPlayed={entry.nightsPlayed}
+          winRate={entry.winRate}
+          roi={entry.roi}
+          avgProfitLoss={entry.avgProfitLoss}
           locale={locale}
           currency={currency}
         />

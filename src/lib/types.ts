@@ -15,6 +15,9 @@ export interface LeaderboardEntry {
   biggestWin: number;
   worstNight: number;
   avgProfitLoss: number;
+  totalInvested: number;
+  winRate: number;
+  roi: number;
   rank: number;
 }
 

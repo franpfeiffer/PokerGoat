@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NightCard } from "@/components/nights/night-card";
 import { getGroupNights } from "@/lib/db/queries/nights";
-import { getGroupLeaderboard } from "@/lib/db/queries/leaderboard";
+import { getGroupLeaderboard, getGroupProfitHistory } from "@/lib/db/queries/leaderboard";
 import { getGroupById } from "@/lib/db/queries/groups";
 import { LeaderboardTable } from "@/components/leaderboard/leaderboard-table";
+import { GroupProfitChart } from "@/components/stats/group-profit-chart";
 
 export default async function GroupOverviewPage({
   params,
@@ -17,10 +18,13 @@ export default async function GroupOverviewPage({
   const { locale, groupId } = await params;
   const t = await getTranslations("groups");
   const tNights = await getTranslations("nights");
-  const [group, nights, leaderboard] = await Promise.all([
+  const tLeaderboard = await getTranslations("leaderboard");
+  const tH2H = await getTranslations("headToHead");
+  const [group, nights, leaderboard, profitHistory] = await Promise.all([
     getGroupById(groupId),
     getGroupNights(groupId),
     getGroupLeaderboard(groupId),
+    getGroupProfitHistory(groupId),
   ]);
 
   return (
@@ -28,6 +32,11 @@ export default async function GroupOverviewPage({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-2xl font-bold truncate">{group?.name ?? t("group")}</h1>
         <div className="flex gap-2">
+          <Link href={`/groups/${groupId}/head-to-head`} className="flex-1 sm:flex-none">
+            <Button variant="secondary" size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
+              {tH2H("title")}
+            </Button>
+          </Link>
           <Link href={`/groups/${groupId}/members`} className="flex-1 sm:flex-none">
             <Button variant="secondary" size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
               {t("members")}
@@ -45,6 +54,23 @@ export default async function GroupOverviewPage({
           </Link>
         </div>
       </div>
+
+      {profitHistory.length > 0 && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-display text-lg font-semibold">
+              {tLeaderboard("profitEvolution")}
+            </h2>
+          </CardHeader>
+          <CardContent>
+            <GroupProfitChart
+              data={profitHistory}
+              locale={locale === "es" ? "es-ES" : "en-US"}
+              currency={group?.currency ?? "ARS"}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="order-2 lg:order-1">

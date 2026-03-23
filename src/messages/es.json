@@ -177,7 +177,34 @@
     "season": "Temporada",
     "nightRanking": "Clasificación de la noche",
     "historicalNoData": "Sin datos históricos",
-    "cumulative": "Acumulado"
+    "cumulative": "Acumulado",
+    "profitEvolution": "Evolución de ganancias",
+    "winRate": "WR",
+    "roi": "ROI"
+  },
+  "headToHead": {
+    "title": "Cara a cara",
+    "selectPlayers": "Selecciona dos jugadores para comparar",
+    "playerA": "Jugador 1",
+    "playerB": "Jugador 2",
+    "compare": "Comparar",
+    "sharedNights": "Noches en común",
+    "wins": "Victorias",
+    "draws": "Empates",
+    "totalProfit": "Beneficio total",
+    "avgProfit": "Promedio por noche",
+    "nightByNight": "Noche a noche",
+    "noSharedNights": "Estos jugadores no compartieron ninguna noche",
+    "selectBoth": "Selecciona ambos jugadores"
+  },
+  "share": {
+    "share": "Compartir resultados",
+    "generating": "Generando imagen…"
+  },
+  "mvp": {
+    "title": "MVP de la noche",
+    "votes": "votos",
+    "tapToVote": "Toca un jugador para votar"
   },
   "profile": {
     "title": "Perfil",

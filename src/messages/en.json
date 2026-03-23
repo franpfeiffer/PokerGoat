@@ -177,7 +177,34 @@
     "season": "Season",
     "nightRanking": "Night ranking",
     "historicalNoData": "No historical data",
-    "cumulative": "Cumulative"
+    "cumulative": "Cumulative",
+    "profitEvolution": "Profit evolution",
+    "winRate": "WR",
+    "roi": "ROI"
+  },
+  "headToHead": {
+    "title": "Head to head",
+    "selectPlayers": "Select two players to compare",
+    "playerA": "Player 1",
+    "playerB": "Player 2",
+    "compare": "Compare",
+    "sharedNights": "Shared nights",
+    "wins": "Wins",
+    "draws": "Draws",
+    "totalProfit": "Total profit",
+    "avgProfit": "Avg. per night",
+    "nightByNight": "Night by night",
+    "noSharedNights": "These players didn't share any nights",
+    "selectBoth": "Select both players"
+  },
+  "share": {
+    "share": "Share results",
+    "generating": "Generating image…"
+  },
+  "mvp": {
+    "title": "Night MVP",
+    "votes": "votes",
+    "tapToVote": "Tap a player to vote"
   },
   "profile": {
     "title": "Profile",

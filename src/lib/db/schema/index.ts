@@ -20,3 +20,4 @@ export {
   joinRequestsRelations,
   requestStatusEnum,
 } from "./join-requests";
+export { mvpVotes, mvpVotesRelations } from "./mvp-votes";
