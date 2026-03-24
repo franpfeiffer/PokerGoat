@@ -54,7 +54,6 @@ export function ShareResults({
           files: [file],
         });
       } else {
-        // Fallback: download
         const a = document.createElement("a");
         a.href = dataUrl;
         a.download = "poker-results.png";
@@ -77,29 +76,29 @@ export function ShareResults({
       {/* Card to capture */}
       <div
         ref={cardRef}
-        className="rounded-xl border border-velvet-700 bg-velvet-900 p-5"
+        className="rounded-xl border border-velvet-700/60 bg-velvet-900 p-5"
         style={{ width: 360 }}
       >
-        <div className="mb-4 text-center">
-          <p className="text-xs font-medium uppercase tracking-widest text-gold-400">
+        <div className="mb-5 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold-500">
             PokerGoat
           </p>
-          <p className="mt-1 font-display text-lg font-bold text-velvet-50">
+          <p className="mt-1.5 font-display text-lg font-bold text-velvet-50">
             {nightName}
           </p>
-          <p className="text-xs text-velvet-400">{date}</p>
+          <p className="mt-0.5 text-[11px] text-velvet-500">{date}</p>
         </div>
-        <div className="space-y-1.5">
+        <div className="space-y-1">
           {results.map((r) => (
             <div
               key={r.rank}
-              className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm ${
+              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${
                 r.rank <= 3
-                  ? "bg-gold-500/5 border border-gold-500/10"
-                  : "border border-transparent"
+                  ? "bg-gold-500/[0.04] border border-gold-500/10"
+                  : ""
               }`}
             >
-              <span className="w-8 text-center text-sm">
+              <span className="w-7 text-center text-sm">
                 {medalEmoji(r.rank)}
               </span>
               <span className="flex-1 truncate text-velvet-100">
@@ -111,7 +110,7 @@ export function ShareResults({
                     ? "text-profit"
                     : r.profitLoss < 0
                       ? "text-loss"
-                      : "text-velvet-400"
+                      : "text-velvet-500"
                 }`}
               >
                 {formatProfitLoss(r.profitLoss, locale, currency)}

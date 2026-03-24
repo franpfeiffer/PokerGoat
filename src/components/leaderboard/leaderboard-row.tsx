@@ -2,7 +2,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { ProfitBadge } from "./profit-badge";
 import { RankIndicator } from "./rank-indicator";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 interface LeaderboardRowProps {
   rank: number;

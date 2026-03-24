@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { ToastProvider } from "@/components/ui/toast";
 import { AuthGuard } from "@/components/auth/auth-guard";
+import { OfflineIndicator } from "@/components/ui/offline-indicator";
 
 export default async function AppLayout({
   children,
@@ -30,6 +31,7 @@ export default async function AppLayout({
             </main>
           </div>
           <MobileNav />
+          <OfflineIndicator />
         </div>
       </ToastProvider>
     </AuthGuard>

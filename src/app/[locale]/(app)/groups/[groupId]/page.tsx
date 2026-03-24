@@ -34,7 +34,7 @@ export default async function GroupOverviewPage({
         <div className="flex gap-2">
           <Link href={`/groups/${groupId}/head-to-head`} className="flex-1 sm:flex-none">
             <Button variant="secondary" size="sm" className="min-h-11 w-full sm:min-h-10 sm:w-auto">
-              {tH2H("title")}
+              H2H
             </Button>
           </Link>
           <Link href={`/groups/${groupId}/members`} className="flex-1 sm:flex-none">
@@ -54,23 +54,6 @@ export default async function GroupOverviewPage({
           </Link>
         </div>
       </div>
-
-      {profitHistory.length > 0 && (
-        <Card>
-          <CardHeader>
-            <h2 className="font-display text-lg font-semibold">
-              {tLeaderboard("profitEvolution")}
-            </h2>
-          </CardHeader>
-          <CardContent>
-            <GroupProfitChart
-              data={profitHistory}
-              locale={locale === "es" ? "es-ES" : "en-US"}
-              currency={group?.currency ?? "ARS"}
-            />
-          </CardContent>
-        </Card>
-      )}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="order-2 lg:order-1">
@@ -122,6 +105,23 @@ export default async function GroupOverviewPage({
           </CardContent>
         </Card>
       </div>
+
+      {profitHistory.length > 0 && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-display text-lg font-semibold">
+              {tLeaderboard("profitEvolution")}
+            </h2>
+          </CardHeader>
+          <CardContent>
+            <GroupProfitChart
+              data={profitHistory}
+              locale={locale === "es" ? "es-ES" : "en-US"}
+              currency={group?.currency ?? "ARS"}
+            />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

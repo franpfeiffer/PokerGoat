@@ -19,6 +19,8 @@
     "goatEye": "GoatEye",
     "groups": "Groups",
     "profile": "Profile",
+    "tools": "Tools",
+    "sidePots": "Side Pots",
     "settings": "Settings",
     "signOut": "Sign out"
   },
@@ -45,6 +47,14 @@
     "hasAccount": "Already have an account?",
     "forgotPassword": "Forgot your password?"
   },
+  "dashboardWidget": {
+    "totalProfit": "Net Worth",
+    "nightsPlayed": "Nights played",
+    "winRate": "Win rate",
+    "last30Days": "Last 30 days",
+    "nights": "nights",
+    "noRecent": "No recent activity"
+  },
   "dashboard": {
     "title": "Dashboard",
     "yourGroups": "Your groups",
@@ -61,7 +71,7 @@
     "members": "Members",
     "nights": "Poker nights",
     "leaderboard": "Leaderboard",
-    "settings": "Group settings",
+    "settings": "Settings",
     "inviteCode": "Invite code",
     "copyInvite": "Copy link",
     "copied": "Copied",
@@ -197,6 +207,11 @@
     "noSharedNights": "These players didn't share any nights",
     "selectBoth": "Select both players"
   },
+  "offline": {
+    "offline": "Offline - changes saved locally",
+    "syncing": "Syncing changes…",
+    "pending": "{count} pending changes to sync"
+  },
   "share": {
     "share": "Share results",
     "generating": "Generating image…"
@@ -228,6 +243,18 @@
     "english": "English",
     "theme": "Theme"
   },
+  "sidePots": {
+    "title": "Side Pot Calculator",
+    "subtitle": "Calculate main and side pots when there are all-ins.",
+    "players": "Players",
+    "playerName": "Name",
+    "betAmount": "Bet",
+    "addPlayer": "Add player",
+    "remove": "Remove",
+    "pots": "Pots",
+    "total": "Total",
+    "eligible": "Eligible"
+  },
   "goatEye": {
     "title": "GoatEye",
     "subtitle": "Browse cash-game ranges with configurable table size and effective stack.",
@@ -244,6 +271,7 @@
     },
     "actions": {
       "rfi": "Open Raise",
+      "limp": "Limp",
       "vs_open": "vs Open",
       "vs_3bet": "vs 3Bet",
       "vs_4bet": "vs 4Bet"

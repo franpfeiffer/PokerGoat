@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,18 +53,18 @@ export function HeadToHeadComparison({
   const nameB = players.find((p) => p.id === playerB)?.name ?? "";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Player selector */}
       <Card>
-        <CardContent className="flex flex-col gap-4 py-5 sm:flex-row sm:items-end">
-          <div className="flex flex-1 flex-col gap-1.5">
-            <label className="text-sm font-medium text-velvet-200">
+        <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-end">
+          <div className="flex flex-1 flex-col gap-1">
+            <label className="text-xs font-semibold uppercase tracking-wider text-velvet-400">
               {t("playerA")}
             </label>
             <select
               value={playerA}
               onChange={(e) => setPlayerA(e.target.value)}
-              className="focus-ring rounded-lg border border-velvet-700 bg-velvet-800 px-3 py-2 text-sm text-velvet-50 appearance-none"
+              className="focus-ring min-h-11 rounded-lg border border-velvet-700 bg-velvet-800 px-3 py-2 text-sm text-velvet-50 appearance-none sm:min-h-10"
             >
               <option value="">{t("selectPlayers")}</option>
               {players
@@ -75,17 +76,17 @@ export function HeadToHeadComparison({
                 ))}
             </select>
           </div>
-          <span className="hidden text-center text-lg font-bold text-velvet-400 sm:block">
+          <span className="hidden self-center pb-1 text-lg font-bold text-velvet-600 sm:block">
             vs
           </span>
-          <div className="flex flex-1 flex-col gap-1.5">
-            <label className="text-sm font-medium text-velvet-200">
+          <div className="flex flex-1 flex-col gap-1">
+            <label className="text-xs font-semibold uppercase tracking-wider text-velvet-400">
               {t("playerB")}
             </label>
             <select
               value={playerB}
               onChange={(e) => setPlayerB(e.target.value)}
-              className="focus-ring rounded-lg border border-velvet-700 bg-velvet-800 px-3 py-2 text-sm text-velvet-50 appearance-none"
+              className="focus-ring min-h-11 rounded-lg border border-velvet-700 bg-velvet-800 px-3 py-2 text-sm text-velvet-50 appearance-none sm:min-h-10"
             >
               <option value="">{t("selectPlayers")}</option>
               {players
@@ -108,101 +109,103 @@ export function HeadToHeadComparison({
         </CardContent>
       </Card>
 
-      {/* Results */}
+      {/* No shared nights */}
       {stats && stats.sharedNights === 0 && (
         <Card>
-          <CardContent className="flex h-40 items-center justify-center py-5">
-            <p className="text-velvet-400">{t("noSharedNights")}</p>
+          <CardContent className="flex h-32 items-center justify-center">
+            <p className="text-sm text-velvet-500">{t("noSharedNights")}</p>
           </CardContent>
         </Card>
       )}
 
+      {/* Results */}
       {stats && stats.sharedNights > 0 && (
         <>
-          {/* Summary */}
+          {/* Win/Draw/Win scoreboard */}
           <Card>
             <CardContent className="py-5">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                {/* Player A */}
-                <div className="space-y-3">
-                  <p className="text-sm font-semibold text-velvet-100 truncate">
+              <div className="grid grid-cols-3 items-center text-center">
+                <div>
+                  <p className="text-xs font-medium text-velvet-400 truncate mb-1">
                     {nameA}
                   </p>
-                  <p className="text-3xl font-bold text-gold">{stats.winsA}</p>
-                  <p className="text-xs text-velvet-400">{t("wins")}</p>
+                  <p className="text-4xl font-bold tabular-nums text-gold-400">
+                    {stats.winsA}
+                  </p>
+                  <p className="mt-0.5 text-[10px] uppercase tracking-widest text-velvet-500">
+                    {t("wins")}
+                  </p>
                 </div>
 
-                {/* Center stats */}
-                <div className="space-y-3">
-                  <p className="text-sm font-semibold text-velvet-400">vs</p>
-                  <p className="text-3xl font-bold text-velvet-400">
+                <div>
+                  <p className="text-xs font-medium text-velvet-600 mb-1">vs</p>
+                  <p className="text-4xl font-bold tabular-nums text-velvet-500">
                     {stats.draws}
                   </p>
-                  <p className="text-xs text-velvet-400">{t("draws")}</p>
+                  <p className="mt-0.5 text-[10px] uppercase tracking-widest text-velvet-500">
+                    {t("draws")}
+                  </p>
                 </div>
 
-                {/* Player B */}
-                <div className="space-y-3">
-                  <p className="text-sm font-semibold text-velvet-100 truncate">
+                <div>
+                  <p className="text-xs font-medium text-velvet-400 truncate mb-1">
                     {nameB}
                   </p>
-                  <p className="text-3xl font-bold text-gold">{stats.winsB}</p>
-                  <p className="text-xs text-velvet-400">{t("wins")}</p>
+                  <p className="text-4xl font-bold tabular-nums text-gold-400">
+                    {stats.winsB}
+                  </p>
+                  <p className="mt-0.5 text-[10px] uppercase tracking-widest text-velvet-500">
+                    {t("wins")}
+                  </p>
                 </div>
               </div>
 
-              <div className="mt-6 border-t border-velvet-700 pt-4">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <ProfitBadge
-                      amount={stats.totalA}
-                      locale={locale}
-                      currency={currency}
-                    />
-                    <p className="mt-1 text-xs text-velvet-400">
-                      {t("totalProfit")}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-velvet-200">
-                      {stats.sharedNights}
-                    </p>
-                    <p className="mt-1 text-xs text-velvet-400">
-                      {t("sharedNights")}
-                    </p>
-                  </div>
-                  <div>
-                    <ProfitBadge
-                      amount={stats.totalB}
-                      locale={locale}
-                      currency={currency}
-                    />
-                    <p className="mt-1 text-xs text-velvet-400">
-                      {t("totalProfit")}
-                    </p>
-                  </div>
+              {/* Profit / Shared nights / Profit */}
+              <div className="mt-5 grid grid-cols-3 items-start gap-2 border-t border-velvet-700/40 pt-4 text-center">
+                <div>
+                  <ProfitBadge
+                    amount={stats.totalA}
+                    locale={locale}
+                    currency={currency}
+                  />
+                  <p className="mt-0.5 text-[10px] text-velvet-500">
+                    {t("totalProfit")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-bold tabular-nums text-velvet-200">
+                    {stats.sharedNights}
+                  </p>
+                  <p className="mt-0.5 text-[10px] text-velvet-500">
+                    {t("sharedNights")}
+                  </p>
+                </div>
+                <div>
+                  <ProfitBadge
+                    amount={stats.totalB}
+                    locale={locale}
+                    currency={currency}
+                  />
+                  <p className="mt-0.5 text-[10px] text-velvet-500">
+                    {t("totalProfit")}
+                  </p>
                 </div>
               </div>
 
-              <div className="mt-4 border-t border-velvet-700 pt-4">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <p className="text-sm font-semibold text-velvet-200">
-                      {formatCurrency(stats.avgA, locale, currency)}
-                    </p>
-                    <p className="mt-1 text-xs text-velvet-400">
-                      {t("avgProfit")}
-                    </p>
-                  </div>
-                  <div />
-                  <div>
-                    <p className="text-sm font-semibold text-velvet-200">
-                      {formatCurrency(stats.avgB, locale, currency)}
-                    </p>
-                    <p className="mt-1 text-xs text-velvet-400">
-                      {t("avgProfit")}
-                    </p>
-                  </div>
+              {/* Avg */}
+              <div className="mt-3 grid grid-cols-3 gap-2 border-t border-velvet-700/40 pt-3 text-center">
+                <div>
+                  <p className="text-xs font-semibold tabular-nums text-velvet-200">
+                    {formatCurrency(stats.avgA, locale, currency)}
+                  </p>
+                  <p className="text-[10px] text-velvet-500">{t("avgProfit")}</p>
+                </div>
+                <div />
+                <div>
+                  <p className="text-xs font-semibold tabular-nums text-velvet-200">
+                    {formatCurrency(stats.avgB, locale, currency)}
+                  </p>
+                  <p className="text-[10px] text-velvet-500">{t("avgProfit")}</p>
                 </div>
               </div>
             </CardContent>
@@ -210,11 +213,11 @@ export function HeadToHeadComparison({
 
           {/* Night by night */}
           <Card>
-            <CardContent className="py-5">
-              <h3 className="mb-4 font-display text-sm font-semibold text-velvet-200">
+            <CardContent className="py-4">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-velvet-400">
                 {t("nightByNight")}
               </h3>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {stats.results.map((r) => {
                   const aWon =
                     r.playerA && r.playerB && r.playerA.rank < r.playerB.rank;
@@ -223,31 +226,23 @@ export function HeadToHeadComparison({
                   return (
                     <div
                       key={r.nightId}
-                      className="flex items-center gap-3 rounded-lg border border-velvet-700 bg-velvet-800/50 px-3 py-2 text-sm"
+                      className="flex items-center gap-2 rounded-lg border border-velvet-700/40 bg-velvet-800/30 px-3 py-2 text-sm"
                     >
                       <span
-                        className={`flex-1 text-right tabular-nums ${aWon ? "font-bold text-profit" : "text-velvet-200"}`}
+                        className={`flex-1 text-right tabular-nums ${aWon ? "font-bold text-profit" : "text-velvet-300"}`}
                       >
                         {r.playerA
-                          ? formatCurrency(
-                              r.playerA.profitLoss,
-                              locale,
-                              currency,
-                            )
+                          ? formatCurrency(r.playerA.profitLoss, locale, currency)
                           : "—"}
                       </span>
-                      <span className="w-24 text-center text-xs text-velvet-400 shrink-0">
+                      <span className="w-20 text-center text-[11px] text-velvet-500 shrink-0">
                         {r.nightName ?? r.date}
                       </span>
                       <span
-                        className={`flex-1 tabular-nums ${bWon ? "font-bold text-profit" : "text-velvet-200"}`}
+                        className={`flex-1 tabular-nums ${bWon ? "font-bold text-profit" : "text-velvet-300"}`}
                       >
                         {r.playerB
-                          ? formatCurrency(
-                              r.playerB.profitLoss,
-                              locale,
-                              currency,
-                            )
+                          ? formatCurrency(r.playerB.profitLoss, locale, currency)
                           : "—"}
                       </span>
                     </div>

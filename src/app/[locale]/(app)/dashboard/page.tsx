@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { UserGroupsGrid } from "@/components/groups/user-groups-grid";
 import { CreateGroupButton } from "@/components/groups/create-group-button";
+import { StatsWidget } from "@/components/dashboard/stats-widget";
 
 export const metadata: Metadata = {
   title: "Panel de control",
@@ -27,6 +28,8 @@ export default function DashboardPage() {
           <CreateGroupButton />
         </div>
       </div>
+
+      <StatsWidget />
 
       <section
         aria-labelledby="groups-heading"

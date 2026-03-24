@@ -83,6 +83,7 @@ export function PreflopView() {
     calculated: t("labels.calculated"),
     actionLabels: {
       rfi: t("actions.rfi"),
+      limp: t("actions.limp"),
       vs_open: t("actions.vs_open"),
       vs_3bet: t("actions.vs_3bet"),
       vs_4bet: t("actions.vs_4bet"),

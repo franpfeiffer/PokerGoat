@@ -4,9 +4,11 @@ import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 
+const toolPaths = ["/goat-eye", "/side-pots", "/tools"];
+
 const navItems = [
   { href: "/dashboard", icon: "home", translationKey: "dashboard" },
-  { href: "/goat-eye", icon: "goatEye", translationKey: "goatEye" },
+  { href: "/tools", icon: "tools", translationKey: "tools" },
   { href: "/groups", icon: "groups", translationKey: "groups" },
   { href: "/profile", icon: "profile", translationKey: "profile" },
   { href: "/settings", icon: "settings", translationKey: "settings" },
@@ -23,7 +25,10 @@ export function MobileNav() {
       style={{ touchAction: "manipulation" }}
     >
       {navItems.map((item) => {
-        const isActive = pathname.includes(item.href);
+        const isActive =
+          item.href === "/tools"
+            ? toolPaths.some((p) => pathname.includes(p))
+            : pathname.includes(item.href);
         return (
           <Link
             key={item.href}
@@ -70,6 +75,12 @@ function MobileNavIcon({ name, active }: { name: string; active: boolean }) {
           <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
         </svg>
       );
+    case "tools":
+      return (
+        <svg {...props}>
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+        </svg>
+      );
     case "groups":
       return (
         <svg {...props}>
@@ -77,13 +88,6 @@ function MobileNavIcon({ name, active }: { name: string; active: boolean }) {
           <circle cx="9" cy="7" r="4" />
           <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      );
-    case "goatEye":
-      return (
-        <svg {...props}>
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
         </svg>
       );
     case "profile":

@@ -19,6 +19,8 @@
     "goatEye": "GoatEye",
     "groups": "Grupos",
     "profile": "Perfil",
+    "tools": "Tools",
+    "sidePots": "Side Pots",
     "settings": "Ajustes",
     "signOut": "Cerrar sesión"
   },
@@ -45,6 +47,14 @@
     "hasAccount": "¿Ya tienes cuenta?",
     "forgotPassword": "¿Olvidaste tu contraseña?"
   },
+  "dashboardWidget": {
+    "totalProfit": "Net Worth",
+    "nightsPlayed": "Noches jugadas",
+    "winRate": "Ratio victorias",
+    "last30Days": "Ultimos 30 dias",
+    "nights": "noches",
+    "noRecent": "Sin actividad reciente"
+  },
   "dashboard": {
     "title": "Panel de control",
     "yourGroups": "Tus grupos",
@@ -61,7 +71,7 @@
     "members": "Miembros",
     "nights": "Noches de poker",
     "leaderboard": "Clasificación",
-    "settings": "Ajustes del grupo",
+    "settings": "Ajustes",
     "inviteCode": "Código de invitación",
     "copyInvite": "Copiar enlace",
     "copied": "Copiado",
@@ -197,6 +207,11 @@
     "noSharedNights": "Estos jugadores no compartieron ninguna noche",
     "selectBoth": "Selecciona ambos jugadores"
   },
+  "offline": {
+    "offline": "Sin conexion - los cambios se guardan localmente",
+    "syncing": "Sincronizando cambios…",
+    "pending": "{count} cambios pendientes de sincronizar"
+  },
   "share": {
     "share": "Compartir resultados",
     "generating": "Generando imagen…"
@@ -228,6 +243,18 @@
     "english": "Inglés",
     "theme": "Tema"
   },
+  "sidePots": {
+    "title": "Calculadora de Side Pots",
+    "subtitle": "Calcula los pots principales y side pots cuando hay all-ins.",
+    "players": "Jugadores",
+    "playerName": "Nombre",
+    "betAmount": "Apuesta",
+    "addPlayer": "Agregar jugador",
+    "remove": "Eliminar",
+    "pots": "Pots",
+    "total": "Total",
+    "eligible": "Elegibles"
+  },
   "goatEye": {
     "title": "GoatEye",
     "subtitle": "Consulta rangos de cash game con mesa y stack configurables.",
@@ -244,6 +271,7 @@
     },
     "actions": {
       "rfi": "Open Raise",
+      "limp": "Limp",
       "vs_open": "vs Open",
       "vs_3bet": "vs 3Bet",
       "vs_4bet": "vs 4Bet"

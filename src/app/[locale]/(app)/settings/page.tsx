@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
+import { ThemeSwitcher } from "@/components/layout/theme-switcher";
 
 export const metadata: Metadata = {
   title: "Ajustes",
@@ -27,6 +28,17 @@ export default function SettingsPage() {
             </p>
             <LocaleSwitcher />
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <h2 className="font-display text-lg font-semibold">
+            {t("theme")}
+          </h2>
+        </CardHeader>
+        <CardContent>
+          <ThemeSwitcher />
         </CardContent>
       </Card>
     </div>

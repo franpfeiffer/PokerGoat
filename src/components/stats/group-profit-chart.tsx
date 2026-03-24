@@ -73,7 +73,7 @@ export function GroupProfitChart({
 
   if (data.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center text-velvet-400">
+      <div className="flex h-48 items-center justify-center text-sm text-velvet-500">
         {t("historicalNoData")}
       </div>
     );
@@ -81,20 +81,24 @@ export function GroupProfitChart({
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-2">
-        {players.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => toggle(p.id)}
-            className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-              selectedIds.has(p.id)
-                ? "border-gold/50 bg-gold/10 text-gold"
-                : "border-velvet-700 bg-velvet-800 text-velvet-400 hover:text-velvet-200"
-            }`}
-          >
-            {p.name}
-          </button>
-        ))}
+      <div className="flex flex-wrap gap-1.5">
+        {players.map((p) => {
+          const active = selectedIds.has(p.id);
+          return (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => toggle(p.id)}
+              className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+                active
+                  ? "border-gold-500/30 bg-gold-500/10 text-gold-400"
+                  : "border-velvet-700/60 bg-velvet-800/50 text-velvet-500 hover:text-velvet-300"
+              }`}
+            >
+              {p.name}
+            </button>
+          );
+        })}
       </div>
       <Chart
         data={chartData}

@@ -1,4 +1,4 @@
-export type PreflopScenarioAction = "rfi" | "vs_open" | "vs_3bet" | "vs_4bet";
+export type PreflopScenarioAction = "rfi" | "limp" | "vs_open" | "vs_3bet" | "vs_4bet";
 
 export type PreflopDecisionKey = "raise" | "call" | "fold" | "marginal";
 

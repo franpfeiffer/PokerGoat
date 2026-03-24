@@ -4,12 +4,16 @@ import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 
-const navItems = [
+const mainNavItems = [
   { href: "/dashboard", icon: "dashboard", translationKey: "dashboard" },
-  { href: "/goat-eye", icon: "goatEye", translationKey: "goatEye" },
   { href: "/groups", icon: "groups", translationKey: "groups" },
   { href: "/profile", icon: "profile", translationKey: "profile" },
   { href: "/settings", icon: "settings", translationKey: "settings" },
+] as const;
+
+const toolItems = [
+  { href: "/goat-eye", icon: "goatEye", translationKey: "goatEye" },
+  { href: "/side-pots", icon: "sidePots", translationKey: "sidePots" },
 ] as const;
 
 export function Sidebar() {
@@ -27,7 +31,31 @@ export function Sidebar() {
         </Link>
       </div>
       <nav className="flex flex-1 flex-col gap-1 p-3" aria-label="Principal">
-        {navItems.map((item) => {
+        {mainNavItems.map((item) => {
+          const isActive = pathname.includes(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`focus-ring flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                isActive
+                  ? "bg-gold-500/10 text-gold-400"
+                  : "text-velvet-300 hover:bg-velvet-800/50 hover:text-velvet-100"
+              }`}
+            >
+              <NavIcon name={item.icon} active={isActive} />
+              {t(item.translationKey)}
+            </Link>
+          );
+        })}
+
+        {/* Tools section */}
+        <div className="mt-4 mb-1 px-3">
+          <span className="text-xs font-semibold uppercase tracking-wider text-velvet-500">
+            {t("tools")}
+          </span>
+        </div>
+        {toolItems.map((item) => {
           const isActive = pathname.includes(item.href);
           return (
             <Link
@@ -89,6 +117,13 @@ function NavIcon({ name, active }: { name: string; active: boolean }) {
         <svg {...props}>
           <rect x="3" y="3" width="18" height="18" rx="2" />
           <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+        </svg>
+      );
+    case "sidePots":
+      return (
+        <svg {...props}>
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v12M6 12h12" />
         </svg>
       );
     case "profile":

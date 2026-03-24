@@ -9,6 +9,7 @@ import { getTemplate, setTemplate } from "@/lib/indexeddb";
 
 const actionTemplates: Record<PreflopScenarioAction, string> = {
   rfi: "rfi_late_100bb.json",
+  limp: "limp_100bb.json",
   vs_open: "vs_open_100bb.json",
   vs_3bet: "vs_3bet_100bb.json",
   vs_4bet: "vs_4bet_100bb.json",
@@ -39,10 +40,10 @@ export function getAvailableActions(position: string): PreflopScenarioAction[] {
   }
 
   if (position === "SB") {
-    return ["rfi", "vs_open", "vs_3bet", "vs_4bet"];
+    return ["rfi", "limp", "vs_open", "vs_3bet", "vs_4bet"];
   }
 
-  return ["rfi", "vs_open", "vs_3bet", "vs_4bet"];
+  return ["rfi", "limp", "vs_open", "vs_3bet", "vs_4bet"];
 }
 
 export function getDefaultPosition(players: number): string {
@@ -77,8 +78,12 @@ async function loadTemplate(fileName: string): Promise<PreflopRangeFile> {
 }
 
 function resolveTemplateName(scenario: PreflopScenario): string {
-  if (scenario.action !== "rfi") {
+  if (scenario.action !== "rfi" && scenario.action !== "limp") {
     return actionTemplates[scenario.action];
+  }
+
+  if (scenario.action === "limp") {
+    return actionTemplates.limp;
   }
 
   const positions = getPositionsForPlayers(scenario.players);

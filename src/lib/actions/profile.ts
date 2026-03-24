@@ -5,6 +5,7 @@ import {
   createUserProfile,
   updateUserProfile,
   getUserStats,
+  getDashboardStats,
 } from "@/lib/db/queries/users";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 
@@ -30,6 +31,12 @@ export async function getOrCreateProfile(data: {
 
 export async function getProfileStats(userId: string) {
   return getUserStats(userId);
+}
+
+export async function getDashboardStatsAction(authUserId: string) {
+  const user = await getUserByAuthId(authUserId);
+  if (!user) return null;
+  return getDashboardStats(user.id);
 }
 
 export async function updateDisplayName(userId: string, formData: FormData) {
