@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { NightStatusAction } from "@/components/nights/night-status-action";
 import { NightParticipantsPanel } from "@/components/nights/night-participants-panel";
 import { ChipReconciliationPanel } from "@/components/nights/chip-reconciliation-panel";
+import { NightTimer } from "@/components/nights/night-timer";
 import { formatCurrency } from "@/lib/utils/currency";
 import { formatShortDate } from "@/lib/utils/dates";
 import { getNightById, getNightParticipants } from "@/lib/db/queries/nights";
@@ -104,7 +105,7 @@ export default async function NightDetailPage({
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className={`grid gap-3 ${night.status === "in_progress" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
         <Card>
           <CardContent className="text-center py-4">
             <p className="text-xs text-velvet-400 uppercase tracking-wider">
@@ -125,6 +126,16 @@ export default async function NightDetailPage({
             </p>
           </CardContent>
         </Card>
+        {night.status === "in_progress" && (
+          <Card>
+            <CardContent className="text-center py-4">
+              <NightTimer
+                startedAt={night.updatedAt}
+                label={t("timerLabel")}
+              />
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <Card>

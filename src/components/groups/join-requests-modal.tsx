@@ -9,6 +9,7 @@ import { approveJoinRequest, rejectJoinRequest } from "@/lib/actions/groups";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
+import { useHaptic } from "@/hooks/use-haptic";
 
 interface JoinRequest {
   id: string;
@@ -30,6 +31,7 @@ export function JoinRequestsModal({ requests }: JoinRequestsModalProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const haptic = useHaptic();
 
   useEffect(() => {
     if (isOpen) {
@@ -59,9 +61,11 @@ export function JoinRequestsModal({ requests }: JoinRequestsModalProps) {
           : await rejectJoinRequest(requestId, profile.id);
 
       if (result.error) {
+        haptic.error();
         setError(typeof result.error === "string" ? result.error : tCommon("error"));
         return;
       }
+      haptic.success();
       router.refresh();
     });
   }

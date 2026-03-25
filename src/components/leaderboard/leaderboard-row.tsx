@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { ProfitBadge } from "./profit-badge";
 import { RankIndicator } from "./rank-indicator";
 import { Link } from "@/i18n/navigation";
+import { StatTooltip } from "@/components/ui/tooltip";
 
 interface LeaderboardRowProps {
   rank: number;
@@ -85,13 +86,15 @@ export function LeaderboardRow({
       {(winRate !== undefined || roi !== undefined) && (
         <div className="mt-1.5 ml-[3.25rem] flex gap-3 text-xs tabular-nums text-velvet-400">
           {winRate !== undefined && (
-            <span>
+            <span className="inline-flex items-center gap-0.5">
               {t("winRate")} {Math.round(winRate * 100)}%
+              <StatTooltip content={t("winRateTooltip")} />
             </span>
           )}
           {roi !== undefined && (
-            <span>
+            <span className="inline-flex items-center gap-0.5">
               ROI {roi >= 0 ? "+" : ""}{roi.toFixed(1)}%
+              <StatTooltip content={t("roiTooltip")} />
             </span>
           )}
           {avgProfitLoss !== undefined && (

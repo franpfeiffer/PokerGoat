@@ -10,6 +10,8 @@ import { updateDisplayName, updateAvatar } from "@/lib/actions/profile";
 import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
 import { ProfitChart } from "./profit-chart";
+import { GroupComparisonCard } from "./group-comparison-card";
+import type { GroupComparisonStats } from "@/lib/db/queries/users";
 
 interface ProfileContentProps {
   userId: string;
@@ -24,6 +26,7 @@ interface ProfileContentProps {
   };
   profitHistory: { date: string; profitLoss: number; cumulative: number }[];
   streak: { type: "winning" | "losing" | "none"; count: number };
+  groupComparison: GroupComparisonStats | null;
   locale: string;
   onUpdate?: () => void;
 }
@@ -37,6 +40,7 @@ export function ProfileContent({
   stats,
   profitHistory,
   streak,
+  groupComparison,
   locale,
   onUpdate,
 }: ProfileContentProps) {
@@ -345,6 +349,15 @@ export function ProfileContent({
           </span>
         </StatCard>
       </div>
+
+      {/* Group comparison */}
+      {groupComparison && (
+        <GroupComparisonCard
+          data={groupComparison}
+          locale={locale === "es" ? "es-ES" : "en-US"}
+          currency={DEFAULT_CURRENCY}
+        />
+      )}
 
       {/* Profit history chart */}
       <ProfitChart data={profitHistory} locale={locale} currency="ARS" />

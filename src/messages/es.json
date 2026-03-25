@@ -145,6 +145,7 @@
       "profit": "Ganancia",
       "loss": "Pérdida"
     },
+    "timerLabel": "Tiempo jugando",
     "noNights": "Aún no hay noches de poker",
     "noNightsAction": "Crea la primera noche para empezar",
     "chipBlackQty": "Negras",
@@ -196,7 +197,10 @@
     "streakWinning": "racha ganadora",
     "streakLosing": "racha perdedora",
     "showAll": "Todos",
-    "hideAll": "Ninguno"
+    "hideAll": "Ninguno",
+    "winRateTooltip": "Porcentaje de noches en las que terminaste con ganancia",
+    "roiTooltip": "Retorno sobre la inversión: ganancia neta dividida por el total invertido en buy-ins",
+    "avgProfitTooltip": "Ganancia o pérdida promedio por noche jugada"
   },
   "activity": {
     "title": "Actividad reciente",
@@ -252,7 +256,14 @@
     "profitHistory": "Historial de ganancias",
     "profitHistoryCumulative": "Acumulado",
     "streakWinning": "racha ganadora",
-    "streakLosing": "racha perdedora"
+    "streakLosing": "racha perdedora",
+    "vsGroup": "vs {name}",
+    "you": "Vos",
+    "groupAvg": "Grupo",
+    "avgProfit": "Promedio/noche",
+    "rankTop": "Estás en el top {pct}% del grupo",
+    "rankMid": "Estás en la media del grupo",
+    "rankBottom": "Por debajo de la media del grupo"
   },
   "settings": {
     "title": "Ajustes",

@@ -8,6 +8,7 @@ import {
   getDashboardStats,
   getUserProfitHistory,
   getUserStreak,
+  getUserGroupComparison,
 } from "@/lib/db/queries/users";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 
@@ -41,6 +42,10 @@ export async function getProfileProfitHistory(userId: string) {
 
 export async function getProfileStreak(userId: string) {
   return getUserStreak(userId);
+}
+
+export async function getProfileGroupComparison(userId: string) {
+  return getUserGroupComparison(userId);
 }
 
 export async function getDashboardStatsAction(authUserId: string) {

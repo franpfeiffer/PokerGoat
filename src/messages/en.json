@@ -145,6 +145,7 @@
       "profit": "Profit",
       "loss": "Loss"
     },
+    "timerLabel": "Time playing",
     "noNights": "No poker nights yet",
     "noNightsAction": "Create the first night to get started",
     "chipBlackQty": "Black",
@@ -196,7 +197,10 @@
     "streakWinning": "win streak",
     "streakLosing": "losing streak",
     "showAll": "All",
-    "hideAll": "None"
+    "hideAll": "None",
+    "winRateTooltip": "Percentage of nights where you finished with profit",
+    "roiTooltip": "Return on investment: net profit divided by total invested in buy-ins",
+    "avgProfitTooltip": "Average profit or loss per night played"
   },
   "activity": {
     "title": "Recent activity",
@@ -252,7 +256,14 @@
     "profitHistory": "Profit history",
     "profitHistoryCumulative": "Cumulative",
     "streakWinning": "win streak",
-    "streakLosing": "losing streak"
+    "streakLosing": "losing streak",
+    "vsGroup": "vs {name}",
+    "you": "You",
+    "groupAvg": "Group",
+    "avgProfit": "Avg/night",
+    "rankTop": "You're in the top {pct}% of the group",
+    "rankMid": "You're around the group average",
+    "rankBottom": "Below the group average"
   },
   "settings": {
     "title": "Settings",

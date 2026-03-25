@@ -9,6 +9,7 @@ import { authClient } from "@/lib/auth/client";
 import { getOrCreateProfile } from "@/lib/actions/profile";
 import { startNight } from "@/lib/actions/nights";
 import { calculateAndSaveResults } from "@/lib/actions/results";
+import { useHaptic } from "@/hooks/use-haptic";
 import {
   type NightChipValues,
   calculateReconciliation,
@@ -56,6 +57,7 @@ export function NightStatusAction({
   const { data: session } = authClient.useSession();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const haptic = useHaptic();
   const [showDiscrepancyDialog, setShowDiscrepancyDialog] = useState(false);
   const [reconciliation, setReconciliation] = useState<ChipReconciliation | null>(null);
 
@@ -90,6 +92,7 @@ export function NightStatusAction({
       return;
     }
 
+    haptic.success();
     router.push(`/groups/${groupId}/nights/${nightId}/results`);
   }
 
@@ -102,9 +105,11 @@ export function NightStatusAction({
         if (!profileId) return;
         const result = await startNight(nightId, profileId);
         if (result.error) {
+          haptic.error();
           setError(typeof result.error === "string" ? result.error : tCommon("error"));
           return;
         }
+        haptic.success();
         router.refresh();
         return;
       }

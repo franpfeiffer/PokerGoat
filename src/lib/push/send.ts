@@ -133,4 +133,31 @@ export const pushNotify = {
       icon: "/icons/casino-chips.png",
     });
   },
+
+  joinRequest(leaderId: string, groupId: string, groupName: string) {
+    return sendToUser(leaderId, {
+      title: "👤 Nueva solicitud de ingreso",
+      body: `Alguien quiere unirse a ${groupName}`,
+      url: `/groups/${groupId}/members`,
+      icon: "/icons/casino-chips.png",
+    });
+  },
+
+  joinApproved(userId: string, groupId: string) {
+    return sendToUser(userId, {
+      title: "✅ Solicitud aprobada",
+      body: "Tu solicitud para unirte al grupo fue aprobada",
+      url: `/groups/${groupId}`,
+      icon: "/icons/casino-chips.png",
+    });
+  },
+
+  joinRejected(userId: string, groupId: string) {
+    return sendToUser(userId, {
+      title: "❌ Solicitud rechazada",
+      body: "Tu solicitud para unirte al grupo fue rechazada",
+      url: `/groups/join`,
+      icon: "/icons/casino-chips.png",
+    });
+  },
 };

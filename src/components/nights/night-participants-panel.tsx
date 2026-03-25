@@ -13,6 +13,7 @@ import {
   updateParticipant,
 } from "@/lib/actions/nights";
 import { ParticipantRow } from "@/components/nights/participant-row";
+import { useHaptic } from "@/hooks/use-haptic";
 
 interface GroupMember {
   userId: string;
@@ -64,6 +65,7 @@ export function NightParticipantsPanel({
   const { data: session } = authClient.useSession();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const haptic = useHaptic();
   const [targetUserId, setTargetUserId] = useState("");
 
   const participantUserIds = useMemo(
@@ -117,6 +119,7 @@ export function NightParticipantsPanel({
   }
 
   function handleAddRebuy(participantId: string, rebuyAmount: number, currentRebuyTotal: number, currentBuyInCount: number) {
+    haptic.tap();
     startTransition(async () => {
       setError(null);
       const ok = await runWithProfile(async () => {

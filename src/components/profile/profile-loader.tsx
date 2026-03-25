@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { authClient } from "@/lib/auth/client";
 import { ProfileContent } from "./profile-content";
-import { getOrCreateProfile, getProfileStats, getProfileProfitHistory, getProfileStreak } from "@/lib/actions/profile";
+import { getOrCreateProfile, getProfileStats, getProfileProfitHistory, getProfileStreak, getProfileGroupComparison } from "@/lib/actions/profile";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function ProfileLoader() {
@@ -18,6 +18,7 @@ export function ProfileLoader() {
   const [stats, setStats] = useState({ nightsPlayed: 0, totalProfit: 0, winRate: 0 });
   const [profitHistory, setProfitHistory] = useState<{ date: string; profitLoss: number; cumulative: number }[]>([]);
   const [streak, setStreak] = useState<{ type: "winning" | "losing" | "none"; count: number }>({ type: "none", count: 0 });
+  const [groupComparison, setGroupComparison] = useState<Awaited<ReturnType<typeof getProfileGroupComparison>>>(null);
   const [loading, setLoading] = useState(true);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -36,14 +37,16 @@ export function ProfileLoader() {
       });
       if (p) {
         setProfile(p);
-        const [s, history, str] = await Promise.all([
+        const [s, history, str, comparison] = await Promise.all([
           getProfileStats(p.id),
           getProfileProfitHistory(p.id),
           getProfileStreak(p.id),
+          getProfileGroupComparison(p.id),
         ]);
         setStats(s);
         setProfitHistory(history);
         setStreak(str);
+        setGroupComparison(comparison);
       }
       setLoading(false);
     }
@@ -65,6 +68,7 @@ export function ProfileLoader() {
       stats={stats}
       profitHistory={profitHistory}
       streak={streak}
+      groupComparison={groupComparison}
       locale={locale}
       onUpdate={reload}
     />
@@ -73,28 +77,40 @@ export function ProfileLoader() {
 
 function ProfileSkeleton() {
   return (
-    <div className="space-y-6">
-      <Card className="relative overflow-hidden profile-hero-bg">
-        <CardContent className="flex flex-col items-center py-10 px-6">
-          {/* Avatar skeleton */}
-          <div className="h-28 w-28 rounded-full bg-velvet-800 animate-pulse" />
-          {/* Name skeleton */}
-          <div className="mt-5 h-7 w-40 rounded-lg bg-velvet-800 animate-pulse" />
-          {/* Email skeleton */}
-          <div className="mt-2 h-4 w-52 rounded bg-velvet-800/60 animate-pulse" />
+    <div className="space-y-3">
+      {/* Hero card */}
+      <Card className="relative overflow-hidden">
+        <CardContent className="flex flex-col items-center py-8 px-4 sm:py-10 sm:px-6">
+          <div className="h-24 w-24 rounded-full bg-velvet-800 animate-pulse" />
+          <div className="mt-5 h-7 w-36 rounded-lg bg-velvet-800 animate-pulse" />
+          <div className="mt-2 h-4 w-48 rounded bg-velvet-800/60 animate-pulse" />
         </CardContent>
       </Card>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {[0, 1, 2].map((i) => (
+      {/* Net worth card */}
+      <Card>
+        <CardContent className="flex flex-col items-center gap-2 py-5 px-3 text-center sm:py-6">
+          <div className="h-10 w-32 rounded-lg bg-velvet-800 animate-pulse" />
+          <div className="h-3 w-20 rounded bg-velvet-800/60 animate-pulse" />
+        </CardContent>
+      </Card>
+      {/* Nights + Winrate */}
+      <div className="grid grid-cols-2 gap-3">
+        {[0, 1].map((i) => (
           <Card key={i}>
-            <CardContent className="flex flex-col items-center gap-3 py-6 px-4">
-              <div className="h-5 w-5 rounded bg-velvet-800/60 animate-pulse" />
-              <div className="h-9 w-20 rounded-lg bg-velvet-800 animate-pulse" />
-              <div className="h-3 w-24 rounded bg-velvet-800/60 animate-pulse" />
+            <CardContent className="flex flex-col items-center gap-2 py-5 px-3 text-center sm:py-6">
+              <div className="h-8 w-16 rounded-lg bg-velvet-800 animate-pulse" />
+              <div className="h-3 w-20 rounded bg-velvet-800/60 animate-pulse" />
             </CardContent>
           </Card>
         ))}
       </div>
+      {/* Chart placeholder */}
+      <Card>
+        <CardContent className="py-5 px-3 sm:py-6">
+          <div className="h-4 w-36 rounded bg-velvet-800/60 animate-pulse mb-4" />
+          <div className="h-40 w-full rounded-lg bg-velvet-800/40 animate-pulse" />
+        </CardContent>
+      </Card>
     </div>
   );
 }

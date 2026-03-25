@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { groups, groupMembers, joinRequests } from "@/lib/db/schema";
 import { createGroupSchema, updateGroupSchema, joinGroupSchema } from "@/lib/validators/groups";
@@ -15,6 +15,7 @@ import { insertActivity } from "@/lib/db/queries/activity";
 import { auth } from "@/lib/auth/server";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 import { revalidateTag } from "next/cache";
+import { pushNotify } from "@/lib/push/send";
 
 export async function createGroup(userId: string, formData: FormData) {
   const { data: session } = await auth!.getSession();
@@ -139,6 +140,22 @@ export async function requestJoinGroup(userId: string, formData: FormData) {
     userId,
   });
 
+  // Notify group leaders
+  const leaders = await db
+    .select({ userId: groupMembers.userId })
+    .from(groupMembers)
+    .where(
+      and(
+        eq(groupMembers.groupId, group.id),
+        inArray(groupMembers.role, ["leader", "temporary_leader"])
+      )
+    );
+  await Promise.allSettled(
+    leaders.map((l) =>
+      pushNotify.joinRequest(l.userId, group.id, group.name)
+    )
+  );
+
   return { success: true, groupName: group.name };
 }
 
@@ -178,6 +195,9 @@ export async function approveJoinRequest(
     actorId: request.userId,
   }).catch(() => {});
 
+  // Notify the user their request was approved
+  await pushNotify.joinApproved(request.userId, request.groupId).catch(() => {});
+
   revalidateLocalized(`/groups/${request.groupId}`);
   return { success: true };
 }
@@ -205,6 +225,9 @@ export async function rejectJoinRequest(
     .update(joinRequests)
     .set({ status: "rejected", reviewedBy: reviewerId, updatedAt: new Date() })
     .where(eq(joinRequests.id, requestId));
+
+  // Notify the user their request was rejected
+  await pushNotify.joinRejected(request.userId, request.groupId).catch(() => {});
 
   return { success: true };
 }

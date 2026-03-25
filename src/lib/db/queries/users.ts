@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { eq, sql, gte, and, asc } from "drizzle-orm";
 import { db } from "..";
-import { userProfiles, pokerNightResults, pokerNights } from "../schema";
+import { userProfiles, pokerNightResults, pokerNights, groupMembers } from "../schema";
 
 const CACHE_TTL = 30;
 
@@ -176,6 +176,117 @@ export async function getUserProfitHistory(userId: string) {
       });
     },
     [`user-profit-history-${userId}`],
+    { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
+  );
+
+  return getCached();
+}
+
+export interface GroupComparisonStats {
+  groupName: string;
+  groupId: string;
+  userRank: number;
+  totalPlayers: number;
+  userWinRate: number;
+  avgWinRate: number;
+  userRoi: number;
+  avgRoi: number;
+  userAvgProfit: number;
+  avgGroupProfit: number;
+}
+
+export async function getUserGroupComparison(userId: string): Promise<GroupComparisonStats | null> {
+  const getCached = unstable_cache(
+    async () => {
+      // Find the group where the user has played the most nights
+      const userGroups = await db
+        .select({ groupId: groupMembers.groupId })
+        .from(groupMembers)
+        .where(eq(groupMembers.userId, userId));
+
+      if (userGroups.length === 0) return null;
+
+      // Find the group with most nights played by this user
+      const nightsByGroup = await db
+        .select({
+          groupId: pokerNights.groupId,
+          nightCount: sql<number>`count(${pokerNightResults.id})::int`,
+        })
+        .from(pokerNightResults)
+        .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
+        .where(eq(pokerNightResults.userId, userId))
+        .groupBy(pokerNights.groupId)
+        .orderBy(sql`count(${pokerNightResults.id}) desc`)
+        .limit(1);
+
+      if (nightsByGroup.length === 0) return null;
+
+      const groupId = nightsByGroup[0].groupId;
+
+      // Get group name
+      const { groups } = await import("../schema");
+      const [group] = await db
+        .select({ name: groups.name })
+        .from(groups)
+        .where(eq(groups.id, groupId))
+        .limit(1);
+
+      if (!group) return null;
+
+      // Get stats for all players in this group
+      const rows = await db
+        .select({
+          userId: pokerNightResults.userId,
+          nightsPlayed: sql<number>`count(${pokerNightResults.id})::int`,
+          totalProfit: sql<number>`sum(${pokerNightResults.profitLoss})::numeric`,
+          totalInvested: sql<number>`sum(${pokerNightResults.totalInvested})::numeric`,
+          wins: sql<number>`count(case when ${pokerNightResults.profitLoss} > 0 then 1 end)::int`,
+        })
+        .from(pokerNightResults)
+        .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
+        .where(eq(pokerNights.groupId, groupId))
+        .groupBy(pokerNightResults.userId)
+        .orderBy(sql`sum(${pokerNightResults.profitLoss}) desc`);
+
+      if (rows.length < 2) return null;
+
+      const playerStats = rows.map((r) => {
+        const nights = Number(r.nightsPlayed);
+        const profit = Number(r.totalProfit);
+        const invested = Number(r.totalInvested);
+        const wins = Number(r.wins);
+        return {
+          userId: r.userId,
+          winRate: nights > 0 ? wins / nights : 0,
+          roi: invested > 0 ? (profit / invested) * 100 : 0,
+          avgProfit: nights > 0 ? profit / nights : 0,
+        };
+      });
+
+      const userStat = playerStats.find((p) => p.userId === userId);
+      if (!userStat) return null;
+
+      const userRank = rows.findIndex((r) => r.userId === userId) + 1;
+      const totalPlayers = rows.length;
+
+      const avgWinRate = playerStats.reduce((s, p) => s + p.winRate, 0) / totalPlayers;
+      const avgRoi = playerStats.reduce((s, p) => s + p.roi, 0) / totalPlayers;
+      const avgGroupProfit = playerStats.reduce((s, p) => s + p.avgProfit, 0) / totalPlayers;
+
+      return {
+        groupName: group.name,
+        groupId,
+        userRank,
+        totalPlayers,
+        userWinRate: userStat.winRate,
+        avgWinRate,
+        userRoi: userStat.roi,
+        avgRoi,
+        userAvgProfit: userStat.avgProfit,
+        avgGroupProfit,
+      };
+    },
+    [`user-group-comparison-${userId}`],
     { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
   );
 
