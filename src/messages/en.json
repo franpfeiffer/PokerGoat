@@ -261,9 +261,9 @@
     "you": "You",
     "groupAvg": "Group",
     "avgProfit": "Avg/night",
-    "rankTop": "You're in the top {pct}% of the group",
-    "rankMid": "You're around the group average",
-    "rankBottom": "Below the group average"
+    "rankFirst": "🥇 You're #1 in the group",
+    "rankAboveAvg": "Rank #{rank} of {total} — above average",
+    "rankBelowAvg": "Rank #{rank} of {total} — below average"
   },
   "settings": {
     "title": "Settings",

@@ -42,9 +42,8 @@ function CompareRow({
 export function GroupComparisonCard({ data, locale, currency }: GroupComparisonCardProps) {
   const t = useTranslations("profile");
 
-  const rankPercentile = Math.round(((data.totalPlayers - data.userRank) / (data.totalPlayers - 1)) * 100);
   const rankColor =
-    rankPercentile >= 66 ? "text-profit" : rankPercentile >= 33 ? "text-gold-400" : "text-loss";
+    data.userRank === 1 ? "text-gold-400" : data.userRank <= Math.ceil(data.totalPlayers / 2) ? "text-profit" : "text-loss";
 
   return (
     <Card className="animate-fade-in" style={{ animationDelay: "0.3s" }}>
@@ -85,11 +84,11 @@ export function GroupComparisonCard({ data, locale, currency }: GroupComparisonC
         />
 
         <p className={`mt-3 text-center text-xs font-medium ${rankColor}`}>
-          {rankPercentile >= 66
-            ? t("rankTop", { pct: rankPercentile })
-            : rankPercentile >= 33
-              ? t("rankMid")
-              : t("rankBottom")}
+          {data.userRank === 1
+            ? t("rankFirst")
+            : data.userRank <= Math.ceil(data.totalPlayers / 2)
+              ? t("rankAboveAvg", { rank: data.userRank, total: data.totalPlayers })
+              : t("rankBelowAvg", { rank: data.userRank, total: data.totalPlayers })}
         </p>
       </CardContent>
     </Card>
