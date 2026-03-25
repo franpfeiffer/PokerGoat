@@ -26,12 +26,18 @@ export default function ProfitChartInner({
 }: ProfitChartInnerProps) {
   const t = useTranslations("profile");
 
+  // Si hay un solo punto, agregamos un punto inicial en 0 para que se vea la línea
+  const chartData =
+    data.length === 1
+      ? [{ date: "", profitLoss: 0, cumulative: 0 }, ...data]
+      : data;
+
   const lineColor =
     data[data.length - 1].cumulative >= 0 ? "#22c55e" : "#ef4444";
 
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <LineChart data={data} margin={{ top: 4, right: 4, left: 4, bottom: 4 }}>
+      <LineChart data={chartData} margin={{ top: 4, right: 4, left: 4, bottom: 4 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#2a2a38" />
         <XAxis
           dataKey="date"

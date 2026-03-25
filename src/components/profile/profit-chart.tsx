@@ -23,7 +23,7 @@ export function ProfitChart({
 }: ProfitChartProps) {
   const t = useTranslations("profile");
 
-  if (data.length < 2) return null;
+  if (data.length < 1) return null;
 
   return (
     <Card className="animate-fade-in" style={{ animationDelay: "0.3s" }}>
