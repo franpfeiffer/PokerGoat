@@ -9,6 +9,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { updateDisplayName, updateAvatar } from "@/lib/actions/profile";
 import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
+import { ProfitChart } from "./profit-chart";
 
 interface ProfileContentProps {
   userId: string;
@@ -21,6 +22,8 @@ interface ProfileContentProps {
     totalProfit: number;
     winRate: number;
   };
+  profitHistory: { date: string; profitLoss: number; cumulative: number }[];
+  streak: { type: "winning" | "losing" | "none"; count: number };
   locale: string;
   onUpdate?: () => void;
 }
@@ -32,6 +35,8 @@ export function ProfileContent({
   avatarUrl,
   googleImage,
   stats,
+  profitHistory,
+  streak,
   locale,
   onUpdate,
 }: ProfileContentProps) {
@@ -293,6 +298,18 @@ export function ProfileContent({
               </div>
             )}
             <p className="text-sm text-velvet-400">{email}</p>
+            {streak.type !== "none" && streak.count >= 2 && (
+              <span
+                className={`mt-1 inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
+                  streak.type === "winning"
+                    ? "bg-profit/15 text-profit"
+                    : "bg-loss/15 text-loss"
+                }`}
+              >
+                {streak.type === "winning" ? "🔥" : "❄️"}
+                {streak.count} {streak.type === "winning" ? t("streakWinning") : t("streakLosing")}
+              </span>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -328,6 +345,9 @@ export function ProfileContent({
           </span>
         </StatCard>
       </div>
+
+      {/* Profit history chart */}
+      <ProfitChart data={profitHistory} locale={locale} currency="ARS" />
     </div>
   );
 }

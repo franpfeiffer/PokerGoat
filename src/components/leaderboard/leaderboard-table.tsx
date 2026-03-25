@@ -41,6 +41,7 @@ export function LeaderboardTable({
           winRate={entry.winRate}
           roi={entry.roi}
           avgProfitLoss={entry.avgProfitLoss}
+          streak={entry.streak}
           locale={locale}
           currency={currency}
         />

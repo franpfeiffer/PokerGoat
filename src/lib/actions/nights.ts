@@ -9,9 +9,19 @@ import {
   updateParticipantSchema,
 } from "@/lib/validators/nights";
 import { getUserMembership } from "@/lib/db/queries/groups";
+import { getUpcomingNightsForUser } from "@/lib/db/queries/nights";
+import { getUserByAuthId } from "@/lib/db/queries/users";
+import { insertActivity } from "@/lib/db/queries/activity";
+import { pushNotify } from "@/lib/push/send";
 import { serializeNightMetadata } from "@/lib/utils/chips";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 import { revalidateTag } from "next/cache";
+
+export async function getUpcomingNightsAction(authUserId: string) {
+  const user = await getUserByAuthId(authUserId);
+  if (!user) return [];
+  return getUpcomingNightsForUser(user.id);
+}
 
 async function ensureNightCreatorParticipant(nightId: string, creatorUserId: string) {
   await db
@@ -109,6 +119,23 @@ export async function createNight(
     })
     .onConflictDoNothing();
 
+  await insertActivity({
+    groupId,
+    type: "night_created",
+    actorId: userId,
+    targetId: night.id,
+    metadata: { nightName: parsed.data.name, date: parsed.data.date },
+  }).catch(() => {});
+
+  pushNotify
+    .nightScheduled(
+      groupId,
+      night.name ?? "Nueva noche de poker",
+      night.id,
+      userId
+    )
+    .catch(() => {});
+
   revalidateLocalized(`/groups/${groupId}`);
   revalidateTag(`group-${groupId}`, "max");
   return { nightId: night.id };
@@ -149,6 +176,14 @@ export async function startNight(nightId: string, userId: string) {
     .update(pokerNights)
     .set({ status: "in_progress", updatedAt: new Date() })
     .where(eq(pokerNights.id, nightId));
+
+  pushNotify
+    .nightStarted(
+      night.groupId,
+      night.name ?? "Noche de poker",
+      nightId
+    )
+    .catch(() => {});
 
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   revalidateTag(`night-${nightId}`, "max");

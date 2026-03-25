@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   description:
     "Lleva el control de tus noches de poker con amigos. Clasificaciones, estad\u00edsticas y m\u00e1s.",
   applicationName: "PokerGoat",
+  icons: {
+    icon: "/icons/casino-chips.png",
+    apple: "/icons/icon-192x192.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

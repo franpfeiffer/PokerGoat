@@ -14,6 +14,7 @@ interface LeaderboardRowProps {
   winRate?: number;
   roi?: number;
   avgProfitLoss?: number;
+  streak?: { type: "winning" | "losing" | "none"; count: number };
   locale?: string;
   currency?: string;
 }
@@ -28,6 +29,7 @@ export function LeaderboardRow({
   winRate,
   roi,
   avgProfitLoss,
+  streak,
   locale = "es-ES",
   currency = "ARS",
 }: LeaderboardRowProps) {
@@ -48,14 +50,28 @@ export function LeaderboardRow({
           <Avatar src={avatarUrl} name={displayName} size="sm" />
         </Link>
         <div className="min-w-0 flex-1">
-          <Link
-            href={`/users/${userId}`}
-            className={`text-sm font-medium truncate block ${
-              isTop3 ? "text-velvet-50" : "text-velvet-200 hover:text-gold-400"
-            }`}
-          >
-            {displayName}
-          </Link>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Link
+              href={`/users/${userId}`}
+              className={`text-sm font-medium truncate ${
+                isTop3 ? "text-velvet-50" : "text-velvet-200 hover:text-gold-400"
+              }`}
+            >
+              {displayName}
+            </Link>
+            {streak && streak.type !== "none" && streak.count >= 2 && (
+              <span
+                title={`${streak.count} ${streak.type === "winning" ? t("streakWinning") : t("streakLosing")}`}
+                className={`shrink-0 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none ${
+                  streak.type === "winning"
+                    ? "bg-profit/15 text-profit"
+                    : "bg-loss/15 text-loss"
+                }`}
+              >
+                {streak.type === "winning" ? "🔥" : "❄️"} {streak.count}
+              </span>
+            )}
+          </div>
           {nightsPlayed !== undefined && (
             <p className="text-xs text-velvet-500 tabular-nums">
               {nightsPlayed} {t("nightsPlayed")}

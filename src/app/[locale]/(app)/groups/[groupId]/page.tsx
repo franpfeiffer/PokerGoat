@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { NightCard } from "@/components/nights/night-card";
 import { getGroupNights } from "@/lib/db/queries/nights";
-import { getGroupLeaderboard, getGroupProfitHistory } from "@/lib/db/queries/leaderboard";
+import { getGroupLeaderboard, getGroupProfitHistory, getGroupStreaks } from "@/lib/db/queries/leaderboard";
+import { getGroupActivity } from "@/lib/db/queries/activity";
+import { ActivityFeed } from "@/components/groups/activity-feed";
 import { getGroupById } from "@/lib/db/queries/groups";
 import { LeaderboardTable } from "@/components/leaderboard/leaderboard-table";
 import { GroupProfitChart } from "@/components/stats/group-profit-chart";
@@ -20,12 +22,20 @@ export default async function GroupOverviewPage({
   const tNights = await getTranslations("nights");
   const tLeaderboard = await getTranslations("leaderboard");
   const tH2H = await getTranslations("headToHead");
-  const [group, nights, leaderboard, profitHistory] = await Promise.all([
+  const tActivity = await getTranslations("activity");
+  const [group, nights, leaderboard, profitHistory, streaks, activity] = await Promise.all([
     getGroupById(groupId),
     getGroupNights(groupId),
     getGroupLeaderboard(groupId),
     getGroupProfitHistory(groupId),
+    getGroupStreaks(groupId),
+    getGroupActivity(groupId),
   ]);
+
+  const leaderboardWithStreaks = leaderboard.map((entry) => ({
+    ...entry,
+    streak: streaks[entry.userId] ?? { type: "none" as const, count: 0 },
+  }));
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6">
@@ -97,7 +107,7 @@ export default async function GroupOverviewPage({
               <EmptyState title={t("leaderboard")} description={tNights("noNightsAction")} />
             ) : (
               <LeaderboardTable
-                entries={leaderboard}
+                entries={leaderboardWithStreaks}
                 locale={locale === "es" ? "es-ES" : "en-US"}
                 currency="ARS"
               />
@@ -117,6 +127,23 @@ export default async function GroupOverviewPage({
             <GroupProfitChart
               data={profitHistory}
               locale={locale === "es" ? "es-ES" : "en-US"}
+              currency={group?.currency ?? "ARS"}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {activity.length > 0 && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-display text-lg font-semibold">
+              {tActivity("title")}
+            </h2>
+          </CardHeader>
+          <CardContent>
+            <ActivityFeed
+              items={activity}
+              locale={locale}
               currency={group?.currency ?? "ARS"}
             />
           </CardContent>

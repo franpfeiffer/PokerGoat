@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { UserGroupsGrid } from "@/components/groups/user-groups-grid";
 import { CreateGroupButton } from "@/components/groups/create-group-button";
 import { StatsWidget } from "@/components/dashboard/stats-widget";
+import { UpcomingNightsBanner } from "@/components/dashboard/upcoming-nights-banner";
 
 export const metadata: Metadata = {
   title: "Panel de control",
@@ -29,6 +30,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      <UpcomingNightsBanner />
       <StatsWidget />
 
       <section

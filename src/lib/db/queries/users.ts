@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { eq, sql, gte, and } from "drizzle-orm";
+import { eq, sql, gte, and, asc } from "drizzle-orm";
 import { db } from "..";
 import { userProfiles, pokerNightResults, pokerNights } from "../schema";
 
@@ -111,6 +111,71 @@ export async function getDashboardStats(userId: string) {
       };
     },
     [`dashboard-stats-${userId}`],
+    { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
+  );
+
+  return getCached();
+}
+
+export async function getUserStreak(userId: string) {
+  const getCached = unstable_cache(
+    async () => {
+      const rows = await db
+        .select({
+          profitLoss: pokerNightResults.profitLoss,
+        })
+        .from(pokerNightResults)
+        .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
+        .where(eq(pokerNightResults.userId, userId))
+        .orderBy(asc(pokerNights.date));
+
+      if (rows.length === 0) return { type: "none" as const, count: 0 };
+
+      const results = rows.map((r) => Number(r.profitLoss) > 0);
+      const last = results[results.length - 1];
+      let count = 0;
+      for (let i = results.length - 1; i >= 0; i--) {
+        if (results[i] === last) count++;
+        else break;
+      }
+
+      return {
+        type: last ? ("winning" as const) : ("losing" as const),
+        count,
+      };
+    },
+    [`user-streak-${userId}`],
+    { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
+  );
+
+  return getCached();
+}
+
+export async function getUserProfitHistory(userId: string) {
+  const getCached = unstable_cache(
+    async () => {
+      const rows = await db
+        .select({
+          date: pokerNights.date,
+          profitLoss: pokerNightResults.profitLoss,
+        })
+        .from(pokerNightResults)
+        .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
+        .where(eq(pokerNightResults.userId, userId))
+        .orderBy(asc(pokerNights.date));
+
+      let cumulative = 0;
+      return rows.map((row) => {
+        const pl = Number(row.profitLoss);
+        cumulative += pl;
+        return {
+          date: row.date,
+          profitLoss: pl,
+          cumulative: Number(cumulative.toFixed(2)),
+        };
+      });
+    },
+    [`user-profit-history-${userId}`],
     { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
   );
 

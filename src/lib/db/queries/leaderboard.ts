@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { eq, sql, and, gte, lte, desc, inArray } from "drizzle-orm";
+import { eq, sql, and, gte, lte, desc, inArray, asc } from "drizzle-orm";
 import { db } from "..";
 import { pokerNightResults, pokerNights, userProfiles } from "../schema";
 import type { LeaderboardEntry, NightResult } from "@/lib/types";
@@ -46,6 +46,51 @@ export async function getGroupProfitHistory(
       });
     },
     [`group-profit-history-${groupId}`],
+    { revalidate: CACHE_TTL, tags: [`group-${groupId}`] }
+  );
+
+  return getCached();
+}
+
+export async function getGroupStreaks(
+  groupId: string
+): Promise<Record<string, { type: "winning" | "losing" | "none"; count: number }>> {
+  const getCached = unstable_cache(
+    async () => {
+      const rows = await db
+        .select({
+          userId: pokerNightResults.userId,
+          profitLoss: pokerNightResults.profitLoss,
+          date: pokerNights.date,
+        })
+        .from(pokerNightResults)
+        .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
+        .where(eq(pokerNights.groupId, groupId))
+        .orderBy(asc(pokerNights.date));
+
+      const byUser: Record<string, boolean[]> = {};
+      for (const row of rows) {
+        if (!byUser[row.userId]) byUser[row.userId] = [];
+        byUser[row.userId].push(Number(row.profitLoss) > 0);
+      }
+
+      const result: Record<string, { type: "winning" | "losing" | "none"; count: number }> = {};
+      for (const [userId, results] of Object.entries(byUser)) {
+        if (results.length === 0) {
+          result[userId] = { type: "none", count: 0 };
+          continue;
+        }
+        const last = results[results.length - 1];
+        let count = 0;
+        for (let i = results.length - 1; i >= 0; i--) {
+          if (results[i] === last) count++;
+          else break;
+        }
+        result[userId] = { type: last ? "winning" : "losing", count };
+      }
+      return result;
+    },
+    [`group-streaks-${groupId}`],
     { revalidate: CACHE_TTL, tags: [`group-${groupId}`] }
   );
 

@@ -21,3 +21,12 @@ export {
   requestStatusEnum,
 } from "./join-requests";
 export { mvpVotes, mvpVotesRelations } from "./mvp-votes";
+export {
+  groupActivity,
+  groupActivityRelations,
+  activityTypeEnum,
+} from "./group-activity";
+export {
+  pushSubscriptions,
+  pushSubscriptionsRelations,
+} from "./push-subscriptions";

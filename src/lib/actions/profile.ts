@@ -6,6 +6,8 @@ import {
   updateUserProfile,
   getUserStats,
   getDashboardStats,
+  getUserProfitHistory,
+  getUserStreak,
 } from "@/lib/db/queries/users";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 
@@ -31,6 +33,14 @@ export async function getOrCreateProfile(data: {
 
 export async function getProfileStats(userId: string) {
   return getUserStats(userId);
+}
+
+export async function getProfileProfitHistory(userId: string) {
+  return getUserProfitHistory(userId);
+}
+
+export async function getProfileStreak(userId: string) {
+  return getUserStreak(userId);
 }
 
 export async function getDashboardStatsAction(authUserId: string) {

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { authClient } from "@/lib/auth/client";
 import { ProfileContent } from "./profile-content";
-import { getOrCreateProfile, getProfileStats } from "@/lib/actions/profile";
+import { getOrCreateProfile, getProfileStats, getProfileProfitHistory, getProfileStreak } from "@/lib/actions/profile";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function ProfileLoader() {
@@ -16,6 +16,8 @@ export function ProfileLoader() {
     avatarUrl: string | null;
   } | null>(null);
   const [stats, setStats] = useState({ nightsPlayed: 0, totalProfit: 0, winRate: 0 });
+  const [profitHistory, setProfitHistory] = useState<{ date: string; profitLoss: number; cumulative: number }[]>([]);
+  const [streak, setStreak] = useState<{ type: "winning" | "losing" | "none"; count: number }>({ type: "none", count: 0 });
   const [loading, setLoading] = useState(true);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -34,8 +36,14 @@ export function ProfileLoader() {
       });
       if (p) {
         setProfile(p);
-        const s = await getProfileStats(p.id);
+        const [s, history, str] = await Promise.all([
+          getProfileStats(p.id),
+          getProfileProfitHistory(p.id),
+          getProfileStreak(p.id),
+        ]);
         setStats(s);
+        setProfitHistory(history);
+        setStreak(str);
       }
       setLoading(false);
     }
@@ -55,6 +63,8 @@ export function ProfileLoader() {
       avatarUrl={profile.avatarUrl}
       googleImage={session.user.image}
       stats={stats}
+      profitHistory={profitHistory}
+      streak={streak}
       locale={locale}
       onUpdate={reload}
     />

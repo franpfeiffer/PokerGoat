@@ -1,10 +1,35 @@
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, inArray } from "drizzle-orm";
 import { db } from "..";
 import {
   pokerNights,
   pokerNightParticipants,
   userProfiles,
+  groupMembers,
+  groups,
 } from "../schema";
+
+export async function getUpcomingNightsForUser(userId: string) {
+  return db
+    .select({
+      id: pokerNights.id,
+      name: pokerNights.name,
+      date: pokerNights.date,
+      status: pokerNights.status,
+      groupId: pokerNights.groupId,
+      groupName: groups.name,
+    })
+    .from(groupMembers)
+    .innerJoin(groups, eq(groupMembers.groupId, groups.id))
+    .innerJoin(
+      pokerNights,
+      and(
+        eq(pokerNights.groupId, groups.id),
+        inArray(pokerNights.status, ["scheduled", "in_progress"])
+      )
+    )
+    .where(eq(groupMembers.userId, userId))
+    .orderBy(pokerNights.date);
+}
 
 export async function getGroupNights(groupId: string) {
   return db

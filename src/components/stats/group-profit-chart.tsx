@@ -5,6 +5,17 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 
+const COLORS = [
+  "#d4a847",
+  "#34d375",
+  "#f04848",
+  "#6e8efb",
+  "#e87cda",
+  "#4dd4c0",
+  "#f5a623",
+  "#b07df0",
+];
+
 const Chart = dynamic(() => import("./group-profit-chart-inner"), {
   ssr: false,
   loading: () => <Skeleton className="h-64 w-full rounded-lg" />,
@@ -79,26 +90,51 @@ export function GroupProfitChart({
     );
   }
 
+  const allSelected = selectedIds.size === players.length;
+
+  const toggleAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(players.map((p) => p.id)));
+    }
+  };
+
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-1.5">
-        {players.map((p) => {
+      <div className="flex flex-wrap items-center gap-1.5">
+        {players.map((p, i) => {
           const active = selectedIds.has(p.id);
+          const color = COLORS[i % COLORS.length];
           return (
             <button
               key={p.id}
               type="button"
               onClick={() => toggle(p.id)}
-              className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-all ${
                 active
-                  ? "border-gold-500/30 bg-gold-500/10 text-gold-400"
-                  : "border-velvet-700/60 bg-velvet-800/50 text-velvet-500 hover:text-velvet-300"
+                  ? "border-transparent bg-velvet-800 text-velvet-100"
+                  : "border-velvet-700/40 bg-velvet-900 text-velvet-600 hover:text-velvet-400"
               }`}
+              style={active ? { borderColor: `${color}40`, backgroundColor: `${color}18` } : {}}
             >
-              {p.name}
+              <span
+                className="h-2 w-2 rounded-full transition-opacity"
+                style={{ backgroundColor: color, opacity: active ? 1 : 0.3 }}
+              />
+              <span style={active ? { color } : {}}>{p.name}</span>
             </button>
           );
         })}
+        {players.length > 2 && (
+          <button
+            type="button"
+            onClick={toggleAll}
+            className="rounded-full border border-velvet-700/40 bg-velvet-900 px-2.5 py-1 text-xs text-velvet-500 transition-colors hover:text-velvet-300"
+          >
+            {allSelected ? t("hideAll") : t("showAll")}
+          </button>
+        )}
       </div>
       <Chart
         data={chartData}

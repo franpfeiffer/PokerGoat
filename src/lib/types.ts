@@ -19,6 +19,7 @@ export interface LeaderboardEntry {
   winRate: number;
   roi: number;
   rank: number;
+  streak?: { type: "winning" | "losing" | "none"; count: number };
 }
 
 export interface NightResult {

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
+import { ProfitChart } from "./profit-chart";
 
 interface PublicProfileContentProps {
   userId: string;
@@ -15,6 +16,7 @@ interface PublicProfileContentProps {
     totalProfit: number;
     winRate: number;
   };
+  profitHistory: { date: string; profitLoss: number; cumulative: number }[];
 }
 
 export function PublicProfileContent({
@@ -22,6 +24,7 @@ export function PublicProfileContent({
   displayName,
   avatarUrl,
   stats,
+  profitHistory,
 }: PublicProfileContentProps) {
   const locale = useLocale();
 
@@ -84,6 +87,8 @@ export function PublicProfileContent({
           </span>
         </StatCard>
       </div>
+
+      <ProfitChart data={profitHistory} locale={locale} currency="ARS" />
     </div>
   );
 }

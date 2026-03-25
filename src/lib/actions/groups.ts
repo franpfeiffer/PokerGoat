@@ -11,8 +11,10 @@ import {
   getUserMembership,
 } from "@/lib/db/queries/groups";
 import { getUserByAuthId } from "@/lib/db/queries/users";
+import { insertActivity } from "@/lib/db/queries/activity";
 import { auth } from "@/lib/auth/server";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
+import { revalidateTag } from "next/cache";
 
 export async function createGroup(userId: string, formData: FormData) {
   const { data: session } = await auth!.getSession();
@@ -169,6 +171,12 @@ export async function approveJoinRequest(
     userId: request.userId,
     role: "member",
   });
+
+  await insertActivity({
+    groupId: request.groupId,
+    type: "member_joined",
+    actorId: request.userId,
+  }).catch(() => {});
 
   revalidateLocalized(`/groups/${request.groupId}`);
   return { success: true };

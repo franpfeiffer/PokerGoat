@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getUserById, getUserStats } from "@/lib/db/queries/users";
+import { getUserById, getUserStats, getUserProfitHistory } from "@/lib/db/queries/users";
 import { PublicProfileContent } from "@/components/profile/public-profile-content";
 
 export async function generateMetadata({
@@ -30,7 +30,10 @@ export default async function PublicProfilePage({
     notFound();
   }
 
-  const stats = await getUserStats(userId);
+  const [stats, profitHistory] = await Promise.all([
+    getUserStats(userId),
+    getUserProfitHistory(userId),
+  ]);
 
   return (
     <div className="mx-auto max-w-2xl py-2">
@@ -39,6 +42,7 @@ export default async function PublicProfilePage({
         displayName={user.displayName}
         avatarUrl={user.avatarUrl}
         stats={stats}
+        profitHistory={profitHistory}
       />
     </div>
   );

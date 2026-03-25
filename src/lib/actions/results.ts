@@ -1,8 +1,8 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { pokerNights, pokerNightParticipants, pokerNightResults } from "@/lib/db/schema";
+import { pokerNights, pokerNightParticipants, pokerNightResults, userProfiles } from "@/lib/db/schema";
 import {
   calculateTotalInvested,
   calculateCashout,
@@ -13,6 +13,8 @@ import {
   allParticipantsHaveChips,
 } from "@/lib/utils/chips";
 import { getUserMembership } from "@/lib/db/queries/groups";
+import { insertActivity } from "@/lib/db/queries/activity";
+import { pushNotify } from "@/lib/push/send";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 import { revalidateTag } from "next/cache";
 
@@ -126,6 +128,37 @@ export async function calculateAndSaveResults(
     .update(pokerNights)
     .set({ status: "completed", updatedAt: new Date() })
     .where(eq(pokerNights.id, nightId));
+
+  // Obtener displayNames para notificaciones
+  const userIds = results.map((r) => r.userId);
+  const profiles = await db
+    .select({ id: userProfiles.id, displayName: userProfiles.displayName })
+    .from(userProfiles)
+    .where(inArray(userProfiles.id, userIds));
+  const nameById = Object.fromEntries(profiles.map((p) => [p.id, p.displayName]));
+
+  // Registrar evento: ganador de la noche
+  const winner = results[0];
+  if (winner) {
+    const winnerName = nameById[winner.userId] ?? "Alguien";
+    const nightName = night.name ?? "Noche de poker";
+
+    await insertActivity({
+      groupId: night.groupId,
+      type: "night_completed",
+      actorId: winner.userId,
+      targetId: nightId,
+      metadata: {
+        nightName: night.name,
+        profitLoss: Number(winner.profitLoss),
+        playersCount: results.length,
+      },
+    }).catch(() => {});
+
+    pushNotify
+      .resultsPublished(night.groupId, nightName, nightId, winnerName)
+      .catch(() => {});
+  }
 
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   revalidateLocalized(`/groups/${night.groupId}`);
