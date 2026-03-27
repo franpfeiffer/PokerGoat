@@ -1,11 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { authClient } from "@/lib/auth/client";
-import { getMyGroups } from "@/lib/actions/groups";
-import { checkIsAdmin } from "@/lib/actions/admin";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { GroupCard } from "@/components/groups/group-card";
@@ -18,43 +12,15 @@ type UserGroup = {
   currency: string;
 };
 
-export function UserGroupsGrid() {
-  const t = useTranslations("dashboard");
-  const { data: session, isPending: sessionPending } = authClient.useSession();
-  const [groups, setGroups] = useState<UserGroup[] | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+interface UserGroupsGridProps {
+  groups: UserGroup[];
+  isAdmin: boolean;
+}
 
-  useEffect(() => {
-    if (sessionPending) return;
-    const authUserId = session?.user?.id;
-    if (typeof authUserId !== "string") {
-      return;
-    }
-    const userId = authUserId;
+export async function UserGroupsGrid({ groups, isAdmin }: UserGroupsGridProps) {
+  const t = await getTranslations("dashboard");
 
-    async function load() {
-      const [data, admin] = await Promise.all([
-        getMyGroups(userId),
-        checkIsAdmin(),
-      ]);
-      setGroups(data as UserGroup[]);
-      setIsAdmin(admin);
-    }
-
-    load();
-  }, [sessionPending, session]);
-
-  const loading = sessionPending || groups === null;
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-velvet-700 border-t-gold-500" />
-      </div>
-    );
-  }
-
-  if (!session?.user || !groups?.length) {
+  if (!groups.length) {
     return (
       <EmptyState
         title={t("noGroups")}

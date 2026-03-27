@@ -15,10 +15,24 @@ export interface ProfitHistoryPoint {
 }
 
 export async function getGroupProfitHistory(
-  groupId: string
+  groupId: string,
+  limit = 100
 ): Promise<ProfitHistoryPoint[]> {
   const getCached = unstable_cache(
     async () => {
+      // Fetch the last `limit` nights for this group, then get all results for those nights
+      const { pokerNights: pn } = await import("../schema");
+      const recentNights = await db
+        .select({ id: pn.id, date: pn.date })
+        .from(pn)
+        .where(eq(pn.groupId, groupId))
+        .orderBy(desc(pn.date))
+        .limit(limit);
+
+      if (recentNights.length === 0) return [];
+
+      const nightIds = recentNights.map((n) => n.id);
+
       const rows = await db
         .select({
           date: pokerNights.date,
@@ -29,7 +43,7 @@ export async function getGroupProfitHistory(
         .from(pokerNightResults)
         .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
         .innerJoin(userProfiles, eq(pokerNightResults.userId, userProfiles.id))
-        .where(eq(pokerNights.groupId, groupId))
+        .where(inArray(pokerNightResults.nightId, nightIds))
         .orderBy(pokerNights.date);
 
       const cumulativeByUser: Record<string, number> = {};
@@ -53,10 +67,24 @@ export async function getGroupProfitHistory(
 }
 
 export async function getGroupStreaks(
-  groupId: string
+  groupId: string,
+  lastNights = 50
 ): Promise<Record<string, { type: "winning" | "losing" | "none"; count: number }>> {
   const getCached = unstable_cache(
     async () => {
+      // Only need the last N nights to compute current streak
+      const { pokerNights: pn } = await import("../schema");
+      const recentNightIds = await db
+        .select({ id: pn.id })
+        .from(pn)
+        .where(eq(pn.groupId, groupId))
+        .orderBy(desc(pn.date))
+        .limit(lastNights);
+
+      if (recentNightIds.length === 0) return {};
+
+      const nightIds = recentNightIds.map((n) => n.id);
+
       const rows = await db
         .select({
           userId: pokerNightResults.userId,
@@ -65,7 +93,7 @@ export async function getGroupStreaks(
         })
         .from(pokerNightResults)
         .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
-        .where(eq(pokerNights.groupId, groupId))
+        .where(inArray(pokerNightResults.nightId, nightIds))
         .orderBy(asc(pokerNights.date));
 
       const byUser: Record<string, boolean[]> = {};

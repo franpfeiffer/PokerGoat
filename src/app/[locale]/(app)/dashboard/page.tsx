@@ -1,18 +1,40 @@
 import type { Metadata } from "next";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { UserGroupsGrid } from "@/components/groups/user-groups-grid";
 import { CreateGroupButton } from "@/components/groups/create-group-button";
 import { StatsWidget } from "@/components/dashboard/stats-widget";
 import { UpcomingNightsBanner } from "@/components/dashboard/upcoming-nights-banner";
+import { auth } from "@/lib/auth/server";
+import { getUserByAuthId, getDashboardStats } from "@/lib/db/queries/users";
+import { getUserGroups } from "@/lib/db/queries/groups";
+import { getUpcomingNightsForUser } from "@/lib/db/queries/nights";
 
 export const metadata: Metadata = {
   title: "Panel de control",
 };
 
-export default function DashboardPage() {
-  const t = useTranslations("dashboard");
+export default async function DashboardPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const [t, { data: session }] = await Promise.all([
+    getTranslations("dashboard"),
+    auth!.getSession(),
+  ]);
+
+  const authUser = session?.user;
+  const currentUser = authUser ? await getUserByAuthId(authUser.id) : null;
+
+  const [stats, groups, upcomingNights, isAdmin] = await Promise.all([
+    currentUser ? getDashboardStats(currentUser.id) : null,
+    currentUser ? getUserGroups(currentUser.id) : [],
+    currentUser ? getUpcomingNightsForUser(currentUser.id) : [],
+    Promise.resolve(authUser?.email === process.env.ADMIN_EMAIL),
+  ]);
 
   return (
     <div className="mx-auto max-w-4xl py-2">
@@ -30,8 +52,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <UpcomingNightsBanner />
-      <StatsWidget />
+      <UpcomingNightsBanner nights={upcomingNights} locale={locale} />
+      <StatsWidget stats={stats} />
 
       <section
         aria-labelledby="groups-heading"
@@ -40,7 +62,7 @@ export default function DashboardPage() {
         <h2 id="groups-heading" className="sr-only">
           {t("yourGroups")}
         </h2>
-        <UserGroupsGrid />
+        <UserGroupsGrid groups={groups} isAdmin={isAdmin} />
       </section>
     </div>
   );

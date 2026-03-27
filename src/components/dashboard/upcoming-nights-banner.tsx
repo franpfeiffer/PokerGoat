@@ -1,10 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { authClient } from "@/lib/auth/client";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getUpcomingNightsAction } from "@/lib/actions/nights";
 
 interface UpcomingNight {
   id: string;
@@ -15,18 +10,13 @@ interface UpcomingNight {
   groupName: string;
 }
 
-export function UpcomingNightsBanner() {
-  const t = useTranslations("dashboard");
-  const locale = useLocale();
-  const { data: session, isPending } = authClient.useSession();
-  const [nights, setNights] = useState<UpcomingNight[]>([]);
+interface UpcomingNightsBannerProps {
+  nights: UpcomingNight[];
+  locale: string;
+}
 
-  useEffect(() => {
-    if (isPending || !session?.user?.id) return;
-    getUpcomingNightsAction(session.user.id).then((result) => {
-      if (result) setNights(result);
-    });
-  }, [isPending, session]);
+export async function UpcomingNightsBanner({ nights, locale }: UpcomingNightsBannerProps) {
+  const t = await getTranslations("dashboard");
 
   if (nights.length === 0) return null;
 

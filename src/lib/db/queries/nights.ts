@@ -31,12 +31,13 @@ export async function getUpcomingNightsForUser(userId: string) {
     .orderBy(pokerNights.date);
 }
 
-export async function getGroupNights(groupId: string) {
+export async function getGroupNights(groupId: string, limit = 50) {
   return db
     .select()
     .from(pokerNights)
     .where(eq(pokerNights.groupId, groupId))
-    .orderBy(desc(pokerNights.date));
+    .orderBy(desc(pokerNights.date))
+    .limit(limit);
 }
 
 export async function getNightById(nightId: string) {

@@ -3,6 +3,7 @@ import {
   uuid,
   timestamp,
   unique,
+  index,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { pokerNights } from "./poker-nights";
@@ -25,7 +26,10 @@ export const mvpVotes = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [unique("mvp_vote_unique").on(table.nightId, table.voterId)]
+  (table) => [
+    unique("mvp_vote_unique").on(table.nightId, table.voterId),
+    index("mvp_votes_night_id_idx").on(table.nightId),
+  ]
 );
 
 export const mvpVotesRelations = relations(mvpVotes, ({ one }) => ({

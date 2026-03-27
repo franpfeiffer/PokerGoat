@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { eq, sql, gte, and, asc } from "drizzle-orm";
+import { eq, sql, gte, and, asc, desc } from "drizzle-orm";
 import { db } from "..";
 import { userProfiles, pokerNightResults, pokerNights, groupMembers } from "../schema";
 
@@ -15,12 +15,19 @@ export async function getUserByAuthId(authUserId: string) {
 }
 
 export async function getUserById(id: string) {
-  const [user] = await db
-    .select()
-    .from(userProfiles)
-    .where(eq(userProfiles.id, id))
-    .limit(1);
-  return user ?? null;
+  const getCached = unstable_cache(
+    async () => {
+      const [user] = await db
+        .select()
+        .from(userProfiles)
+        .where(eq(userProfiles.id, id))
+        .limit(1);
+      return user ?? null;
+    },
+    [`user-profile-${id}`],
+    { revalidate: CACHE_TTL, tags: [`user-${id}`] }
+  );
+  return getCached();
 }
 
 export async function createUserProfile(data: {
@@ -198,15 +205,9 @@ export interface GroupComparisonStats {
 export async function getUserGroupComparison(userId: string): Promise<GroupComparisonStats | null> {
   const getCached = unstable_cache(
     async () => {
-      // Find the group where the user has played the most nights
-      const userGroups = await db
-        .select({ groupId: groupMembers.groupId })
-        .from(groupMembers)
-        .where(eq(groupMembers.userId, userId));
+      const { groups } = await import("../schema");
 
-      if (userGroups.length === 0) return null;
-
-      // Find the group with most nights played by this user
+      // Find the group where the user has played the most nights (single query)
       const nightsByGroup = await db
         .select({
           groupId: pokerNights.groupId,
@@ -216,37 +217,37 @@ export async function getUserGroupComparison(userId: string): Promise<GroupCompa
         .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
         .where(eq(pokerNightResults.userId, userId))
         .groupBy(pokerNights.groupId)
-        .orderBy(sql`count(${pokerNightResults.id}) desc`)
+        .orderBy(desc(sql`count(${pokerNightResults.id})`))
         .limit(1);
 
       if (nightsByGroup.length === 0) return null;
 
       const groupId = nightsByGroup[0].groupId;
 
-      // Get group name
-      const { groups } = await import("../schema");
-      const [group] = await db
-        .select({ name: groups.name })
-        .from(groups)
-        .where(eq(groups.id, groupId))
-        .limit(1);
+      // Fetch group name and all player stats in parallel
+      const [groupResult, rows] = await Promise.all([
+        db
+          .select({ name: groups.name })
+          .from(groups)
+          .where(eq(groups.id, groupId))
+          .limit(1),
+        db
+          .select({
+            userId: pokerNightResults.userId,
+            nightsPlayed: sql<number>`count(${pokerNightResults.id})::int`,
+            totalProfit: sql<number>`sum(${pokerNightResults.profitLoss})::numeric`,
+            totalInvested: sql<number>`sum(${pokerNightResults.totalInvested})::numeric`,
+            wins: sql<number>`count(case when ${pokerNightResults.profitLoss} > 0 then 1 end)::int`,
+          })
+          .from(pokerNightResults)
+          .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
+          .where(eq(pokerNights.groupId, groupId))
+          .groupBy(pokerNightResults.userId)
+          .orderBy(sql`sum(${pokerNightResults.profitLoss}) desc`),
+      ]);
 
+      const [group] = groupResult;
       if (!group) return null;
-
-      // Get stats for all players in this group
-      const rows = await db
-        .select({
-          userId: pokerNightResults.userId,
-          nightsPlayed: sql<number>`count(${pokerNightResults.id})::int`,
-          totalProfit: sql<number>`sum(${pokerNightResults.profitLoss})::numeric`,
-          totalInvested: sql<number>`sum(${pokerNightResults.totalInvested})::numeric`,
-          wins: sql<number>`count(case when ${pokerNightResults.profitLoss} > 0 then 1 end)::int`,
-        })
-        .from(pokerNightResults)
-        .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
-        .where(eq(pokerNights.groupId, groupId))
-        .groupBy(pokerNightResults.userId)
-        .orderBy(sql`sum(${pokerNightResults.profitLoss}) desc`);
 
       if (rows.length < 2) return null;
 

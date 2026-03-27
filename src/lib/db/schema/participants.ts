@@ -5,6 +5,7 @@ import {
   decimal,
   timestamp,
   unique,
+  index,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { pokerNights } from "./poker-nights";
@@ -36,7 +37,10 @@ export const pokerNightParticipants = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [unique("participants_night_user").on(table.nightId, table.userId)]
+  (table) => [
+    unique("participants_night_user").on(table.nightId, table.userId),
+    index("participants_night_id_idx").on(table.nightId),
+  ]
 );
 
 export const pokerNightParticipantsRelations = relations(

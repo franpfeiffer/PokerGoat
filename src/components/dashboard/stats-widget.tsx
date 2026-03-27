@@ -1,10 +1,5 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { authClient } from "@/lib/auth/client";
+import { getTranslations } from "next-intl/server";
 import { ProfitBadge } from "@/components/leaderboard/profit-badge";
-import { getDashboardStatsAction } from "@/lib/actions/profile";
 
 interface DashboardStats {
   allTime: {
@@ -19,19 +14,14 @@ interface DashboardStats {
   };
 }
 
-export function StatsWidget() {
-  const t = useTranslations("dashboardWidget");
-  const { data: session, isPending } = authClient.useSession();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
+interface StatsWidgetProps {
+  stats: DashboardStats | null;
+}
 
-  useEffect(() => {
-    if (isPending || !session?.user?.id) return;
-    getDashboardStatsAction(session.user.id).then(setStats);
-  }, [isPending, session]);
+export async function StatsWidget({ stats }: StatsWidgetProps) {
+  const t = await getTranslations("dashboardWidget");
 
-  if (isPending || !stats) return null;
-
-  if (stats.allTime.nightsPlayed === 0) return null;
+  if (!stats || stats.allTime.nightsPlayed === 0) return null;
 
   return (
     <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4 mb-6">
