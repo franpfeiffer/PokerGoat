@@ -9,6 +9,8 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY!
 );
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "";
+
 export interface PushPayload {
   title: string;
   body: string;
@@ -95,7 +97,7 @@ export const pushNotify = {
       {
         title: "🃏 Nueva noche programada",
         body: nightName,
-        url: `/groups/${groupId}/nights/${nightId}`,
+        url: `${APP_URL}/groups/${groupId}/nights/${nightId}`,
         icon: "/icons/casino-chips.png",
       },
       creatorId
@@ -106,7 +108,7 @@ export const pushNotify = {
     return sendToGroupMembers(groupId, {
       title: "🎰 ¡La noche empezó!",
       body: nightName,
-      url: `/groups/${groupId}/nights/${nightId}`,
+      url: `${APP_URL}/groups/${groupId}/nights/${nightId}`,
       icon: "/icons/casino-chips.png",
     });
   },
@@ -120,7 +122,7 @@ export const pushNotify = {
     return sendToGroupMembers(groupId, {
       title: "🏆 Resultados publicados",
       body: `${winnerName} ganó en ${nightName}`,
-      url: `/groups/${groupId}/nights/${nightId}/results`,
+      url: `${APP_URL}/groups/${groupId}/nights/${nightId}/results`,
       icon: "/icons/casino-chips.png",
     });
   },
@@ -129,7 +131,7 @@ export const pushNotify = {
     return sendToUser(userId, {
       title: "⭐ ¡Sos el MVP!",
       body: `La mesa te votó MVP en ${nightName}`,
-      url: `/groups/${groupId}/nights/${nightId}/results`,
+      url: `${APP_URL}/groups/${groupId}/nights/${nightId}/results`,
       icon: "/icons/casino-chips.png",
     });
   },
@@ -138,7 +140,7 @@ export const pushNotify = {
     return sendToUser(leaderId, {
       title: "👤 Nueva solicitud de ingreso",
       body: `Alguien quiere unirse a ${groupName}`,
-      url: `/groups/${groupId}/members`,
+      url: `${APP_URL}/groups/${groupId}/members`,
       icon: "/icons/casino-chips.png",
     });
   },
@@ -147,7 +149,7 @@ export const pushNotify = {
     return sendToUser(userId, {
       title: "✅ Solicitud aprobada",
       body: "Tu solicitud para unirte al grupo fue aprobada",
-      url: `/groups/${groupId}`,
+      url: `${APP_URL}/groups/${groupId}`,
       icon: "/icons/casino-chips.png",
     });
   },
@@ -156,7 +158,7 @@ export const pushNotify = {
     return sendToUser(userId, {
       title: "❌ Solicitud rechazada",
       body: "Tu solicitud para unirte al grupo fue rechazada",
-      url: `/groups/join`,
+      url: `${APP_URL}/groups/join`,
       icon: "/icons/casino-chips.png",
     });
   },

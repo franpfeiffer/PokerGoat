@@ -40,7 +40,7 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   const sw = self as unknown as {
     clients: {
-      matchAll(opts: object): Promise<{ navigate(url: string): void; focus(): Promise<unknown> }[]>;
+      matchAll(opts: object): Promise<{ url: string; focus(): Promise<unknown> }[]>;
       openWindow(url: string): Promise<unknown>;
     };
   };
@@ -56,11 +56,12 @@ self.addEventListener("notificationclick", (event) => {
     sw.clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
-        for (const client of clientList) {
-          if ("focus" in client) {
-            (client as unknown as { navigate(u: string): void }).navigate(url);
-            return (client as unknown as { focus(): Promise<unknown> }).focus();
-          }
+        // Find an existing window and navigate it to the URL
+        const existing = clientList.find((c) => "focus" in c);
+        if (existing) {
+          return (existing as unknown as { navigate(u: string): Promise<unknown>; focus(): Promise<unknown> })
+            .navigate(url)
+            .then(() => existing.focus());
         }
         return sw.clients.openWindow(url);
       })

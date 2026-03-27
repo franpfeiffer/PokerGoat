@@ -14,6 +14,7 @@ import { getUserByAuthId } from "@/lib/db/queries/users";
 import { insertActivity } from "@/lib/db/queries/activity";
 import { pushNotify } from "@/lib/push/send";
 import { serializeNightMetadata } from "@/lib/utils/chips";
+import { isRateLimited } from "@/lib/utils/rate-limit";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 import { revalidateTag } from "next/cache";
 
@@ -39,6 +40,11 @@ export async function createNight(
   userId: string,
   formData: FormData
 ) {
+  // Rate limit: max 10 nights created per user per hour
+  if (isRateLimited(`create-night:${userId}`, 10, 60 * 60_000)) {
+    return { error: "Demasiadas noches creadas. Probá de nuevo más tarde." };
+  }
+
   const membership = await getUserMembership(groupId, userId);
   if (!membership || membership.role === "member") {
     return { error: "No tienes permisos para crear noches" };

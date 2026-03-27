@@ -7,6 +7,8 @@ import { NightCard } from "@/components/nights/night-card";
 import { getGroupNights } from "@/lib/db/queries/nights";
 import { getGroupLeaderboard, getGroupProfitHistory, getGroupStreaks } from "@/lib/db/queries/leaderboard";
 import { getGroupActivity } from "@/lib/db/queries/activity";
+import { getGroupMvpLeaderboard } from "@/lib/db/queries/mvp";
+import { Avatar } from "@/components/ui/avatar";
 import { ActivityFeed } from "@/components/groups/activity-feed";
 import { getGroupById } from "@/lib/db/queries/groups";
 import { LeaderboardTable } from "@/components/leaderboard/leaderboard-table";
@@ -23,13 +25,15 @@ export default async function GroupOverviewPage({
   const tLeaderboard = await getTranslations("leaderboard");
   const tH2H = await getTranslations("headToHead");
   const tActivity = await getTranslations("activity");
-  const [group, nights, leaderboard, profitHistory, streaks, activity] = await Promise.all([
+  const tMvp = await getTranslations("mvp");
+  const [group, nights, leaderboard, profitHistory, streaks, activity, mvpLeaderboard] = await Promise.all([
     getGroupById(groupId),
     getGroupNights(groupId),
     getGroupLeaderboard(groupId),
     getGroupProfitHistory(groupId),
     getGroupStreaks(groupId),
     getGroupActivity(groupId),
+    getGroupMvpLeaderboard(groupId),
   ]);
 
   const leaderboardWithStreaks = leaderboard.map((entry) => ({
@@ -129,6 +133,56 @@ export default async function GroupOverviewPage({
               locale={locale === "es" ? "es-ES" : "en-US"}
               currency={group?.currency ?? "ARS"}
             />
+          </CardContent>
+        </Card>
+      )}
+
+      {mvpLeaderboard.length > 0 && (
+        <Card>
+          <CardHeader>
+            <h2 className="font-display text-lg font-semibold">
+              {tMvp("leaderboard")}
+            </h2>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {mvpLeaderboard.map((entry, index) => (
+                <div
+                  key={entry.userId}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 ${
+                    index === 0
+                      ? "border border-gold-500/20 bg-gold-500/[0.04]"
+                      : "border border-velvet-700/30 bg-velvet-800/20"
+                  }`}
+                >
+                  <span
+                    className={`w-5 text-center text-sm font-bold tabular-nums ${
+                      index === 0 ? "text-gold-400" : "text-velvet-500"
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  <Avatar src={entry.avatarUrl} name={entry.displayName} size="sm" />
+                  <span
+                    className={`flex-1 text-sm font-medium truncate ${
+                      index === 0 ? "text-gold-200" : "text-velvet-200"
+                    }`}
+                  >
+                    {entry.displayName}
+                  </span>
+                  <span
+                    className={`text-sm font-bold tabular-nums ${
+                      index === 0 ? "text-gold-400" : "text-velvet-400"
+                    }`}
+                  >
+                    {entry.mvpCount} {tMvp("mvps")}
+                  </span>
+                  {index === 0 && (
+                    <span className="text-base" aria-hidden="true">⭐</span>
+                  )}
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       )}

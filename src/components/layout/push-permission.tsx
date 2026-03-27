@@ -28,14 +28,10 @@ export function PushPermission() {
       try {
         const registration = await navigator.serviceWorker.ready;
 
-        // Si ya tiene una subscription activa, la registramos en el server (idempotente)
         let sub = await registration.pushManager.getSubscription();
 
         if (!sub) {
-          if (Notification.permission !== "granted") {
-            const perm = await Notification.requestPermission();
-            if (perm !== "granted") return;
-          }
+          // Pedir permiso y suscribir automáticamente — si el usuario bloqueó previamente falla silencioso
           sub = await registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),

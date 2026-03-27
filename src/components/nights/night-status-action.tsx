@@ -10,6 +10,7 @@ import { getOrCreateProfile } from "@/lib/actions/profile";
 import { startNight } from "@/lib/actions/nights";
 import { calculateAndSaveResults } from "@/lib/actions/results";
 import { useHaptic } from "@/hooks/use-haptic";
+import { useToast } from "@/components/ui/toast";
 import {
   type NightChipValues,
   calculateReconciliation,
@@ -58,6 +59,7 @@ export function NightStatusAction({
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const haptic = useHaptic();
+  const { toast } = useToast();
   const [showDiscrepancyDialog, setShowDiscrepancyDialog] = useState(false);
   const [reconciliation, setReconciliation] = useState<ChipReconciliation | null>(null);
 
@@ -110,6 +112,7 @@ export function NightStatusAction({
           return;
         }
         haptic.success();
+        toast(t("started"), "success");
         router.refresh();
         return;
       }

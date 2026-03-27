@@ -16,6 +16,7 @@ import { auth } from "@/lib/auth/server";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 import { revalidateTag } from "next/cache";
 import { pushNotify } from "@/lib/push/send";
+import { isRateLimited } from "@/lib/utils/rate-limit";
 
 export async function createGroup(userId: string, formData: FormData) {
   const { data: session } = await auth!.getSession();
@@ -101,6 +102,11 @@ export async function updateGroup(
 }
 
 export async function requestJoinGroup(userId: string, formData: FormData) {
+  // Rate limit: max 5 join requests per user per 10 minutes
+  if (isRateLimited(`join-request:${userId}`, 5, 10 * 60_000)) {
+    return { error: "Demasiados intentos. Probá de nuevo en unos minutos." };
+  }
+
   const parsed = joinGroupSchema.safeParse({
     inviteCode: formData.get("inviteCode"),
   });

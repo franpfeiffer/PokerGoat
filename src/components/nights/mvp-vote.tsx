@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/avatar";
 import { voteForMvp } from "@/lib/actions/mvp";
+import { useToast } from "@/components/ui/toast";
 import type { MvpCandidate } from "@/lib/db/queries/mvp";
 
 interface Participant {
@@ -30,6 +31,7 @@ export function MvpVote({
   totalVotes,
 }: MvpVoteProps) {
   const t = useTranslations("mvp");
+  const { toast } = useToast();
   const [selectedVote, setSelectedVote] = useState(currentVote);
   const [isPending, startTransition] = useTransition();
 
@@ -38,9 +40,16 @@ export function MvpVote({
   );
 
   const handleVote = (candidateId: string) => {
+    const prev = selectedVote;
     setSelectedVote(candidateId);
     startTransition(async () => {
-      await voteForMvp(nightId, currentUserId, candidateId);
+      const result = await voteForMvp(nightId, currentUserId, candidateId);
+      if (result.error) {
+        setSelectedVote(prev);
+        toast(typeof result.error === "string" ? result.error : t("voteError"), "error");
+      } else {
+        toast(t("voteSuccess"), "success");
+      }
     });
   };
 

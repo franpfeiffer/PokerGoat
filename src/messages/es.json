@@ -107,6 +107,7 @@
     "date": "Fecha",
     "buyIn": "Buy-in",
     "start": "Iniciar",
+    "started": "La noche empezó.",
     "finish": "Finalizar",
     "chipValue": "Valor de ficha",
     "chipValues": "Valores de fichas",
@@ -248,7 +249,11 @@
   "mvp": {
     "title": "MVP de la noche",
     "votes": "votos",
-    "tapToVote": "Toca un jugador para votar"
+    "tapToVote": "Toca un jugador para votar",
+    "voteSuccess": "Voto registrado.",
+    "voteError": "No se pudo registrar el voto",
+    "leaderboard": "Hall of Fame MVP",
+    "mvps": "MVPs"
   },
   "profile": {
     "title": "Perfil",

@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { mvpVotes, pokerNights, pokerNightParticipants } from "@/lib/db/schema";
 import { revalidateTag } from "next/cache";
 import { pushNotify } from "@/lib/push/send";
+import { isRateLimited } from "@/lib/utils/rate-limit";
 
 export async function voteForMvp(
   nightId: string,
@@ -14,6 +15,11 @@ export async function voteForMvp(
   // Can't vote for yourself
   if (voterId === candidateId) {
     return { error: "You can't vote for yourself" };
+  }
+
+  // Rate limit: max 10 votes per user per minute (handles rapid re-votes)
+  if (isRateLimited(`mvp-vote:${voterId}`, 10, 60_000)) {
+    return { error: "Too many requests. Try again later." };
   }
 
   // Verify night is completed

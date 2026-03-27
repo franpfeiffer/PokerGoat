@@ -1,7 +1,45 @@
 import { unstable_cache } from "next/cache";
 import { eq, sql } from "drizzle-orm";
 import { db } from "..";
-import { mvpVotes, userProfiles } from "../schema";
+import { mvpVotes, userProfiles, pokerNights } from "../schema";
+
+export interface MvpLeaderboardEntry {
+  userId: string;
+  displayName: string;
+  avatarUrl: string | null;
+  mvpCount: number;
+}
+
+export async function getGroupMvpLeaderboard(groupId: string): Promise<MvpLeaderboardEntry[]> {
+  const getCached = unstable_cache(
+    async () => {
+      const rows = await db
+        .select({
+          userId: mvpVotes.candidateId,
+          displayName: userProfiles.displayName,
+          avatarUrl: userProfiles.avatarUrl,
+          mvpCount: sql<number>`count(*)::int`,
+        })
+        .from(mvpVotes)
+        .innerJoin(pokerNights, eq(mvpVotes.nightId, pokerNights.id))
+        .innerJoin(userProfiles, eq(mvpVotes.candidateId, userProfiles.id))
+        .where(eq(pokerNights.groupId, groupId))
+        .groupBy(mvpVotes.candidateId, userProfiles.displayName, userProfiles.avatarUrl)
+        .orderBy(sql`count(*) desc`);
+
+      return rows.map((r) => ({
+        userId: r.userId,
+        displayName: r.displayName,
+        avatarUrl: r.avatarUrl,
+        mvpCount: r.mvpCount,
+      }));
+    },
+    [`group-mvp-leaderboard-${groupId}`],
+    { revalidate: 30, tags: [`group-${groupId}`] }
+  );
+
+  return getCached();
+}
 
 export interface MvpCandidate {
   userId: string;

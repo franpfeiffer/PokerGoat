@@ -107,6 +107,7 @@
     "date": "Date",
     "buyIn": "Buy-in",
     "start": "Start",
+    "started": "Night started.",
     "finish": "Finish",
     "chipValue": "Chip value",
     "chipValues": "Chip values",
@@ -248,7 +249,11 @@
   "mvp": {
     "title": "Night MVP",
     "votes": "votes",
-    "tapToVote": "Tap a player to vote"
+    "tapToVote": "Tap a player to vote",
+    "voteSuccess": "Vote registered.",
+    "voteError": "Could not register vote",
+    "leaderboard": "MVP Hall of Fame",
+    "mvps": "MVPs"
   },
   "profile": {
     "title": "Profile",
