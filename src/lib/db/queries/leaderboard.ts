@@ -105,6 +105,7 @@ export async function getNightLeaderboard(nightId: string): Promise<NightResult[
           userId: pokerNightResults.userId,
           displayName: userProfiles.displayName,
           avatarUrl: userProfiles.avatarUrl,
+          bankAlias: userProfiles.bankAlias,
           totalInvested: pokerNightResults.totalInvested,
           totalCashout: pokerNightResults.totalCashout,
           profitLoss: pokerNightResults.profitLoss,
@@ -118,6 +119,7 @@ export async function getNightLeaderboard(nightId: string): Promise<NightResult[
 
       return rows.map((r) => ({
         ...r,
+        bankAlias: r.bankAlias ?? null,
         totalInvested: Number(r.totalInvested),
         totalCashout: Number(r.totalCashout),
         profitLoss: Number(r.profitLoss),

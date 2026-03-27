@@ -1,6 +1,7 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { formatProfitLoss } from "@/lib/utils/currency";
@@ -11,6 +12,7 @@ interface PublicProfileContentProps {
   userId: string;
   displayName: string;
   avatarUrl: string | null;
+  bankAlias?: string | null;
   stats: {
     nightsPlayed: number;
     totalProfit: number;
@@ -23,10 +25,21 @@ export function PublicProfileContent({
   userId,
   displayName,
   avatarUrl,
+  bankAlias,
   stats,
   profitHistory,
 }: PublicProfileContentProps) {
   const locale = useLocale();
+  const t = useTranslations("profile");
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    if (!bankAlias) return;
+    navigator.clipboard.writeText(bankAlias).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
 
   const profitColor =
     stats.totalProfit > 0
@@ -61,6 +74,30 @@ export function PublicProfileContent({
               {displayName}
             </h2>
           </div>
+
+          {bankAlias && (
+            <div className="mt-3 flex items-center gap-2 animate-fade-in" style={{ animationDelay: "0.15s" }}>
+              <span className="text-xs text-velvet-400 uppercase tracking-widest">{t("bankAliasLabel")}:</span>
+              <span className="text-sm font-mono text-velvet-200 truncate max-w-[160px]">{bankAlias}</span>
+              <button
+                type="button"
+                onClick={handleCopy}
+                className="focus-ring group rounded-full p-1.5 text-velvet-500 hover:text-gold-400 hover:bg-velvet-800/60 transition-colors"
+                aria-label={t("bankAliasCopy")}
+              >
+                {copied ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="text-profit" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="transition-transform group-hover:scale-110">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          )}
         </CardContent>
       </Card>
 

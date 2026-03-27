@@ -9,6 +9,7 @@ import {
   getUserProfitHistory,
   getUserStreak,
   getUserGroupComparison,
+  type GroupComparisonStats,
 } from "@/lib/db/queries/users";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 
@@ -30,6 +31,22 @@ export async function getOrCreateProfile(data: {
   }
 
   return { profile, isNew };
+}
+
+export async function getFullProfile(authUserId: string, displayName: string, avatarUrl?: string) {
+  let profile = await getUserByAuthId(authUserId);
+  if (!profile) {
+    profile = await createUserProfile({ authUserId, displayName, avatarUrl });
+  }
+
+  const [stats, profitHistory, streak, groupComparison] = await Promise.all([
+    getUserStats(profile.id),
+    getUserProfitHistory(profile.id),
+    getUserStreak(profile.id),
+    getUserGroupComparison(profile.id),
+  ]);
+
+  return { profile, stats, profitHistory, streak, groupComparison };
 }
 
 export async function getProfileStats(userId: string) {
@@ -72,6 +89,16 @@ export async function updateLocale(userId: string, locale: string) {
 
   await updateUserProfile(userId, { locale });
   revalidateLocalized("/settings");
+  return { success: true };
+}
+
+export async function updateBankAlias(userId: string, bankAlias: string | null) {
+  if (bankAlias !== null && bankAlias.length > 200) {
+    return { error: "El alias/CVU no puede superar los 200 caracteres" };
+  }
+
+  await updateUserProfile(userId, { bankAlias: bankAlias || null });
+  revalidateLocalized("/profile");
   return { success: true };
 }
 

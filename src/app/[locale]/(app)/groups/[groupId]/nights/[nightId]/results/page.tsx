@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Avatar } from "@/components/ui/avatar";
-import { formatCurrency, formatProfitLoss } from "@/lib/utils/currency";
 import { getNightLeaderboard } from "@/lib/db/queries/leaderboard";
 import { getNightMvpVotes } from "@/lib/db/queries/mvp";
 import { getNightById, getNightParticipants } from "@/lib/db/queries/nights";
@@ -11,6 +9,7 @@ import { auth } from "@/lib/auth/server";
 import { getUserByAuthId } from "@/lib/db/queries/users";
 import { MvpVote } from "@/components/nights/mvp-vote";
 import { ShareResults } from "@/components/nights/share-results";
+import { NightLeaderboard } from "@/components/nights/night-leaderboard";
 
 export const metadata: Metadata = {
   title: "Night results",
@@ -55,32 +54,7 @@ export default async function NightResultsPage({
           {rows.length === 0 ? (
             <EmptyState title={tCommon("noResults")} />
           ) : (
-            <div className="space-y-2">
-              {rows.map((row) => (
-                <div
-                  key={row.userId}
-                  className="flex items-center gap-3 rounded-lg border border-velvet-700/70 px-3 py-2"
-                >
-                  <span className="w-7 text-sm tabular-nums text-velvet-400">
-                    #{row.rank}
-                  </span>
-                  <Avatar src={row.avatarUrl} name={row.displayName} size="sm" />
-                  <span className="flex-1 truncate text-sm text-velvet-100">
-                    {row.displayName}
-                  </span>
-                  <div className="text-right">
-                    <div className="text-xs text-velvet-400 tabular-nums">
-                      {formatCurrency(row.totalInvested, moneyLocale, "ARS")}
-                      {" -> "}
-                      {formatCurrency(row.totalCashout, moneyLocale, "ARS")}
-                    </div>
-                    <div className="text-sm font-semibold tabular-nums">
-                      {formatProfitLoss(row.profitLoss, moneyLocale, "ARS")}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <NightLeaderboard rows={rows} moneyLocale={moneyLocale} />
           )}
         </CardContent>
       </Card>

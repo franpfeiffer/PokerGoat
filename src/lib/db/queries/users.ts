@@ -3,7 +3,7 @@ import { eq, sql, gte, and, asc } from "drizzle-orm";
 import { db } from "..";
 import { userProfiles, pokerNightResults, pokerNights, groupMembers } from "../schema";
 
-const CACHE_TTL = 30;
+const CACHE_TTL = 60;
 
 export async function getUserByAuthId(authUserId: string) {
   const [user] = await db
@@ -299,6 +299,7 @@ export async function updateUserProfile(
     displayName: string;
     avatarUrl: string;
     locale: string;
+    bankAlias: string | null;
   }>
 ) {
   const [user] = await db

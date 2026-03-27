@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
-import { updateDisplayName, updateAvatar } from "@/lib/actions/profile";
+import { updateDisplayName, updateAvatar, updateBankAlias } from "@/lib/actions/profile";
 import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
 import { ProfitChart } from "./profit-chart";
@@ -19,6 +19,7 @@ interface ProfileContentProps {
   email: string;
   avatarUrl: string | null;
   googleImage?: string | null;
+  bankAlias?: string | null;
   stats: {
     nightsPlayed: number;
     totalProfit: number;
@@ -28,7 +29,7 @@ interface ProfileContentProps {
   streak: { type: "winning" | "losing" | "none"; count: number };
   groupComparison: GroupComparisonStats | null;
   locale: string;
-  onUpdate?: () => void;
+  onProfileChange?: (patch: { displayName?: string; avatarUrl?: string | null; bankAlias?: string | null }) => void;
 }
 
 export function ProfileContent({
@@ -37,17 +38,21 @@ export function ProfileContent({
   email,
   avatarUrl,
   googleImage,
+  bankAlias,
   stats,
   profitHistory,
   streak,
   groupComparison,
   locale,
-  onUpdate,
+  onProfileChange,
 }: ProfileContentProps) {
   const t = useTranslations("profile");
   const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingAlias, setIsEditingAlias] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [aliasCopied, setAliasCopied] = useState(false);
+  const aliasInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -61,17 +66,25 @@ export function ProfileContent({
     }
   }, [isEditingName]);
 
+  useEffect(() => {
+    if (isEditingAlias && aliasInputRef.current) {
+      aliasInputRef.current.focus();
+      aliasInputRef.current.select();
+    }
+  }, [isEditingAlias]);
+
   function handleNameSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
+      const newName = formData.get("displayName") as string;
       const result = await updateDisplayName(userId, formData);
       if (result.error) {
         setError(result.error);
       } else {
         setIsEditingName(false);
-        onUpdate?.();
+        onProfileChange?.({ displayName: newName });
       }
     });
   }
@@ -87,7 +100,7 @@ export function ProfileContent({
         setError(result.error);
       } else {
         window.dispatchEvent(new Event("profile-updated"));
-        onUpdate?.();
+        onProfileChange?.({ avatarUrl: googleImage });
       }
     });
   }
@@ -137,7 +150,7 @@ export function ProfileContent({
             setError(result.error);
           } else {
             window.dispatchEvent(new Event("profile-updated"));
-            onUpdate?.();
+            onProfileChange?.({ avatarUrl: dataUrl });
           }
         });
       };
@@ -160,6 +173,30 @@ export function ProfileContent({
       setIsEditingName(false);
       setError(null);
     }
+  }
+
+  function handleAliasSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    const formData = new FormData(e.currentTarget);
+    const value = (formData.get("bankAlias") as string).trim();
+    startTransition(async () => {
+      const result = await updateBankAlias(userId, value || null);
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setIsEditingAlias(false);
+        onProfileChange?.({ bankAlias: value || null });
+      }
+    });
+  }
+
+  function handleCopyAlias() {
+    if (!bankAlias) return;
+    navigator.clipboard.writeText(bankAlias).then(() => {
+      setAliasCopied(true);
+      setTimeout(() => setAliasCopied(false), 2000);
+    });
   }
 
   const profitColor =
@@ -313,6 +350,86 @@ export function ProfileContent({
                 {streak.type === "winning" ? "🔥" : "❄️"}
                 {streak.count} {streak.type === "winning" ? t("streakWinning") : t("streakLosing")}
               </span>
+            )}
+          </div>
+
+          {/* Bank Alias / CVU */}
+          <div className="mt-4 w-full max-w-xs animate-fade-in" style={{ animationDelay: "0.15s" }}>
+            {isEditingAlias ? (
+              <form
+                onSubmit={handleAliasSubmit}
+                onKeyDown={(e) => { if (e.key === "Escape") { setIsEditingAlias(false); setError(null); } }}
+                className="animate-scale-in flex flex-col items-center gap-3 w-full"
+              >
+                <div className="w-full rounded-xl border border-velvet-600 bg-velvet-900/80 p-4 shadow-lg shadow-black/20 backdrop-blur-sm">
+                  <Input
+                    ref={aliasInputRef}
+                    label={t("bankAliasLabel")}
+                    name="bankAlias"
+                    defaultValue={bankAlias ?? ""}
+                    placeholder={t("bankAliasPlaceholder")}
+                    maxLength={200}
+                    className="text-center"
+                  />
+                  {error && (
+                    <p role="alert" className="mt-2 text-center text-xs text-loss">
+                      {error}
+                    </p>
+                  )}
+                  <div className="mt-3 flex gap-2 justify-center">
+                    <Button type="submit" size="sm" disabled={isPending}>
+                      {t("save")}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => { setIsEditingAlias(false); setError(null); }}
+                    >
+                      {t("cancel")}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                {bankAlias ? (
+                  <>
+                    <span className="text-xs text-velvet-400 uppercase tracking-widest mr-1">{t("bankAliasLabel")}:</span>
+                    <span className="text-sm font-mono text-velvet-200 truncate max-w-[140px]">{bankAlias}</span>
+                    <button
+                      type="button"
+                      onClick={handleCopyAlias}
+                      className="focus-ring group rounded-full p-1.5 text-velvet-500 hover:text-gold-400 hover:bg-velvet-800/60 transition-colors"
+                      aria-label={t("bankAliasCopy")}
+                    >
+                      {aliasCopied ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="text-profit" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="transition-transform group-hover:scale-110">
+                          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                        </svg>
+                      )}
+                    </button>
+                  </>
+                ) : (
+                  <span className="text-xs text-velvet-500">{t("bankAliasEmpty")}</span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setIsEditingAlias(true)}
+                  className="focus-ring group rounded-full p-1.5 text-velvet-500 hover:text-gold-400 hover:bg-velvet-800/60 transition-colors"
+                  aria-label={t("bankAliasEdit")}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="transition-transform group-hover:scale-110">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                    <path d="m15 5 4 4" />
+                  </svg>
+                </button>
+              </div>
             )}
           </div>
         </CardContent>

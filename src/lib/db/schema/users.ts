@@ -11,6 +11,7 @@ export const userProfiles = pgTable("user_profiles", {
   displayName: varchar("display_name", { length: 100 }).notNull(),
   avatarUrl: text("avatar_url"),
   locale: varchar("locale", { length: 5 }).notNull().default("es"),
+  bankAlias: varchar("bank_alias", { length: 200 }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

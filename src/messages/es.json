@@ -234,6 +234,17 @@
     "share": "Compartir resultados",
     "generating": "Generando imagen…"
   },
+  "payment": {
+    "title": "Transferencia",
+    "recipient": "Destinatario",
+    "amountLabel": "Monto a enviar",
+    "aliasLabel": "Alias / CVU",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "noDebt": "Sin deuda",
+    "noAlias": "Este jugador no configuró su alias/CVU",
+    "close": "Cerrar"
+  },
   "mvp": {
     "title": "MVP de la noche",
     "votes": "votos",
@@ -263,7 +274,12 @@
     "avgProfit": "Promedio/noche",
     "rankFirst": "🥇 Sos el #1 del grupo",
     "rankAboveAvg": "Puesto #{rank} de {total} — por encima de la media",
-    "rankBelowAvg": "Puesto #{rank} de {total} — por debajo de la media"
+    "rankBelowAvg": "Puesto #{rank} de {total} — por debajo de la media",
+    "bankAliasLabel": "Alias / CVU",
+    "bankAliasPlaceholder": "tu.alias o 0000003...CVU",
+    "bankAliasEmpty": "Sin alias/CVU configurado",
+    "bankAliasEdit": "Editar alias/CVU",
+    "bankAliasCopy": "Copiar alias/CVU"
   },
   "settings": {
     "title": "Ajustes",

@@ -41,6 +41,7 @@ export default async function PublicProfilePage({
         userId={user.id}
         displayName={user.displayName}
         avatarUrl={user.avatarUrl}
+        bankAlias={user.bankAlias}
         stats={stats}
         profitHistory={profitHistory}
       />

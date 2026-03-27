@@ -230,3 +230,42 @@ h6 {
 .profile-hero-bg {
   /* Clean — no gradient */
 }
+
+/* ── Payment modal ───────────────────────────────── */
+
+.payment-modal {
+  background: transparent;
+  border: none;
+  border-radius: 1rem;
+}
+
+.payment-modal[open] > div {
+  animation: modal-enter 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.payment-modal::backdrop {
+  animation: backdrop-in 0.2s ease both;
+}
+
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .payment-modal[open] > div,
+  .payment-modal::backdrop {
+    animation: none;
+  }
+}

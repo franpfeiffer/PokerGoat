@@ -26,6 +26,7 @@ export interface NightResult {
   userId: string;
   displayName: string;
   avatarUrl: string | null;
+  bankAlias: string | null;
   totalInvested: number;
   totalCashout: number;
   profitLoss: number;
