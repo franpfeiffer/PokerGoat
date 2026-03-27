@@ -17,115 +17,106 @@ function urlBase64ToUint8Array(base64String: string): ArrayBuffer {
   return buffer.buffer;
 }
 
-type UIState = "loading" | "unsupported" | "denied" | "enabled" | "disabled";
-
-async function getOrRegisterSW(): Promise<ServiceWorkerRegistration> {
-  // If already active, return immediately
-  const existing = await navigator.serviceWorker.getRegistration("/");
-  if (existing?.active) return existing;
-
-  // Register and wait for activation (up to 10s)
-  const reg = await navigator.serviceWorker.register("/sw.js");
-  if (reg.active) return reg;
-
-  return new Promise((resolve, reject) => {
-    const sw = reg.installing ?? reg.waiting;
-    if (!sw) {
-      reject(new Error("No SW installing"));
-      return;
-    }
-    const timer = setTimeout(() => reject(new Error("SW activation timeout")), 10_000);
-    sw.addEventListener("statechange", () => {
-      if (sw.state === "activated") {
-        clearTimeout(timer);
-        resolve(reg);
-      }
-    });
-  });
-}
-
 export function PushToggle() {
   const { data: session } = authClient.useSession();
   const t = useTranslations("settings");
-  const [uiState, setUiState] = useState<UIState>("loading");
+  // null = loading, true = enabled, false = disabled, string = error message
+  const [state, setState] = useState<null | boolean | string>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!session?.user) return;
-    if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
-      setUiState("unsupported");
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      setState("unsupported");
       return;
     }
     if (Notification.permission === "denied") {
-      setUiState("denied");
+      setState("blocked");
       return;
     }
-
-    // Check if there's an existing active push subscription
-    navigator.serviceWorker.getRegistration("/").then(async (reg) => {
-      if (!reg) {
-        setUiState("disabled");
-        return;
+    // Check for existing subscription without waiting for SW
+    navigator.serviceWorker.getRegistrations().then(async (regs) => {
+      for (const reg of regs) {
+        try {
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) { setState(true); return; }
+        } catch { /* continue */ }
       }
-      const sub = await reg.pushManager.getSubscription();
-      setUiState(sub ? "enabled" : "disabled");
-    }).catch(() => setUiState("disabled"));
+      setState(false);
+    }).catch(() => setState(false));
   }, [session]);
 
   if (!session?.user) return null;
-  if (uiState === "unsupported") return null;
-
-  async function enable() {
-    setUiState("loading");
-    try {
-      const reg = await getOrRegisterSW();
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-      });
-      const json = sub.toJSON();
-      await fetch("/api/push", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ endpoint: json.endpoint, keys: json.keys }),
-      });
-      setUiState("enabled");
-    } catch {
-      setUiState(Notification.permission === "denied" ? "denied" : "disabled");
-    }
+  if (state === "unsupported") return null;
+  if (state === "blocked") {
+    return <p className="text-sm text-velvet-400">{t("notificationsDenied")}</p>;
   }
-
-  async function disable() {
-    setUiState("loading");
-    try {
-      const reg = await navigator.serviceWorker.getRegistration("/");
-      if (reg) {
-        const sub = await reg.pushManager.getSubscription();
-        if (sub) {
-          await fetch("/api/push", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ endpoint: sub.endpoint }),
-          });
-          await sub.unsubscribe();
-        }
-      }
-      setUiState("disabled");
-    } catch {
-      setUiState("enabled");
-    }
-  }
-
-  if (uiState === "loading") {
+  // Still loading session
+  if (state === null) {
     return <div className="h-6 w-11 animate-pulse rounded-full bg-velvet-700" />;
   }
-
-  if (uiState === "denied") {
-    return (
-      <p className="text-sm text-velvet-400">{t("notificationsDenied")}</p>
-    );
+  // Error string
+  if (typeof state === "string") {
+    return <p className="text-xs text-red-400 max-w-[160px] text-right">{state}</p>;
   }
 
-  const isEnabled = uiState === "enabled";
+  const isEnabled = state === true;
+
+  async function toggle() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      if (isEnabled) {
+        // Disable
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const reg of regs) {
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) {
+            await fetch("/api/push", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ endpoint: sub.endpoint }),
+            });
+            await sub.unsubscribe();
+          }
+        }
+        setState(false);
+      } else {
+        // Enable — request permission first
+        const perm = await Notification.requestPermission();
+        if (perm === "denied") { setState("blocked"); return; }
+        if (perm !== "granted") { setState(false); return; }
+
+        // Register SW
+        await navigator.serviceWorker.register("/sw.js");
+
+        // Wait for an active SW — up to 10s
+        const reg = await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("SW not ready after 10s")), 10000)
+          ),
+        ]);
+
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+        });
+        const json = sub.toJSON();
+        await fetch("/api/push", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint: json.endpoint, keys: json.keys }),
+        });
+        setState(true);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setState(msg);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <div className="flex items-center gap-3">
@@ -134,8 +125,9 @@ export function PushToggle() {
       </span>
       <button
         type="button"
-        onClick={isEnabled ? disable : enable}
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 ${
+        onClick={toggle}
+        disabled={busy}
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 disabled:opacity-50 ${
           isEnabled ? "bg-gold-500" : "bg-velvet-700"
         }`}
         role="switch"
