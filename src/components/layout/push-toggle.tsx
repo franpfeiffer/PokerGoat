@@ -17,29 +17,68 @@ function urlBase64ToUint8Array(base64String: string): ArrayBuffer {
   return buffer.buffer;
 }
 
-type PermissionState = "default" | "granted" | "denied" | "unsupported" | "loading";
+type UIState = "loading" | "unsupported" | "denied" | "enabled" | "disabled";
+
+async function getOrRegisterSW(): Promise<ServiceWorkerRegistration> {
+  // If already active, return immediately
+  const existing = await navigator.serviceWorker.getRegistration("/");
+  if (existing?.active) return existing;
+
+  // Register and wait for activation (up to 10s)
+  const reg = await navigator.serviceWorker.register("/sw.js");
+  if (reg.active) return reg;
+
+  return new Promise((resolve, reject) => {
+    const sw = reg.installing ?? reg.waiting;
+    if (!sw) {
+      reject(new Error("No SW installing"));
+      return;
+    }
+    const timer = setTimeout(() => reject(new Error("SW activation timeout")), 10_000);
+    sw.addEventListener("statechange", () => {
+      if (sw.state === "activated") {
+        clearTimeout(timer);
+        resolve(reg);
+      }
+    });
+  });
+}
 
 export function PushToggle() {
   const { data: session } = authClient.useSession();
   const t = useTranslations("settings");
-  const [state, setState] = useState<PermissionState>("loading");
+  const [uiState, setUiState] = useState<UIState>("loading");
 
   useEffect(() => {
-    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      setState("unsupported");
+    if (!session?.user) return;
+    if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+      setUiState("unsupported");
       return;
     }
-    setState(Notification.permission as PermissionState);
-  }, []);
+    if (Notification.permission === "denied") {
+      setUiState("denied");
+      return;
+    }
+
+    // Check if there's an existing active push subscription
+    navigator.serviceWorker.getRegistration("/").then(async (reg) => {
+      if (!reg) {
+        setUiState("disabled");
+        return;
+      }
+      const sub = await reg.pushManager.getSubscription();
+      setUiState(sub ? "enabled" : "disabled");
+    }).catch(() => setUiState("disabled"));
+  }, [session]);
 
   if (!session?.user) return null;
-  if (state === "unsupported") return null;
+  if (uiState === "unsupported") return null;
 
   async function enable() {
-    setState("loading");
+    setUiState("loading");
     try {
-      const registration = await navigator.serviceWorker.ready;
-      const sub = await registration.pushManager.subscribe({
+      const reg = await getOrRegisterSW();
+      const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
       });
@@ -49,62 +88,62 @@ export function PushToggle() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ endpoint: json.endpoint, keys: json.keys }),
       });
-      setState("granted");
+      setUiState("enabled");
     } catch {
-      setState(Notification.permission as PermissionState);
+      setUiState(Notification.permission === "denied" ? "denied" : "disabled");
     }
   }
 
   async function disable() {
-    setState("loading");
+    setUiState("loading");
     try {
-      const registration = await navigator.serviceWorker.ready;
-      const sub = await registration.pushManager.getSubscription();
-      if (sub) {
-        await fetch("/api/push", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ endpoint: sub.endpoint }),
-        });
-        await sub.unsubscribe();
+      const reg = await navigator.serviceWorker.getRegistration("/");
+      if (reg) {
+        const sub = await reg.pushManager.getSubscription();
+        if (sub) {
+          await fetch("/api/push", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ endpoint: sub.endpoint }),
+          });
+          await sub.unsubscribe();
+        }
       }
-      setState("default");
+      setUiState("disabled");
     } catch {
-      setState(Notification.permission as PermissionState);
+      setUiState("enabled");
     }
   }
 
-  if (state === "loading") {
-    return (
-      <div className="flex items-center gap-2">
-        <div className="h-4 w-24 animate-pulse rounded bg-velvet-700" />
-      </div>
-    );
+  if (uiState === "loading") {
+    return <div className="h-6 w-11 animate-pulse rounded-full bg-velvet-700" />;
   }
 
-  if (state === "denied") {
+  if (uiState === "denied") {
     return (
       <p className="text-sm text-velvet-400">{t("notificationsDenied")}</p>
     );
   }
 
+  const isEnabled = uiState === "enabled";
+
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm text-velvet-300">
-        {state === "granted" ? t("notificationsEnabled") : t("notificationsDisabled")}
+        {isEnabled ? t("notificationsEnabled") : t("notificationsDisabled")}
       </span>
       <button
         type="button"
-        onClick={state === "granted" ? disable : enable}
+        onClick={isEnabled ? disable : enable}
         className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 ${
-          state === "granted" ? "bg-gold-500" : "bg-velvet-700"
+          isEnabled ? "bg-gold-500" : "bg-velvet-700"
         }`}
         role="switch"
-        aria-checked={state === "granted"}
+        aria-checked={isEnabled}
       >
         <span
           className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
-            state === "granted" ? "translate-x-6" : "translate-x-1"
+            isEnabled ? "translate-x-6" : "translate-x-1"
           }`}
         />
       </button>
