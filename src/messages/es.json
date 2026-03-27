@@ -291,7 +291,12 @@
     "language": "Idioma",
     "spanish": "Español",
     "english": "Inglés",
-    "theme": "Tema"
+    "theme": "Tema",
+    "notifications": "Notificaciones",
+    "notificationsDesc": "Recibí alertas cuando empiece una noche o haya actividad en tu grupo",
+    "notificationsEnabled": "Activadas",
+    "notificationsDisabled": "Desactivadas",
+    "notificationsDenied": "Bloqueadas en el navegador. Habilitá los permisos desde la configuración del navegador."
   },
   "sidePots": {
     "title": "Calculadora de Side Pots",

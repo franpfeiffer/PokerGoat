@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { ThemeSwitcher } from "@/components/layout/theme-switcher";
+import { PushToggle } from "@/components/layout/push-toggle";
 
 export const metadata: Metadata = {
   title: "Ajustes",
@@ -39,6 +40,20 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           <ThemeSwitcher />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <h2 className="font-display text-lg font-semibold">
+            {t("notifications")}
+          </h2>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm text-velvet-300">{t("notificationsDesc")}</p>
+            <PushToggle />
+          </div>
         </CardContent>
       </Card>
     </div>
