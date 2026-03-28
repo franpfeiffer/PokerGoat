@@ -12,7 +12,13 @@ export type AchievementId =
   | "mvp_star"
   | "mvp_legend"
   | "profit_club"
-  | "goat";
+  | "goat"
+  | "bubble_boy"
+  | "broke"
+  | "all_in"
+  | "dominator"
+  | "deep_pockets"
+  | "redemption";
 
 export interface Achievement {
   id: AchievementId;
@@ -28,6 +34,12 @@ export interface AchievementInput {
   streak: { type: "winning" | "losing" | "none"; count: number };
   biggestWin?: number;
   mvpCount?: number;
+  lastPlaceCount?: number;
+  brokeCount?: number;
+  rebuyNightsCount?: number;
+  firstPlaceStreak?: number;
+  totalRebuysSpent?: number;
+  hadRedemption?: boolean;
 }
 
 const DEFINITIONS: Array<{
@@ -121,6 +133,42 @@ const DEFINITIONS: Array<{
     icon: "🐟",
     tier: "bronze",
     check: ({ nightsPlayed, winRate }) => nightsPlayed >= 5 && winRate < 0.25,
+  },
+  {
+    id: "bubble_boy",
+    icon: "🫧",
+    tier: "bronze",
+    check: ({ lastPlaceCount = 0 }) => lastPlaceCount >= 3,
+  },
+  {
+    id: "broke",
+    icon: "💸",
+    tier: "bronze",
+    check: ({ brokeCount = 0 }) => brokeCount >= 1,
+  },
+  {
+    id: "all_in",
+    icon: "🎲",
+    tier: "silver",
+    check: ({ rebuyNightsCount = 0 }) => rebuyNightsCount >= 5,
+  },
+  {
+    id: "dominator",
+    icon: "👊",
+    tier: "gold",
+    check: ({ firstPlaceStreak = 0 }) => firstPlaceStreak >= 3,
+  },
+  {
+    id: "deep_pockets",
+    icon: "🏦",
+    tier: "silver",
+    check: ({ totalRebuysSpent = 0 }) => totalRebuysSpent >= 10000,
+  },
+  {
+    id: "redemption",
+    icon: "🔄",
+    tier: "silver",
+    check: ({ hadRedemption = false }) => hadRedemption,
   },
 ];
 

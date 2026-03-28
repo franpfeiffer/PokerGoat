@@ -122,6 +122,61 @@ function ActivityRow({
         <span className="text-velvet-400">{t("joinedGroup")}</span>
       </>
     );
+  } else if (item.type === "achievement_unlocked") {
+    icon = "🏅";
+    const achievementName = meta?.achievementName as string | undefined;
+    const achievementIcon = meta?.achievementIcon as string | undefined;
+    text = (
+      <>
+        <span className="font-medium text-velvet-100">{item.actorName}</span>
+        {" "}
+        <span className="text-velvet-400">{t("unlockedAchievement")}</span>
+        {achievementName && (
+          <>
+            {" "}
+            <span className="font-semibold text-gold-400">
+              {achievementIcon} {achievementName}
+            </span>
+          </>
+        )}
+      </>
+    );
+  } else if (item.type === "rank_up") {
+    icon = "⬆️";
+    const rankIcon = meta?.rankIcon as string | undefined;
+    const rankName = meta?.rankName as string | undefined;
+    text = (
+      <>
+        <span className="font-medium text-velvet-100">{item.actorName}</span>
+        {" "}
+        <span className="text-velvet-400">{t("reachedRank")}</span>
+        {rankName && (
+          <>
+            {" "}
+            <span className="font-semibold text-purple-400">
+              {rankIcon} {rankName}
+            </span>
+          </>
+        )}
+      </>
+    );
+  } else if (item.type === "personal_record") {
+    icon = "📈";
+    const recordType = meta?.recordType as string | undefined;
+    const value = meta?.value as string | undefined;
+    text = (
+      <>
+        <span className="font-medium text-velvet-100">{item.actorName}</span>
+        {" "}
+        <span className="text-velvet-400">{t("personalRecord")}</span>
+        {recordType && value && (
+          <>
+            {" "}
+            <span className="font-semibold text-profit">{value}</span>
+          </>
+        )}
+      </>
+    );
   }
 
   const rowContent = (

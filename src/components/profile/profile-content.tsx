@@ -12,6 +12,9 @@ import { DEFAULT_CURRENCY } from "@/lib/constants";
 import { ProfitChart } from "./profit-chart";
 import { GroupComparisonCard } from "./group-comparison-card";
 import { AchievementBadges } from "./achievement-badges";
+import { RankBadge } from "./rank-badge";
+import { PersonalRecordsCard } from "./personal-records-card";
+import { ShareProfile } from "./share-profile";
 import type { GroupComparisonStats } from "@/lib/db/queries/users";
 import type { AchievementInput } from "@/lib/achievements";
 
@@ -31,6 +34,16 @@ interface ProfileContentProps {
   streak: { type: "winning" | "losing" | "none"; count: number };
   groupComparison: GroupComparisonStats | null;
   achievementData: AchievementInput | null;
+  personalRecords: {
+    biggestWin: number;
+    worstNight: number;
+    biggestWinNightId: string | null;
+    worstNightId: string | null;
+    biggestWinDate: string | null;
+    worstNightDate: string | null;
+    longestWinStreak: number;
+    groupId?: string;
+  } | null;
   locale: string;
   onProfileChange?: (patch: { displayName?: string; avatarUrl?: string | null; bankAlias?: string | null }) => void;
 }
@@ -47,6 +60,7 @@ export function ProfileContent({
   streak,
   groupComparison,
   achievementData,
+  personalRecords,
   locale,
   onProfileChange,
 }: ProfileContentProps) {
@@ -357,8 +371,13 @@ export function ProfileContent({
             )}
           </div>
 
+          {/* Rank */}
+          <div className="mt-3 w-full max-w-xs animate-fade-in" style={{ animationDelay: "0.15s" }}>
+            <RankBadge totalProfit={stats.totalProfit} locale={locale} />
+          </div>
+
           {/* Bank Alias / CVU */}
-          <div className="mt-4 w-full max-w-xs animate-fade-in" style={{ animationDelay: "0.15s" }}>
+          <div className="mt-3 w-full max-w-xs animate-fade-in" style={{ animationDelay: "0.2s" }}>
             {isEditingAlias ? (
               <form
                 onSubmit={handleAliasSubmit}
@@ -473,6 +492,34 @@ export function ProfileContent({
 
       {/* Achievement badges */}
       {achievementData && <AchievementBadges input={achievementData} />}
+
+      {/* Share profile */}
+      {achievementData && (
+        <div className="flex justify-center">
+          <ShareProfile
+            displayName={displayName}
+            avatarUrl={avatarUrl || googleImage}
+            totalProfit={stats.totalProfit}
+            nightsPlayed={stats.nightsPlayed}
+            winRate={stats.winRate}
+            achievementData={achievementData}
+          />
+        </div>
+      )}
+
+      {/* Personal records */}
+      {personalRecords && (
+        <PersonalRecordsCard
+          groupId={personalRecords.groupId}
+          biggestWin={personalRecords.biggestWin}
+          worstNight={personalRecords.worstNight}
+          biggestWinNightId={personalRecords.biggestWinNightId}
+          worstNightId={personalRecords.worstNightId}
+          biggestWinDate={personalRecords.biggestWinDate}
+          worstNightDate={personalRecords.worstNightDate}
+          longestWinStreak={personalRecords.longestWinStreak}
+        />
+      )}
 
       {/* Group comparison */}
       {groupComparison && (

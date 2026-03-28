@@ -2,6 +2,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { ProfitBadge } from "./profit-badge";
 import { RankIndicator } from "./rank-indicator";
+import { RankBadge } from "@/components/profile/rank-badge";
 import { Link } from "@/i18n/navigation";
 import { StatTooltip } from "@/components/ui/tooltip";
 
@@ -60,6 +61,7 @@ export function LeaderboardRow({
             >
               {displayName}
             </Link>
+            <RankBadge totalProfit={totalProfitLoss} locale={locale} size="sm" />
             {streak && streak.type !== "none" && streak.count >= 2 && (
               <span
                 title={`${streak.count} ${streak.type === "winning" ? t("streakWinning") : t("streakLosing")}`}

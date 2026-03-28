@@ -10,6 +10,7 @@ import {
   getUserStreak,
   getUserGroupComparison,
   getUserAchievementData,
+  getUserPersonalRecords,
   type GroupComparisonStats,
 } from "@/lib/db/queries/users";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
@@ -40,15 +41,16 @@ export async function getFullProfile(authUserId: string, displayName: string, av
     profile = await createUserProfile({ authUserId, displayName, avatarUrl });
   }
 
-  const [stats, profitHistory, streak, groupComparison, achievementData] = await Promise.all([
+  const [stats, profitHistory, streak, groupComparison, achievementData, personalRecords] = await Promise.all([
     getUserStats(profile.id),
     getUserProfitHistory(profile.id),
     getUserStreak(profile.id),
     getUserGroupComparison(profile.id),
     getUserAchievementData(profile.id),
+    getUserPersonalRecords(profile.id),
   ]);
 
-  return { profile, stats, profitHistory, streak, groupComparison, achievementData };
+  return { profile, stats, profitHistory, streak, groupComparison, achievementData, personalRecords };
 }
 
 export async function getProfileStats(userId: string) {

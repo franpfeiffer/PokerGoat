@@ -162,4 +162,30 @@ export const pushNotify = {
       icon: "/icons/casino-chips.png",
     });
   },
+
+  achievementUnlocked(
+    userId: string,
+    achievementName: string,
+  ) {
+    return sendToUser(userId, {
+      title: "🏅 Achievement unlocked!",
+      body: achievementName,
+      url: `${APP_URL}/profile`,
+      icon: "/icons/casino-chips.png",
+    });
+  },
+
+  addedToNight(
+    userId: string,
+    groupId: string,
+    nightId: string,
+    nightName: string
+  ) {
+    return sendToUser(userId, {
+      title: "🃏 Te agregaron a una noche",
+      body: nightName,
+      url: `${APP_URL}/groups/${groupId}/nights/${nightId}`,
+      icon: "/icons/casino-chips.png",
+    });
+  },
 };

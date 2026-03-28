@@ -8,6 +8,7 @@ import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
 import { ProfitChart } from "./profit-chart";
 import { AchievementBadges } from "./achievement-badges";
+import { RankBadge } from "./rank-badge";
 import type { AchievementInput } from "@/lib/achievements";
 
 interface PublicProfileContentProps {
@@ -77,6 +78,10 @@ export function PublicProfileContent({
             <h2 className="font-display text-2xl font-bold text-velvet-50 tracking-tight text-center">
               {displayName}
             </h2>
+          </div>
+
+          <div className="mt-3 w-full max-w-xs animate-fade-in" style={{ animationDelay: "0.15s" }}>
+            <RankBadge totalProfit={stats.totalProfit} locale={locale} />
           </div>
 
           {bankAlias && (

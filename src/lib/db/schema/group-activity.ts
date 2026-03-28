@@ -14,6 +14,9 @@ export const activityTypeEnum = pgEnum("activity_type", [
   "night_completed",
   "night_created",
   "member_joined",
+  "achievement_unlocked",
+  "rank_up",
+  "personal_record",
 ]);
 
 export const groupActivity = pgTable("group_activity", {

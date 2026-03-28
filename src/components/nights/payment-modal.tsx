@@ -18,7 +18,6 @@ interface PaymentModalProps {
 
 export function PaymentModal({ open, onClose, player }: PaymentModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const locale = useLocale();
   const t = useTranslations("payment");
   const [copied, setCopied] = useState(false);
@@ -34,8 +33,6 @@ export function PaymentModal({ open, onClose, player }: PaymentModalProps) {
     if (open) {
       setCopied(false);
       dialog.showModal();
-      // Defer focus to close button after animation frame
-      requestAnimationFrame(() => closeButtonRef.current?.focus());
     } else {
       dialog.close();
     }
@@ -103,7 +100,6 @@ export function PaymentModal({ open, onClose, player }: PaymentModalProps) {
               {t("title")}
             </span>
             <button
-              ref={closeButtonRef}
               type="button"
               onClick={onClose}
               aria-label={t("close")}

@@ -13,10 +13,14 @@ import {
   allParticipantsHaveChips,
 } from "@/lib/utils/chips";
 import { getUserMembership } from "@/lib/db/queries/groups";
+import { getUserAchievementData, getUserStreak, getUserPersonalRecords } from "@/lib/db/queries/users";
 import { insertActivity } from "@/lib/db/queries/activity";
 import { pushNotify } from "@/lib/push/send";
+import { computeAchievements, getUnlockedAchievements } from "@/lib/achievements";
+import { getRank } from "@/lib/rank";
 import { revalidateLocalized } from "@/lib/utils/revalidate";
 import { revalidateTag } from "next/cache";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export async function calculateAndSaveResults(
   nightId: string,
@@ -159,6 +163,96 @@ export async function calculateAndSaveResults(
       .resultsPublished(night.groupId, nightName, nightId, winnerName)
       .catch(() => {});
   }
+
+  // Post-completion: check achievements, rank ups, and personal records for each participant
+  // Fire and forget — don't block result saving
+  Promise.allSettled(
+    results.map(async (result) => {
+      const userId = result.userId;
+
+      const [achievementData, streak, prevRecords] = await Promise.all([
+        getUserAchievementData(userId),
+        getUserStreak(userId),
+        getUserPersonalRecords(userId),
+      ]);
+
+      const input = { ...achievementData, streak };
+
+      // Achievements: find newly unlocked ones by comparing before/after this night
+      // We compute with previous stats (subtract this night's contribution)
+      const prevNightsPlayed = achievementData.nightsPlayed - 1;
+      const prevProfit = achievementData.totalProfit - Number(result.profitLoss);
+      const prevWins = Math.max(0, Math.round(achievementData.winRate * achievementData.nightsPlayed) - (Number(result.profitLoss) > 0 ? 1 : 0));
+      const prevWinRate = prevNightsPlayed > 0 ? prevWins / prevNightsPlayed : 0;
+      const prevStreak = streak.count > 1
+        ? streak
+        : { type: "none" as const, count: 0 };
+      const prevInput = {
+        ...achievementData,
+        nightsPlayed: prevNightsPlayed,
+        totalProfit: prevProfit,
+        winRate: prevWinRate,
+        streak: prevStreak,
+      };
+
+      const nowUnlocked = new Set(getUnlockedAchievements(input).map((a) => a.id));
+      const wasUnlocked = new Set(getUnlockedAchievements(prevInput).map((a) => a.id));
+      const allAchievements = computeAchievements(input);
+
+      for (const achievement of allAchievements) {
+        if (nowUnlocked.has(achievement.id) && !wasUnlocked.has(achievement.id)) {
+          // New achievement unlocked
+          const achievementNames: Record<string, string> = {
+            first_blood: "First Blood", veteran: "Veteran", centurion: "Centurion",
+            shark: "Shark", fish: "Fish", consistent: "Consistent",
+            high_roller: "High Roller", comeback_kid: "Comeback Kid",
+            hot_streak: "On Fire", ice_cold: "Ice Cold", mvp_star: "MVP",
+            mvp_legend: "MVP Legend", profit_club: "Profit Club", goat: "G.O.A.T.",
+            bubble_boy: "Bubble Boy", broke: "Broke", all_in: "All In",
+            dominator: "Dominator", deep_pockets: "Deep Pockets", redemption: "Redemption",
+          };
+          const name = achievementNames[achievement.id] ?? achievement.id;
+
+          await Promise.all([
+            insertActivity({
+              groupId: night.groupId,
+              type: "achievement_unlocked",
+              actorId: userId,
+              metadata: { achievementId: achievement.id, achievementName: name, achievementIcon: achievement.icon },
+            }),
+            pushNotify.achievementUnlocked(userId, `${achievement.icon} ${name}`),
+          ]).catch(() => {});
+        }
+      }
+
+      // Rank up check
+      const prevRank = getRank(prevProfit);
+      const newRank = getRank(achievementData.totalProfit);
+      if (newRank.id !== prevRank.id) {
+        await insertActivity({
+          groupId: night.groupId,
+          type: "rank_up",
+          actorId: userId,
+          metadata: { rankId: newRank.id, rankName: newRank.id, rankIcon: newRank.icon },
+        }).catch(() => {});
+      }
+
+      // Personal record check — biggest win
+      const thisProfitLoss = Number(result.profitLoss);
+      if (thisProfitLoss > 0 && thisProfitLoss > (prevRecords.biggestWin ?? 0) && prevNightsPlayed > 0) {
+        await insertActivity({
+          groupId: night.groupId,
+          type: "personal_record",
+          actorId: userId,
+          targetId: nightId,
+          metadata: {
+            recordType: "biggestWin",
+            value: formatCurrency(thisProfitLoss, "es-AR", "ARS"),
+          },
+        }).catch(() => {});
+      }
+    })
+  );
 
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   revalidateLocalized(`/groups/${night.groupId}`);

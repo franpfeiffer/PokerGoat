@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { NightCard } from "@/components/nights/night-card";
+import { NightsList } from "@/components/nights/nights-list";
 import { getGroupNights } from "@/lib/db/queries/nights";
 
 export const metadata: Metadata = {
@@ -58,19 +58,11 @@ export default async function NightsListPage({
           }
         />
       ) : (
-        <div className="space-y-3">
-          {nights.map((night) => (
-            <NightCard
-              key={night.id}
-              id={night.id}
-              groupId={groupId}
-              name={night.name}
-              date={night.date}
-              status={night.status}
-              locale={locale}
-            />
-          ))}
-        </div>
+        <NightsList
+          nights={nights.map((n) => ({ id: n.id, name: n.name, date: n.date, status: n.status }))}
+          groupId={groupId}
+          locale={locale}
+        />
       )}
     </div>
   );

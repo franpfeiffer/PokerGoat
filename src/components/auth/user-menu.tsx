@@ -79,12 +79,14 @@ export function UserMenu({ displayName, avatarUrl }: UserMenuProps) {
           </div>
           <Link
             href="/profile"
+            onClick={() => setOpen(false)}
             className="focus-ring flex w-full items-center rounded-md px-3 py-2 text-sm text-velvet-200 hover:bg-velvet-700/50 transition-colors"
           >
             {t("profile")}
           </Link>
           <Link
             href="/settings"
+            onClick={() => setOpen(false)}
             className="focus-ring flex w-full items-center rounded-md px-3 py-2 text-sm text-velvet-200 hover:bg-velvet-700/50 transition-colors"
           >
             {t("settings")}

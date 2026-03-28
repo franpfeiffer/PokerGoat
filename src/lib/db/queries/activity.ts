@@ -7,7 +7,7 @@ const CACHE_TTL = 30;
 
 export interface ActivityItem {
   id: string;
-  type: "night_completed" | "night_created" | "member_joined";
+  type: "night_completed" | "night_created" | "member_joined" | "achievement_unlocked" | "rank_up" | "personal_record";
   actorId: string | null;
   actorName: string | null;
   actorAvatar: string | null;
@@ -53,7 +53,7 @@ export async function getGroupActivity(
 
 export async function insertActivity(data: {
   groupId: string;
-  type: "night_completed" | "night_created" | "member_joined";
+  type: "night_completed" | "night_created" | "member_joined" | "achievement_unlocked" | "rank_up" | "personal_record";
   actorId?: string;
   targetId?: string;
   metadata?: Record<string, unknown>;

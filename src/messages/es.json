@@ -121,6 +121,8 @@
     "participants": "Participantes",
     "participantsCount": "{count} participantes",
     "addParticipant": "Añadir participante",
+    "searchParticipant": "Buscar jugador…",
+    "add": "Agregar",
     "decreaseBuyIn": "Reducir buy-in",
     "addRebuy": "Añadir re-buy",
     "finalChipsFor": "Fichas finales de {name}",
@@ -149,6 +151,11 @@
     "timerLabel": "Tiempo jugando",
     "noNights": "Aún no hay noches de poker",
     "noNightsAction": "Crea la primera noche para empezar",
+    "noNightsFilter": "No hay noches con este filtro",
+    "filterAll": "Todas",
+    "filterInProgress": "En curso",
+    "filterScheduled": "Programadas",
+    "filterCompleted": "Completadas",
     "chipBlackQty": "Negras",
     "chipWhiteQty": "Blancas",
     "chipRedQty": "Rojas",
@@ -190,6 +197,11 @@
     "monthly": "Mensual",
     "season": "Temporada",
     "nightRanking": "Clasificación de la noche",
+    "totalPot": "Pozo total",
+    "rebuys": "Rebuys",
+    "duration": "Duración",
+    "rebuyDetails": "Rebuys",
+    "rebuyCount": "rebuy",
     "historicalNoData": "Sin datos históricos",
     "cumulative": "Acumulado",
     "profitEvolution": "Evolución de ganancias",
@@ -208,11 +220,23 @@
     "wonNight": "ganó la noche",
     "createdNight": "creó la noche",
     "joinedGroup": "se unió al grupo",
+    "unlockedAchievement": "desbloqueó",
+    "reachedRank": "llegó al rango",
+    "personalRecord": "batió un récord personal",
     "in": "en",
     "noActivity": "Sin actividad reciente"
   },
+  "personalRecords": {
+    "title": "Récords personales",
+    "biggestWin": "Mayor ganancia",
+    "worstNight": "Peor noche",
+    "longestStreak": "Racha más larga",
+    "night": "noche",
+    "nights": "noches"
+  },
   "headToHead": {
     "title": "Cara a cara",
+    "subtitle": "Compará estadísticas entre dos jugadores de tu grupo",
     "selectPlayers": "Selecciona dos jugadores para comparar",
     "playerA": "Jugador 1",
     "playerB": "Jugador 2",
@@ -233,6 +257,7 @@
   },
   "share": {
     "share": "Compartir resultados",
+    "shareProfile": "Compartir perfil",
     "generating": "Generando imagen…"
   },
   "payment": {
@@ -360,6 +385,14 @@
       "priority": "Soporte prioritario"
     }
   },
+  "rank": {
+    "label": "Rango",
+    "needForNext": "Faltan {amount} para llegar a {rank}",
+    "fish": "Fish",
+    "crab": "Cangrejo",
+    "octopus": "Pulpo",
+    "shark": "Shark"
+  },
   "achievements": {
     "title": "Logros",
     "locked": "Logro bloqueado",
@@ -418,6 +451,30 @@
     "goat": {
       "name": "G.O.A.T.",
       "description": "$50.000+ en ganancias, 60%+ de winrate y 50+ noches"
+    },
+    "bubble_boy": {
+      "name": "Bubble Boy",
+      "description": "Terminaste último al menos 3 veces"
+    },
+    "broke": {
+      "name": "En cero",
+      "description": "Terminaste una noche con 0 fichas"
+    },
+    "all_in": {
+      "name": "All In",
+      "description": "Hiciste rebuy en al menos 5 noches distintas"
+    },
+    "dominator": {
+      "name": "Dominador",
+      "description": "Ganaste 3 noches seguidas siendo primero"
+    },
+    "deep_pockets": {
+      "name": "Bolsillos profundos",
+      "description": "Gastaste $10.000+ en rebuys en total"
+    },
+    "redemption": {
+      "name": "Redención",
+      "description": "Ganaste la noche justo después de tu peor pérdida"
     }
   }
 }

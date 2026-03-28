@@ -121,6 +121,8 @@
     "participants": "Participants",
     "participantsCount": "{count} participants",
     "addParticipant": "Add participant",
+    "searchParticipant": "Search player…",
+    "add": "Add",
     "decreaseBuyIn": "Decrease buy-in",
     "addRebuy": "Add re-buy",
     "finalChipsFor": "Final chips for {name}",
@@ -149,6 +151,11 @@
     "timerLabel": "Time playing",
     "noNights": "No poker nights yet",
     "noNightsAction": "Create the first night to get started",
+    "noNightsFilter": "No nights match this filter",
+    "filterAll": "All",
+    "filterInProgress": "In progress",
+    "filterScheduled": "Scheduled",
+    "filterCompleted": "Completed",
     "chipBlackQty": "Black",
     "chipWhiteQty": "White",
     "chipRedQty": "Red",
@@ -190,6 +197,11 @@
     "monthly": "Monthly",
     "season": "Season",
     "nightRanking": "Night ranking",
+    "totalPot": "Total pot",
+    "rebuys": "Rebuys",
+    "duration": "Duration",
+    "rebuyDetails": "Rebuys",
+    "rebuyCount": "rebuy",
     "historicalNoData": "No historical data",
     "cumulative": "Cumulative",
     "profitEvolution": "Profit evolution",
@@ -208,11 +220,23 @@
     "wonNight": "won the night",
     "createdNight": "created the night",
     "joinedGroup": "joined the group",
+    "unlockedAchievement": "unlocked",
+    "reachedRank": "reached rank",
+    "personalRecord": "set a new personal record",
     "in": "in",
     "noActivity": "No recent activity"
   },
+  "personalRecords": {
+    "title": "Personal Records",
+    "biggestWin": "Biggest win",
+    "worstNight": "Worst night",
+    "longestStreak": "Longest streak",
+    "night": "night",
+    "nights": "nights"
+  },
   "headToHead": {
-    "title": "Head to head",
+    "title": "Head to Head",
+    "subtitle": "Compare stats between two players in your group",
     "selectPlayers": "Select two players to compare",
     "playerA": "Player 1",
     "playerB": "Player 2",
@@ -244,6 +268,7 @@
   },
   "share": {
     "share": "Share results",
+    "shareProfile": "Share profile",
     "generating": "Generating image…"
   },
   "mvp": {
@@ -360,6 +385,14 @@
       "priority": "Priority support"
     }
   },
+  "rank": {
+    "label": "Rank",
+    "needForNext": "{amount} more to reach {rank}",
+    "fish": "Fish",
+    "crab": "Crab",
+    "octopus": "Octopus",
+    "shark": "Shark"
+  },
   "achievements": {
     "title": "Achievements",
     "locked": "Locked achievement",
@@ -418,6 +451,30 @@
     "goat": {
       "name": "G.O.A.T.",
       "description": "$50,000+ profit, 60%+ win rate and 50+ nights"
+    },
+    "bubble_boy": {
+      "name": "Bubble Boy",
+      "description": "Finished last at least 3 times"
+    },
+    "broke": {
+      "name": "Broke",
+      "description": "Finished a night with 0 chips"
+    },
+    "all_in": {
+      "name": "All In",
+      "description": "Bought back in at least 5 different nights"
+    },
+    "dominator": {
+      "name": "Dominator",
+      "description": "Finished 1st three nights in a row"
+    },
+    "deep_pockets": {
+      "name": "Deep Pockets",
+      "description": "Spent $10,000+ total on rebuys"
+    },
+    "redemption": {
+      "name": "Redemption",
+      "description": "Won the night right after your worst loss"
     }
   }
 }

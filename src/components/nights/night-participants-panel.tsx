@@ -67,6 +67,8 @@ export function NightParticipantsPanel({
   const [error, setError] = useState<string | null>(null);
   const haptic = useHaptic();
   const [targetUserId, setTargetUserId] = useState("");
+  const [search, setSearch] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const participantUserIds = useMemo(
     () => new Set(participants.map((participant) => participant.userId)),
@@ -94,6 +96,18 @@ export function NightParticipantsPanel({
     return true;
   }
 
+  const filteredMembers = availableMembers.filter((m) =>
+    m.displayName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const selectedMember = availableMembers.find((m) => m.userId === targetUserId);
+
+  function handleSelectMember(userId: string, name: string) {
+    setTargetUserId(userId);
+    setSearch(name);
+    setShowDropdown(false);
+  }
+
   function handleAddParticipant() {
     if (!targetUserId) return;
     startTransition(async () => {
@@ -103,6 +117,7 @@ export function NightParticipantsPanel({
       );
       if (!ok) return;
       setTargetUserId("");
+      setSearch("");
       router.refresh();
     });
   }
@@ -191,19 +206,44 @@ export function NightParticipantsPanel({
       )}
 
       {isEditable && availableMembers.length > 0 && (
-        <div className="flex flex-col gap-2 rounded-lg border border-velvet-700/60 bg-velvet-900/40 p-3 sm:flex-row sm:items-center">
-          <select
-            value={targetUserId}
-            onChange={(event) => setTargetUserId(event.target.value)}
-            className="focus-ring w-full min-h-11 rounded-md border border-velvet-700 bg-velvet-800 px-3 py-2 text-sm text-velvet-50 sm:min-h-10 sm:flex-1"
-          >
-            <option value="">{t("addParticipant")}</option>
-            {availableMembers.map((member) => (
-              <option key={member.userId} value={member.userId}>
-                {member.displayName}
-              </option>
-            ))}
-          </select>
+        <div className="flex flex-col gap-2 rounded-lg border border-velvet-700/60 bg-velvet-900/40 p-3 sm:flex-row sm:items-start">
+          <div className="relative sm:flex-1">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setTargetUserId("");
+                setShowDropdown(true);
+              }}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+              placeholder={t("searchParticipant")}
+              className="focus-ring w-full min-h-11 rounded-md border border-velvet-700 bg-velvet-800 px-3 py-2 text-sm text-velvet-50 placeholder:text-velvet-500 sm:min-h-10"
+            />
+            {showDropdown && filteredMembers.length > 0 && (
+              <div className="absolute z-20 mt-1 w-full rounded-lg border border-velvet-700 bg-velvet-800 shadow-xl shadow-black/40 overflow-hidden">
+                {filteredMembers.map((member) => (
+                  <button
+                    key={member.userId}
+                    type="button"
+                    onMouseDown={() => handleSelectMember(member.userId, member.displayName)}
+                    className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm text-velvet-100 hover:bg-velvet-700/60 transition-colors text-left"
+                  >
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-velvet-700 text-[10px] font-bold text-velvet-300">
+                      {member.displayName[0]?.toUpperCase()}
+                    </span>
+                    {member.displayName}
+                  </button>
+                ))}
+              </div>
+            )}
+            {showDropdown && search.length > 0 && filteredMembers.length === 0 && (
+              <div className="absolute z-20 mt-1 w-full rounded-lg border border-velvet-700 bg-velvet-800 px-3 py-2.5 text-sm text-velvet-500 shadow-xl shadow-black/40">
+                {tCommon("noResults")}
+              </div>
+            )}
+          </div>
           <Button
             size="sm"
             type="button"
@@ -211,7 +251,7 @@ export function NightParticipantsPanel({
             disabled={!targetUserId || isPending}
             className="min-h-11 w-full sm:min-h-10 sm:w-auto"
           >
-            {t("addParticipant")}
+            {t("add")}
           </Button>
         </div>
       )}

@@ -9,6 +9,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { GroupComparisonStats } from "@/lib/db/queries/users";
 import type { AchievementInput } from "@/lib/achievements";
 
+type PersonalRecords = {
+  biggestWin: number;
+  worstNight: number;
+  biggestWinNightId: string | null;
+  worstNightId: string | null;
+  biggestWinDate: string | null;
+  worstNightDate: string | null;
+  longestWinStreak: number;
+  groupId?: string;
+};
+
 type ProfileState = {
   id: string;
   displayName: string;
@@ -26,6 +37,7 @@ export function ProfileLoader() {
   const [streak, setStreak] = useState<{ type: "winning" | "losing" | "none"; count: number }>({ type: "none", count: 0 });
   const [groupComparison, setGroupComparison] = useState<GroupComparisonStats | null>(null);
   const [achievementData, setAchievementData] = useState<AchievementInput | null>(null);
+  const [personalRecords, setPersonalRecords] = useState<PersonalRecords | null>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
 
@@ -51,6 +63,10 @@ export function ProfileLoader() {
         setStreak(data.streak);
         setGroupComparison(data.groupComparison);
         setAchievementData({ ...data.achievementData, streak: data.streak });
+        setPersonalRecords({
+          ...data.personalRecords,
+          groupId: data.groupComparison?.groupId ?? undefined,
+        });
         setLoading(false);
       } catch {
         if (cancelled) return;
@@ -93,6 +109,7 @@ export function ProfileLoader() {
       streak={streak}
       groupComparison={groupComparison}
       achievementData={achievementData}
+      personalRecords={personalRecords}
       locale={locale}
       onProfileChange={(patch) => setProfile((p) => p ? { ...p, ...patch } : p)}
     />

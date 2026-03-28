@@ -8,7 +8,6 @@ const mainNavItems = [
   { href: "/dashboard", icon: "dashboard", translationKey: "dashboard" },
   { href: "/groups", icon: "groups", translationKey: "groups" },
   { href: "/profile", icon: "profile", translationKey: "profile" },
-  { href: "/settings", icon: "settings", translationKey: "settings" },
 ] as const;
 
 const toolItems = [

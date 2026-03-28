@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, count } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { mvpVotes, pokerNights, pokerNightParticipants } from "@/lib/db/schema";
 import { revalidateTag } from "next/cache";
@@ -73,17 +73,24 @@ export async function voteForMvp(
     await db.insert(mvpVotes).values({ nightId, voterId, candidateId });
   }
 
-  // Notificar al candidato si recibió un voto nuevo (o cambió a él)
+  // Notificar al candidato solo en hitos (1er voto, 5to, 10mo)
+  const MVP_MILESTONES = [1, 5, 10];
   const candidateGotNewVote = isNewVote || previousCandidateId !== candidateId;
   if (candidateGotNewVote) {
-    pushNotify
-      .mvpWon(
-        candidateId,
-        night.name ?? "Noche de poker",
-        night.groupId,
-        nightId
-      )
-      .catch(() => {});
+    const [{ value: totalVotes }] = await db
+      .select({ value: count() })
+      .from(mvpVotes)
+      .where(eq(mvpVotes.candidateId, candidateId));
+    if (MVP_MILESTONES.includes(Number(totalVotes))) {
+      pushNotify
+        .mvpWon(
+          candidateId,
+          night.name ?? "Noche de poker",
+          night.groupId,
+          nightId
+        )
+        .catch(() => {});
+    }
   }
 
   revalidateTag(`night-${nightId}`, "max");

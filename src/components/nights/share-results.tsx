@@ -17,6 +17,7 @@ interface ShareResultsProps {
   results: ResultRow[];
   locale: string;
   currency: string;
+  groupId?: string;
 }
 
 export function ShareResults({
@@ -25,6 +26,7 @@ export function ShareResults({
   results,
   locale,
   currency,
+  groupId: _groupId,
 }: ShareResultsProps) {
   const t = useTranslations("share");
   const cardRef = useRef<HTMLDivElement>(null);
@@ -34,8 +36,7 @@ export function ShareResults({
     if (!cardRef.current) return null;
     const { toPng } = await import("html-to-image");
     return toPng(cardRef.current, {
-      pixelRatio: 2,
-      backgroundColor: "#08080d",
+      pixelRatio: 3,
     });
   }, []);
 
@@ -71,53 +72,101 @@ export function ShareResults({
     return `#${rank}`;
   };
 
+  const winner = results[0];
+
   return (
     <div className="space-y-3">
-      {/* Card to capture */}
+      {/* Card to capture — off-screen rendered for image generation */}
       <div
         ref={cardRef}
-        className="rounded-xl border border-velvet-700/60 bg-velvet-900 p-5"
-        style={{ width: 360 }}
+        style={{
+          width: 400,
+          background: "linear-gradient(160deg, #0f0a1e 0%, #08080d 60%, #0a0d1a 100%)",
+          padding: "28px 24px 24px",
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          position: "absolute",
+          left: "-9999px",
+          top: 0,
+        }}
       >
-        <div className="mb-5 text-center">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold-500">
+        {/* Top gold line */}
+        <div style={{ height: 2, background: "linear-gradient(90deg, transparent, #c8a438, transparent)", marginBottom: 24 }} />
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase", color: "#c8a438", margin: 0 }}>
             PokerGoat
           </p>
-          <p className="mt-1.5 font-display text-lg font-bold text-velvet-50">
+          <p style={{ fontSize: 20, fontWeight: 700, color: "#f5f0e8", margin: "6px 0 4px", lineHeight: 1.2 }}>
             {nightName}
           </p>
-          <p className="mt-0.5 text-[11px] text-velvet-500">{date}</p>
+          <p style={{ fontSize: 11, color: "#6b6080", margin: 0 }}>{date}</p>
         </div>
-        <div className="space-y-1">
-          {results.map((r) => (
+
+        {/* Winner highlight */}
+        {winner && (
+          <div style={{
+            background: "linear-gradient(135deg, rgba(200,164,56,0.12) 0%, rgba(200,164,56,0.04) 100%)",
+            border: "1px solid rgba(200,164,56,0.25)",
+            borderRadius: 14,
+            padding: "14px 16px",
+            marginBottom: 10,
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}>
+            <span style={{ fontSize: 28, lineHeight: 1 }}>🥇</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 16, fontWeight: 700, color: "#f5f0e8", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {winner.displayName}
+              </p>
+              <p style={{ fontSize: 11, color: "#c8a438", margin: "2px 0 0", fontWeight: 500 }}>Ganador de la noche</p>
+            </div>
+            <span style={{ fontSize: 18, fontWeight: 700, color: "#34d375", whiteSpace: "nowrap" }}>
+              {formatProfitLoss(winner.profitLoss, locale, currency)}
+            </span>
+          </div>
+        )}
+
+        {/* Rest of results */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {results.slice(1).map((r) => (
             <div
               key={r.rank}
-              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${
-                r.rank <= 3
-                  ? "bg-gold-500/[0.04] border border-gold-500/10"
-                  : ""
-              }`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "9px 12px",
+                borderRadius: 10,
+                background: r.rank === 2 || r.rank === 3
+                  ? "rgba(255,255,255,0.03)"
+                  : "transparent",
+                border: r.rank === 2 || r.rank === 3
+                  ? "1px solid rgba(255,255,255,0.06)"
+                  : "1px solid transparent",
+              }}
             >
-              <span className="w-7 text-center text-sm">
+              <span style={{ width: 24, textAlign: "center", fontSize: 16, lineHeight: 1 }}>
                 {medalEmoji(r.rank)}
               </span>
-              <span className="flex-1 truncate text-velvet-100">
+              <span style={{ flex: 1, fontSize: 13, color: "#c8bfdb", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {r.displayName}
               </span>
-              <span
-                className={`font-semibold tabular-nums ${
-                  r.profitLoss > 0
-                    ? "text-profit"
-                    : r.profitLoss < 0
-                      ? "text-loss"
-                      : "text-velvet-500"
-                }`}
-              >
+              <span style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: r.profitLoss > 0 ? "#34d375" : r.profitLoss < 0 ? "#f05c6e" : "#6b6080",
+                whiteSpace: "nowrap",
+              }}>
                 {formatProfitLoss(r.profitLoss, locale, currency)}
               </span>
             </div>
           ))}
         </div>
+
+        {/* Bottom gold line */}
+        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(200,164,56,0.3), transparent)", marginTop: 20 }} />
       </div>
 
       <Button

@@ -4,14 +4,13 @@ import { useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 
-const toolPaths = ["/goat-eye", "/side-pots", "/tools"];
+const toolPaths = ["/goat-eye", "/side-pots", "/tools", "/head-to-head"];
 
 const navItems = [
   { href: "/dashboard", icon: "home", translationKey: "dashboard" },
-  { href: "/tools", icon: "tools", translationKey: "tools" },
   { href: "/groups", icon: "groups", translationKey: "groups" },
+  { href: "/tools", icon: "tools", translationKey: "tools" },
   { href: "/profile", icon: "profile", translationKey: "profile" },
-  { href: "/settings", icon: "settings", translationKey: "settings" },
 ] as const;
 
 export function MobileNav() {

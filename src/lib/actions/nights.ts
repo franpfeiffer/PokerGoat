@@ -361,6 +361,18 @@ export async function addParticipant(
     buyInCount: 1,
   });
 
+  // Notify the added participant (only if someone else added them)
+  if (targetUserId !== currentUserId) {
+    pushNotify
+      .addedToNight(
+        targetUserId,
+        night.groupId,
+        nightId,
+        night.name ?? "Noche de poker"
+      )
+      .catch(() => {});
+  }
+
   revalidateLocalized(`/groups/${night.groupId}/nights/${nightId}`);
   revalidateTag(`night-${nightId}`, "max");
   return { success: true };

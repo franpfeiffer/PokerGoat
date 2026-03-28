@@ -297,13 +297,25 @@ export async function getUserGroupComparison(userId: string): Promise<GroupCompa
 export async function getUserAchievementData(userId: string) {
   const getCached = unstable_cache(
     async () => {
-      const [[statsRow], [mvpRow]] = await Promise.all([
+      const [[statsRow], [mvpRow], nightRows] = await Promise.all([
         db
           .select({
             nightsPlayed: sql<number>`count(${pokerNightResults.id})::int`,
             totalProfit: sql<number>`coalesce(sum(${pokerNightResults.profitLoss}), 0)::numeric`,
             wins: sql<number>`count(case when ${pokerNightResults.profitLoss} > 0 then 1 end)::int`,
             biggestWin: sql<number>`coalesce(max(${pokerNightResults.profitLoss}), 0)::numeric`,
+            lastPlaceCount: sql<number>`count(case when ${pokerNightResults.rank} = (
+              select count(*) from ${pokerNightResults} r2 where r2.night_id = ${pokerNightResults.nightId}
+            ) then 1 end)::int`,
+            brokeCount: sql<number>`count(case when ${pokerNightResults.totalCashout}::numeric = 0 then 1 end)::int`,
+            rebuyNightsCount: sql<number>`count(case when ${pokerNightResults.totalInvested}::numeric > (
+              select p.buy_in_amount::numeric from ${pokerNights} p where p.id = ${pokerNightResults.nightId}
+            ) then 1 end)::int`,
+            totalRebuysSpent: sql<number>`coalesce(sum(
+              greatest(${pokerNightResults.totalInvested}::numeric - (
+                select p.buy_in_amount::numeric from ${pokerNights} p where p.id = ${pokerNightResults.nightId}
+              ), 0)
+            ), 0)::numeric`,
           })
           .from(pokerNightResults)
           .where(eq(pokerNightResults.userId, userId)),
@@ -313,10 +325,43 @@ export async function getUserAchievementData(userId: string) {
           })
           .from(mvpVotes)
           .where(eq(mvpVotes.candidateId, userId)),
+        db
+          .select({
+            rank: pokerNightResults.rank,
+            profitLoss: pokerNightResults.profitLoss,
+            nightId: pokerNightResults.nightId,
+          })
+          .from(pokerNightResults)
+          .where(eq(pokerNightResults.userId, userId))
+          .orderBy(asc(pokerNightResults.nightId)),
       ]);
 
       const nightsPlayed = statsRow?.nightsPlayed ?? 0;
       const wins = statsRow?.wins ?? 0;
+
+      // Calculate first place streak and redemption from ordered night results
+      let firstPlaceStreak = 0;
+      let currentFirstStreak = 0;
+      let hadRedemption = false;
+      let prevWasWorstNight = false;
+      const worstProfit = nightRows.length > 0
+        ? Math.min(...nightRows.map((r) => Number(r.profitLoss)))
+        : 0;
+
+      for (const row of nightRows) {
+        const pl = Number(row.profitLoss);
+        const isFirst = row.rank === 1;
+
+        if (isFirst) {
+          currentFirstStreak++;
+          if (currentFirstStreak > firstPlaceStreak) firstPlaceStreak = currentFirstStreak;
+        } else {
+          currentFirstStreak = 0;
+        }
+
+        if (prevWasWorstNight && pl > 0) hadRedemption = true;
+        prevWasWorstNight = pl === worstProfit && worstProfit < 0;
+      }
 
       return {
         nightsPlayed,
@@ -324,12 +369,87 @@ export async function getUserAchievementData(userId: string) {
         winRate: nightsPlayed > 0 ? wins / nightsPlayed : 0,
         biggestWin: Number(statsRow?.biggestWin ?? 0),
         mvpCount: mvpRow?.mvpCount ?? 0,
+        lastPlaceCount: Number(statsRow?.lastPlaceCount ?? 0),
+        brokeCount: Number(statsRow?.brokeCount ?? 0),
+        rebuyNightsCount: Number(statsRow?.rebuyNightsCount ?? 0),
+        totalRebuysSpent: Number(statsRow?.totalRebuysSpent ?? 0),
+        firstPlaceStreak,
+        hadRedemption,
       };
     },
     [`user-achievement-data-${userId}`],
     { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
   );
 
+  return getCached();
+}
+
+export async function getUserPersonalRecords(userId: string) {
+  const getCached = unstable_cache(
+    async () => {
+      const [[statsRow], streakRows] = await Promise.all([
+        db
+          .select({
+            biggestWin: sql<number>`coalesce(max(${pokerNightResults.profitLoss}), 0)::numeric`,
+            worstNight: sql<number>`coalesce(min(${pokerNightResults.profitLoss}), 0)::numeric`,
+            biggestWinNightId: sql<string>`(
+              select night_id from ${pokerNightResults} r2
+              where r2.user_id = ${userId}
+              order by r2.profit_loss desc limit 1
+            )`,
+            worstNightId: sql<string>`(
+              select night_id from ${pokerNightResults} r2
+              where r2.user_id = ${userId}
+              order by r2.profit_loss asc limit 1
+            )`,
+            biggestWinDate: sql<string>`(
+              select pn.date from ${pokerNightResults} r2
+              inner join ${pokerNights} pn on pn.id = r2.night_id
+              where r2.user_id = ${userId}
+              order by r2.profit_loss desc limit 1
+            )`,
+            worstNightDate: sql<string>`(
+              select pn.date from ${pokerNightResults} r2
+              inner join ${pokerNights} pn on pn.id = r2.night_id
+              where r2.user_id = ${userId}
+              order by r2.profit_loss asc limit 1
+            )`,
+          })
+          .from(pokerNightResults)
+          .where(eq(pokerNightResults.userId, userId)),
+        db
+          .select({ profitLoss: pokerNightResults.profitLoss })
+          .from(pokerNightResults)
+          .innerJoin(pokerNights, eq(pokerNightResults.nightId, pokerNights.id))
+          .where(eq(pokerNightResults.userId, userId))
+          .orderBy(asc(pokerNights.date)),
+      ]);
+
+      // Calculate longest winning streak
+      let longestStreak = 0;
+      let currentStreak = 0;
+      for (const row of streakRows) {
+        if (Number(row.profitLoss) > 0) {
+          currentStreak++;
+          if (currentStreak > longestStreak) longestStreak = currentStreak;
+        } else {
+          currentStreak = 0;
+        }
+      }
+
+      return {
+        biggestWin: Number(statsRow?.biggestWin ?? 0),
+        worstNight: Number(statsRow?.worstNight ?? 0),
+        biggestWinNightId: statsRow?.biggestWinNightId ?? null,
+        worstNightId: statsRow?.worstNightId ?? null,
+        biggestWinDate: statsRow?.biggestWinDate ?? null,
+        worstNightDate: statsRow?.worstNightDate ?? null,
+        longestWinStreak: longestStreak,
+      };
+    },
+    [`user-personal-records-${userId}`],
+    { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
+  );
   return getCached();
 }
 

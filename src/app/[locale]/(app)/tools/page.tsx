@@ -10,6 +10,7 @@ export default async function ToolsPage() {
   const tNav = await getTranslations("nav");
   const tGoatEye = await getTranslations("goatEye");
   const tSidePots = await getTranslations("sidePots");
+  const tH2H = await getTranslations("headToHead");
 
   const toolData = [
     {
@@ -23,6 +24,12 @@ export default async function ToolsPage() {
       title: tNav("sidePots"),
       subtitle: tSidePots("subtitle"),
       icon: "sidePots" as const,
+    },
+    {
+      href: "/groups" as const,
+      title: tH2H("title"),
+      subtitle: tH2H("subtitle"),
+      icon: "headToHead" as const,
     },
   ];
 
@@ -96,6 +103,15 @@ function ToolIcon({ name }: { name: string }) {
         <svg {...props}>
           <circle cx="12" cy="12" r="10" />
           <path d="M12 6v12M6 12h12" />
+        </svg>
+      );
+    case "headToHead":
+      return (
+        <svg {...props}>
+          <path d="M8 3H2v6" />
+          <path d="M2 3l7 7" />
+          <path d="M16 21h6v-6" />
+          <path d="M22 21l-7-7" />
         </svg>
       );
     default:
