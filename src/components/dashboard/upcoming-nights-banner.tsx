@@ -37,50 +37,56 @@ export async function UpcomingNightsBanner({ nights, locale }: UpcomingNightsBan
           <Link
             key={night.id}
             href={`/groups/${night.groupId}/nights/${night.id}`}
-            className={`group flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors ${
+            className={`group relative overflow-hidden flex items-center gap-3 rounded-xl border px-4 py-3.5 transition-all duration-200 ${
               isInProgress
-                ? "border-profit/30 bg-profit/5 hover:bg-profit/10"
-                : "border-gold-500/25 bg-gold-500/5 hover:bg-gold-500/10"
+                ? "border-profit/30 bg-profit/[0.05] hover:bg-profit/[0.09] hover:border-profit/45 glow-pulse-profit"
+                : "border-gold-500/25 bg-gold-500/[0.04] hover:bg-gold-500/[0.08] hover:border-gold-500/40"
             }`}
           >
+            {/* Subtle top accent */}
+            <div className={`absolute inset-x-0 top-0 h-px ${
+              isInProgress
+                ? "bg-gradient-to-r from-transparent via-profit/40 to-transparent"
+                : "bg-gradient-to-r from-transparent via-gold-500/30 to-transparent"
+            }`} />
+
             {/* Status dot */}
-            <span
-              className={`relative flex h-2.5 w-2.5 shrink-0 ${
-                isInProgress ? "text-profit" : "text-gold-400"
-              }`}
-            >
+            <span className="relative flex h-3 w-3 shrink-0">
               {isInProgress && (
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-profit opacity-50" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-profit opacity-40" />
               )}
-              <span
-                className={`relative inline-flex h-2.5 w-2.5 rounded-full ${
-                  isInProgress ? "bg-profit" : "bg-gold-400"
-                }`}
-              />
+              <span className={`relative inline-flex h-3 w-3 rounded-full ${
+                isInProgress ? "bg-profit" : "bg-gold-400"
+              }`} />
             </span>
 
             <div className="min-w-0 flex-1">
-              <p className={`text-sm font-medium truncate ${isInProgress ? "text-profit" : "text-gold-300"}`}>
+              <p className={`text-sm font-semibold truncate ${
+                isInProgress ? "text-profit" : "text-gold-300"
+              }`}>
                 {isInProgress ? t("nightInProgress") : t("nightScheduled")}
-                {" · "}
-                <span className="text-velvet-200">{night.name ?? night.groupName}</span>
+                <span className="font-normal text-velvet-300">
+                  {" · "}{night.name ?? night.groupName}
+                </span>
               </p>
-              <p className="text-xs text-velvet-400">
+              <p className="text-xs text-velvet-500 mt-0.5">
                 {night.groupName} · {formatDate(night.date)}
               </p>
             </div>
 
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width={16}
-              height={16}
+              width={15}
+              height={15}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="shrink-0 text-velvet-500 transition-transform group-hover:translate-x-0.5"
+              className={`shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 ${
+                isInProgress ? "text-profit/50" : "text-gold-500/50"
+              }`}
               aria-hidden="true"
             >
               <path d="m9 18 6-6-6-6" />

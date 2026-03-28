@@ -44,15 +44,15 @@ export function NightsList({ nights, groupId, locale }: NightsListProps) {
               key={key}
               type="button"
               onClick={() => setFilter(key)}
-              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                 filter === key
-                  ? "bg-gold-500/15 text-gold-400 border border-gold-500/30"
-                  : "border border-velvet-700/60 text-velvet-400 hover:text-velvet-200 hover:border-velvet-600"
+                  ? "bg-velvet-800 text-velvet-100 border border-velvet-700"
+                  : "border border-transparent text-velvet-500 hover:text-velvet-300"
               }`}
             >
               {t(labelKey)}
               {count > 0 && (
-                <span className={`ml-1.5 tabular-nums ${filter === key ? "text-gold-500/70" : "text-velvet-600"}`}>
+                <span className={`ml-1.5 tabular-nums ${filter === key ? "text-velvet-400" : "text-velvet-700"}`}>
                   {count}
                 </span>
               )}

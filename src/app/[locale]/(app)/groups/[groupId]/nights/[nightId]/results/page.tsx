@@ -71,21 +71,21 @@ export default async function NightResultsPage({
       {night && rows.length > 0 && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-xl border border-velvet-700/50 bg-velvet-900/40 px-3 py-3 text-center">
-            <p className="text-xs text-velvet-500 uppercase tracking-wider">{tNights("participants")}</p>
+            <p className="text-xs text-velvet-500">{tNights("participants")}</p>
             <p className="mt-1 text-xl font-bold tabular-nums text-velvet-100">{rows.length}</p>
           </div>
           <div className="rounded-xl border border-velvet-700/50 bg-velvet-900/40 px-3 py-3 text-center">
-            <p className="text-xs text-velvet-500 uppercase tracking-wider">{t("totalPot")}</p>
+            <p className="text-xs text-velvet-500">{t("totalPot")}</p>
             <p className="mt-1 text-xl font-bold tabular-nums text-velvet-100">
               {formatCurrency(totalPot, moneyLocale, "ARS")}
             </p>
           </div>
           <div className="rounded-xl border border-velvet-700/50 bg-velvet-900/40 px-3 py-3 text-center">
-            <p className="text-xs text-velvet-500 uppercase tracking-wider">{t("rebuys")}</p>
+            <p className="text-xs text-velvet-500">{t("rebuys")}</p>
             <p className="mt-1 text-xl font-bold tabular-nums text-velvet-100">{totalRebuys}</p>
           </div>
           <div className="rounded-xl border border-velvet-700/50 bg-velvet-900/40 px-3 py-3 text-center">
-            <p className="text-xs text-velvet-500 uppercase tracking-wider">{t("duration")}</p>
+            <p className="text-xs text-velvet-500">{t("duration")}</p>
             <p className="mt-1 text-xl font-bold tabular-nums text-velvet-100">
               {durationLabel ?? "—"}
             </p>

@@ -17,7 +17,7 @@ export function TableHead({
 }: HTMLAttributes<HTMLTableSectionElement>) {
   return (
     <thead
-      className={`border-b border-velvet-700 text-xs uppercase tracking-wider text-velvet-400 ${className}`}
+      className={`border-b border-velvet-700 text-xs text-velvet-400 ${className}`}
       {...props}
     />
   );

@@ -95,7 +95,7 @@ export function PaymentModal({ open, onClose, player }: PaymentModalProps) {
           <div className="mb-6 flex items-center justify-between">
             <span
               id={titleId}
-              className="text-[11px] font-semibold uppercase tracking-[0.18em] text-velvet-500"
+              className="text-xs font-medium text-velvet-500"
             >
               {t("title")}
             </span>
@@ -141,7 +141,7 @@ export function PaymentModal({ open, onClose, player }: PaymentModalProps) {
 
           {/* Amount — hero element */}
           <div className="mb-4">
-            <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.16em] text-velvet-500">
+            <p className="mb-2 text-xs text-velvet-500">
               {t("amountLabel")}
             </p>
             <div className="flex items-baseline gap-3">
@@ -153,7 +153,7 @@ export function PaymentModal({ open, onClose, player }: PaymentModalProps) {
                 {formatCurrency(amountToPay, moneyLocale, "ARS")}
               </span>
               {!hasDebt && (
-                <span className="rounded-full border border-velvet-700/60 bg-velvet-800/60 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-velvet-500">
+                <span className="rounded-md border border-velvet-700/60 bg-velvet-800/60 px-2 py-0.5 text-xs text-velvet-500">
                   {t("noDebt")}
                 </span>
               )}
@@ -164,7 +164,7 @@ export function PaymentModal({ open, onClose, player }: PaymentModalProps) {
           {player.bankAlias ? (
             <div className="group mt-5 flex items-center justify-between gap-3 rounded-xl border border-velvet-700/50 bg-velvet-900/60 px-4 py-3.5 transition-colors hover:border-velvet-600/60">
               <div className="min-w-0 flex-1">
-                <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-velvet-600">
+                <p className="mb-1 text-[11px] text-velvet-600">
                   {t("aliasLabel")}
                 </p>
                 <span className="block truncate font-mono text-sm text-velvet-200">

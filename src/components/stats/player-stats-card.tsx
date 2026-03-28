@@ -91,7 +91,7 @@ function StatItem({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <span className="inline-flex items-center text-xs text-velvet-400 uppercase tracking-wider">
+      <span className="inline-flex items-center text-xs text-velvet-400">
         {label}
         {tooltip && <StatTooltip content={tooltip} />}
       </span>

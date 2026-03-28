@@ -19,7 +19,7 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 flex max-w-svw border-t border-velvet-700 bg-velvet-900 pb-[max(env(safe-area-inset-bottom),0px)] lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 flex max-w-svw border-t border-velvet-800 bg-velvet-950/95 backdrop-blur-md pb-[max(env(safe-area-inset-bottom),0px)] lg:hidden"
       aria-label="Navegación móvil"
       style={{ touchAction: "manipulation" }}
     >
@@ -32,17 +32,25 @@ export function MobileNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`focus-ring relative flex flex-1 flex-col items-center gap-1 py-2.5 text-xs transition-colors ${
+            className={`focus-ring relative flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-all duration-200 ${
               isActive
                 ? "text-gold-400"
-                : "text-velvet-500 hover:text-velvet-300"
+                : "text-velvet-600 hover:text-velvet-400"
             }`}
           >
+            {/* Active top bar */}
             {isActive && (
-              <span className="absolute inset-x-3 top-0 h-[2px] rounded-full bg-gold-500" />
+              <span className="absolute inset-x-4 top-0 h-[2px] rounded-full bg-gradient-to-r from-transparent via-gold-500 to-transparent" />
             )}
-            <MobileNavIcon name={item.icon} active={isActive} />
-            <span className="font-medium">{t(item.translationKey)}</span>
+            {/* Icon container with subtle bg when active */}
+            <span className={`flex h-7 w-10 items-center justify-center rounded-lg transition-all duration-200 ${
+              isActive ? "bg-gold-500/10" : ""
+            }`}>
+              <MobileNavIcon name={item.icon} active={isActive} />
+            </span>
+            <span className={`transition-all duration-200 ${isActive ? "text-gold-400" : ""}`}>
+              {t(item.translationKey)}
+            </span>
           </Link>
         );
       })}
@@ -51,18 +59,16 @@ export function MobileNav() {
 }
 
 function MobileNavIcon({ name, active }: { name: string; active: boolean }) {
-  const color = active ? "text-gold-400" : "text-velvet-500";
   const props = {
     xmlns: "http://www.w3.org/2000/svg",
-    width: 20,
-    height: 20,
+    width: 19,
+    height: 19,
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: active ? 2.5 : 1.5,
+    strokeWidth: active ? 2.5 : 1.8,
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
-    className: color,
     "aria-hidden": true as const,
   };
 
@@ -94,13 +100,6 @@ function MobileNavIcon({ name, active }: { name: string; active: boolean }) {
         <svg {...props}>
           <circle cx="12" cy="8" r="5" />
           <path d="M20 21a8 8 0 0 0-16 0" />
-        </svg>
-      );
-    case "settings":
-      return (
-        <svg {...props}>
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-          <circle cx="12" cy="12" r="3" />
         </svg>
       );
     default:

@@ -65,13 +65,13 @@ export function LeaderboardRow({
             {streak && streak.type !== "none" && streak.count >= 2 && (
               <span
                 title={`${streak.count} ${streak.type === "winning" ? t("streakWinning") : t("streakLosing")}`}
-                className={`shrink-0 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none ${
+                className={`shrink-0 inline-flex items-center rounded px-1 py-0.5 text-[10px] font-semibold tabular-nums leading-none ${
                   streak.type === "winning"
-                    ? "bg-profit/15 text-profit"
-                    : "bg-loss/15 text-loss"
+                    ? "bg-profit/10 text-profit"
+                    : "bg-loss/10 text-loss"
                 }`}
               >
-                {streak.type === "winning" ? "🔥" : "❄️"} {streak.count}
+                {streak.count}
               </span>
             )}
           </div>

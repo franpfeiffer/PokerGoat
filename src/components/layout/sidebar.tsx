@@ -20,54 +20,49 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-velvet-700/60 lg:bg-velvet-900">
-      <div className="flex h-14 items-center border-b border-velvet-700/60 px-6">
-        <Link
-          href="/dashboard"
-          className="focus-ring rounded font-display text-xl font-bold text-gold-500"
-        >
+    <aside className="hidden lg:flex lg:w-56 lg:flex-col lg:border-r lg:border-velvet-800 lg:bg-velvet-950">
+      <div className="flex h-14 items-center px-5 border-b border-velvet-800">
+        <Link href="/dashboard" className="focus-ring rounded font-display text-lg font-bold text-gold-500">
           PokerGoat
         </Link>
       </div>
-      <nav className="flex flex-1 flex-col gap-1 p-3" aria-label="Principal">
+      <nav className="flex flex-1 flex-col gap-0.5 p-2.5" aria-label="Principal">
         {mainNavItems.map((item) => {
           const isActive = pathname.includes(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`focus-ring flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`focus-ring flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                 isActive
-                  ? "bg-gold-500/10 text-gold-400"
-                  : "text-velvet-300 hover:bg-velvet-800/50 hover:text-velvet-100"
+                  ? "bg-velvet-800 text-velvet-50"
+                  : "text-velvet-500 hover:bg-velvet-900 hover:text-velvet-200"
               }`}
             >
               <NavIcon name={item.icon} active={isActive} />
               {t(item.translationKey)}
+              {isActive && <span className="ml-auto h-1 w-1 rounded-full bg-gold-500" />}
             </Link>
           );
         })}
 
-        {/* Tools section */}
-        <div className="mt-4 mb-1 px-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-velvet-500">
-            {t("tools")}
-          </span>
-        </div>
+        <div className="my-2 h-px bg-velvet-800" />
+
         {toolItems.map((item) => {
           const isActive = pathname.includes(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`focus-ring flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`focus-ring flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
                 isActive
-                  ? "bg-gold-500/10 text-gold-400"
-                  : "text-velvet-300 hover:bg-velvet-800/50 hover:text-velvet-100"
+                  ? "bg-velvet-800 text-velvet-50"
+                  : "text-velvet-500 hover:bg-velvet-900 hover:text-velvet-200"
               }`}
             >
               <NavIcon name={item.icon} active={isActive} />
               {t(item.translationKey)}
+              {isActive && <span className="ml-auto h-1 w-1 rounded-full bg-gold-500" />}
             </Link>
           );
         })}
@@ -77,18 +72,16 @@ export function Sidebar() {
 }
 
 function NavIcon({ name, active }: { name: string; active: boolean }) {
-  const color = active ? "text-gold-400" : "text-velvet-400";
   const props = {
     xmlns: "http://www.w3.org/2000/svg",
-    width: 20,
-    height: 20,
+    width: 16,
+    height: 16,
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: 2,
+    strokeWidth: active ? 2.5 : 1.8,
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
-    className: color,
     "aria-hidden": true as const,
   };
 
@@ -130,13 +123,6 @@ function NavIcon({ name, active }: { name: string; active: boolean }) {
         <svg {...props}>
           <circle cx="12" cy="8" r="5" />
           <path d="M20 21a8 8 0 0 0-16 0" />
-        </svg>
-      );
-    case "settings":
-      return (
-        <svg {...props}>
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-          <circle cx="12" cy="12" r="3" />
         </svg>
       );
     default:

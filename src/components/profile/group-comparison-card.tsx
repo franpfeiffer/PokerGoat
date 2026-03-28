@@ -32,7 +32,7 @@ function CompareRow({
 
   return (
     <div className="flex items-center justify-between gap-2 py-2 border-b border-velvet-800/60 last:border-0">
-      <span className="text-xs text-velvet-400 uppercase tracking-wider flex-1">{label}</span>
+      <span className="text-xs text-velvet-400 flex-1">{label}</span>
       <span className={`text-sm font-bold tabular-nums ${userColor} w-20 text-right`}>{userValue}</span>
       <span className="text-xs tabular-nums text-velvet-500 w-20 text-right">{avgValue}</span>
     </div>
@@ -49,7 +49,7 @@ export function GroupComparisonCard({ data, locale, currency }: GroupComparisonC
     <Card className="animate-fade-in" style={{ animationDelay: "0.3s" }}>
       <CardContent className="py-5 px-4 sm:py-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-velvet-200 uppercase tracking-wider">
+          <h3 className="text-sm font-semibold text-velvet-200">
             {t("vsGroup", { name: data.groupName })}
           </h3>
           <span className={`text-sm font-bold tabular-nums ${rankColor}`}>
@@ -60,8 +60,8 @@ export function GroupComparisonCard({ data, locale, currency }: GroupComparisonC
         {/* Column headers */}
         <div className="flex items-center justify-between gap-2 mb-1 pb-1 border-b border-velvet-700/60">
           <span className="flex-1" />
-          <span className="text-[10px] font-medium text-velvet-500 uppercase tracking-wider w-20 text-right">{t("you")}</span>
-          <span className="text-[10px] font-medium text-velvet-500 uppercase tracking-wider w-20 text-right">{t("groupAvg")}</span>
+          <span className="text-[10px] font-medium text-velvet-500 w-20 text-right">{t("you")}</span>
+          <span className="text-[10px] font-medium text-velvet-500 w-20 text-right">{t("groupAvg")}</span>
         </div>
 
         <CompareRow

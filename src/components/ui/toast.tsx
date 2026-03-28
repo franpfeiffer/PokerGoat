@@ -40,7 +40,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div
         aria-live="polite"
-        className="fixed bottom-4 right-4 z-50 flex flex-col gap-2"
+        className="fixed bottom-20 left-4 right-4 z-50 flex flex-col gap-1.5 sm:bottom-6 sm:left-auto sm:right-6 sm:w-72"
       >
         {toasts.map((t) => (
           <ToastItem key={t.id} toast={t} onDismiss={removeToast} />
@@ -63,16 +63,23 @@ function ToastItem({
   }, [toast.id, onDismiss]);
 
   const variantStyles = {
-    success: "border-profit/30 bg-profit/10 text-profit",
-    error: "border-loss/30 bg-loss/10 text-loss",
-    info: "border-velvet-600 bg-velvet-800 text-velvet-200",
+    success: "border-profit/25 bg-velvet-900 text-velvet-100",
+    error: "border-loss/25 bg-velvet-900 text-velvet-100",
+    info: "border-velvet-700/60 bg-velvet-900 text-velvet-100",
+  };
+
+  const dot = {
+    success: "bg-profit",
+    error: "bg-loss",
+    info: "bg-velvet-500",
   };
 
   return (
     <div
       role="status"
-      className={`animate-slide-in rounded-lg border px-4 py-3 text-sm shadow-lg ${variantStyles[toast.variant]}`}
+      className={`animate-slide-up flex items-center gap-2.5 rounded-lg border px-3.5 py-2.5 text-sm shadow-xl shadow-black/40 ${variantStyles[toast.variant]}`}
     >
+      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dot[toast.variant]}`} />
       {toast.message}
     </div>
   );

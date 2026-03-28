@@ -73,7 +73,7 @@ export function PersonalRecordsCard({
   return (
     <Card>
       <CardContent className="py-5 px-4 sm:py-6">
-        <h3 className="text-xs font-medium uppercase tracking-widest text-velvet-400 mb-4">
+        <h3 className="text-xs font-medium text-velvet-400 mb-4">
           {t("title")}
         </h3>
         <div className="space-y-3">
@@ -85,7 +85,7 @@ export function PersonalRecordsCard({
               >
                 <span className="text-xl leading-none shrink-0">{record.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-velvet-500 uppercase tracking-wider">{record.label}</p>
+                  <p className="text-xs text-velvet-500">{record.label}</p>
                   <div className="flex items-baseline gap-1.5 mt-0.5">
                     <span className={`font-bold tabular-nums text-lg leading-tight ${record.color}`}>
                       {record.value}

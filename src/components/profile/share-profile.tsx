@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
 import { getRank } from "@/lib/rank";
-import type { AchievementInput, AchievementId } from "@/lib/achievements";
+import type { AchievementInput } from "@/lib/achievements";
 import { getUnlockedAchievements } from "@/lib/achievements";
 
 interface ShareProfileProps {
@@ -16,6 +16,220 @@ interface ShareProfileProps {
   nightsPlayed: number;
   winRate: number;
   achievementData: AchievementInput | null;
+}
+
+const RANK_COLORS: Record<string, string> = {
+  fish: "#60a5fa",
+  crab: "#fb923c",
+  octopus: "#c084fc",
+  shark: "#c8a438",
+};
+
+async function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function drawCard(opts: {
+  displayName: string;
+  avatarUrl?: string | null;
+  totalProfit: number;
+  nightsPlayed: number;
+  winRate: number;
+  rankId: string;
+  rankName: string;
+  profitLabel: string;
+  nightsLabel: string;
+  winRateLabel: string;
+  achievementIcons: string[];
+}): Promise<string> {
+  const W = 760;
+  const H = 420;
+  const DPR = 2;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
+  const ctx = canvas.getContext("2d")!;
+  ctx.scale(DPR, DPR);
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, W * 0.6, H);
+  bg.addColorStop(0, "#0f0a1e");
+  bg.addColorStop(0.6, "#08080d");
+  bg.addColorStop(1, "#0a0d1a");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Top gold line
+  const topLine = ctx.createLinearGradient(0, 0, W, 0);
+  topLine.addColorStop(0, "transparent");
+  topLine.addColorStop(0.5, "#c8a438");
+  topLine.addColorStop(1, "transparent");
+  ctx.fillStyle = topLine;
+  ctx.fillRect(0, 0, W, 2);
+
+  // Avatar
+  const AVATAR_SIZE = 80;
+  const AVATAR_X = 40;
+  const AVATAR_Y = 40;
+
+  if (opts.avatarUrl) {
+    try {
+      // Try fetching as blob to avoid CORS
+      const res = await fetch(opts.avatarUrl);
+      const blob = await res.blob();
+      const b64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+      });
+      const img = await loadImage(b64);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(AVATAR_X + AVATAR_SIZE / 2, AVATAR_Y + AVATAR_SIZE / 2, AVATAR_SIZE / 2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, AVATAR_X, AVATAR_Y, AVATAR_SIZE, AVATAR_SIZE);
+      ctx.restore();
+    } catch {
+      // fallback: initial letter circle
+      drawInitialCircle(ctx, opts.displayName, AVATAR_X, AVATAR_Y, AVATAR_SIZE);
+    }
+  } else {
+    drawInitialCircle(ctx, opts.displayName, AVATAR_X, AVATAR_Y, AVATAR_SIZE);
+  }
+
+  // Avatar gold border
+  ctx.beginPath();
+  ctx.arc(AVATAR_X + AVATAR_SIZE / 2, AVATAR_Y + AVATAR_SIZE / 2, AVATAR_SIZE / 2 + 1, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(200,164,56,0.4)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Name
+  ctx.fillStyle = "#f5f0e8";
+  ctx.font = "bold 22px system-ui, -apple-system, sans-serif";
+  ctx.fillText(opts.displayName, AVATAR_X + AVATAR_SIZE + 16, AVATAR_Y + 28);
+
+  // Rank pill
+  const rankColor = RANK_COLORS[opts.rankId] ?? "#c8a438";
+  const rankText = opts.rankName;
+  ctx.font = "bold 13px system-ui, -apple-system, sans-serif";
+  const rankW = ctx.measureText(rankText).width + 20;
+  const pillX = AVATAR_X + AVATAR_SIZE + 16;
+  const pillY = AVATAR_Y + 40;
+  roundRect(ctx, pillX, pillY, rankW, 22, 11);
+  ctx.fillStyle = hexToRgba(rankColor, 0.12);
+  ctx.fill();
+  ctx.strokeStyle = hexToRgba(rankColor, 0.35);
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = rankColor;
+  ctx.textAlign = "center";
+  ctx.fillText(rankText, pillX + rankW / 2, pillY + 15);
+  ctx.textAlign = "left";
+
+  // Stats cards
+  const stats = [
+    { label: opts.profitLabel, value: `${opts.totalProfit > 0 ? "+" : ""}${formatProfitLoss(opts.totalProfit, "es-AR", DEFAULT_CURRENCY)}`, color: opts.totalProfit > 0 ? "#34d375" : opts.totalProfit < 0 ? "#f05c6e" : "#6b6080" },
+    { label: opts.nightsLabel, value: String(opts.nightsPlayed), color: "#f5f0e8" },
+    { label: opts.winRateLabel, value: `${Math.round(opts.winRate * 100)}%`, color: opts.winRate > 0.5 ? "#34d375" : opts.winRate > 0 ? "#c8a438" : "#6b6080" },
+  ];
+
+  const CARD_Y = 160;
+  const CARD_H = 90;
+  const CARD_GAP = 12;
+  const CARD_W = (W - 80 - CARD_GAP * 2) / 3;
+
+  stats.forEach(({ label, value, color }, i) => {
+    const cx = 40 + i * (CARD_W + CARD_GAP);
+    roundRect(ctx, cx, CARD_Y, CARD_W, CARD_H, 10);
+    ctx.fillStyle = "rgba(255,255,255,0.03)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.06)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = "#6b6080";
+    ctx.font = "10px system-ui, -apple-system, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(label.toUpperCase(), cx + CARD_W / 2, CARD_Y + 24);
+
+    ctx.fillStyle = color;
+    ctx.font = "bold 20px system-ui, -apple-system, sans-serif";
+    ctx.fillText(value, cx + CARD_W / 2, CARD_Y + 58);
+    ctx.textAlign = "left";
+  });
+
+  // Achievements
+  if (opts.achievementIcons.length > 0) {
+    ctx.fillStyle = "#6b6080";
+    ctx.font = "10px system-ui, -apple-system, sans-serif";
+    ctx.fillText("LOGROS", 40, 290);
+
+    ctx.font = "22px system-ui, -apple-system, sans-serif";
+    opts.achievementIcons.slice(0, 10).forEach((icon, i) => {
+      ctx.fillText(icon, 40 + i * 32, 318);
+    });
+  }
+
+  // PokerGoat branding
+  ctx.fillStyle = "#3a3050";
+  ctx.font = "bold 11px system-ui, -apple-system, sans-serif";
+  ctx.textAlign = "right";
+  ctx.letterSpacing = "0.2em";
+  ctx.fillText("POKERGOAT", W - 40, H - 20);
+  ctx.textAlign = "left";
+
+  // Bottom gold line
+  const botLine = ctx.createLinearGradient(0, 0, W, 0);
+  botLine.addColorStop(0, "transparent");
+  botLine.addColorStop(0.5, "rgba(200,164,56,0.3)");
+  botLine.addColorStop(1, "transparent");
+  ctx.fillStyle = botLine;
+  ctx.fillRect(0, H - 2, W, 2);
+
+  return canvas.toDataURL("image/png");
+}
+
+function drawInitialCircle(ctx: CanvasRenderingContext2D, name: string, x: number, y: number, size: number) {
+  ctx.beginPath();
+  ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2);
+  ctx.fillStyle = "#1e1a2e";
+  ctx.fill();
+  ctx.fillStyle = "#c8a438";
+  ctx.font = `bold ${size * 0.4}px system-ui, -apple-system, sans-serif`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText((name[0] ?? "?").toUpperCase(), x + size / 2, y + size / 2);
+  ctx.textBaseline = "alphabetic";
+  ctx.textAlign = "left";
+}
+
+function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 export function ShareProfile({
@@ -28,45 +242,29 @@ export function ShareProfile({
 }: ShareProfileProps) {
   const t = useTranslations("share");
   const locale = useLocale();
-  const cardRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
 
-  const moneyLocale = locale === "es" ? "es-AR" : "en-US";
   const rank = getRank(totalProfit);
   const unlocked = achievementData ? getUnlockedAchievements(achievementData) : [];
-
-  const getAvatarBase64 = useCallback(async () => {
-    if (!avatarUrl) return null;
-    if (avatarBase64) return avatarBase64;
-    try {
-      const res = await fetch(avatarUrl);
-      const blob = await res.blob();
-      return await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(blob);
-      });
-    } catch {
-      return avatarUrl;
-    }
-  }, [avatarUrl, avatarBase64]);
-
-  const generateImage = useCallback(async () => {
-    if (!cardRef.current) return null;
-    const b64 = await getAvatarBase64();
-    setAvatarBase64(b64);
-    // Wait a tick for React to re-render with base64 avatar
-    await new Promise((r) => setTimeout(r, 100));
-    const { toPng } = await import("html-to-image");
-    return toPng(cardRef.current, { pixelRatio: 3, cacheBust: true });
-  }, [getAvatarBase64]);
+  const rankName = rank.id.charAt(0).toUpperCase() + rank.id.slice(1);
 
   const handleShare = async () => {
     setIsGenerating(true);
     try {
-      const dataUrl = await generateImage();
-      if (!dataUrl) return;
+      const dataUrl = await drawCard({
+        displayName,
+        avatarUrl,
+        totalProfit,
+        nightsPlayed,
+        winRate,
+        rankId: rank.id,
+        rankName,
+        profitLabel: locale === "es" ? "Ganancia" : "Profit",
+        nightsLabel: locale === "es" ? "Noches" : "Nights",
+        winRateLabel: "Win Rate",
+        achievementIcons: unlocked.map((a) => a.icon),
+      });
+
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], "poker-profile.png", { type: "image/png" });
       if (navigator.share && navigator.canShare({ files: [file] })) {
@@ -82,98 +280,20 @@ export function ShareProfile({
     }
   };
 
-  const profitColor = totalProfit > 0 ? "#34d375" : totalProfit < 0 ? "#f05c6e" : "#6b6080";
-  const profitSign = totalProfit > 0 ? "+" : "";
-
   return (
-    <>
-      {/* Off-screen card for image capture */}
-      <div
-        ref={cardRef}
-        style={{
-          width: 380,
-          background: "linear-gradient(160deg, #0f0a1e 0%, #08080d 60%, #0a0d1a 100%)",
-          padding: "28px 24px 24px",
-          fontFamily: "system-ui, -apple-system, sans-serif",
-          position: "absolute",
-          left: "-9999px",
-          top: 0,
-        }}
-      >
-        {/* Gold top line */}
-        <div style={{ height: 2, background: "linear-gradient(90deg, transparent, #c8a438, transparent)", marginBottom: 24 }} />
-
-        {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
-          {(avatarBase64 ?? avatarUrl) ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={avatarBase64 ?? avatarUrl!} alt="" width={56} height={56} style={{ borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(200,164,56,0.3)" }} />
-          ) : (
-            <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#1e1a2e", border: "2px solid rgba(200,164,56,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: "#c8a438", fontWeight: 700 }}>
-              {displayName[0]?.toUpperCase()}
-            </div>
-          )}
-          <div>
-            <p style={{ fontSize: 18, fontWeight: 700, color: "#f5f0e8", margin: 0 }}>{displayName}</p>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 4, padding: "2px 10px", borderRadius: 20, background: rank.bgColor.replace("/10", "").replace("bg-", "").includes("blue") ? "rgba(59,130,246,0.1)" : rank.bgColor.replace("/10", "").replace("bg-", "").includes("orange") ? "rgba(249,115,22,0.1)" : rank.bgColor.replace("/10", "").replace("bg-", "").includes("purple") ? "rgba(168,85,247,0.1)" : "rgba(200,164,56,0.1)", border: `1px solid ${rank.borderColor.includes("blue") ? "rgba(59,130,246,0.3)" : rank.borderColor.includes("orange") ? "rgba(249,115,22,0.3)" : rank.borderColor.includes("purple") ? "rgba(168,85,247,0.3)" : "rgba(200,164,56,0.3)"}` }}>
-              <span style={{ fontSize: 13 }}>{rank.icon}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: rank.color.includes("blue") ? "#60a5fa" : rank.color.includes("orange") ? "#fb923c" : rank.color.includes("purple") ? "#c084fc" : "#c8a438" }}>{rank.id.charAt(0).toUpperCase() + rank.id.slice(1)}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats row */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 18 }}>
-          {[
-            { label: "Total Profit", value: `${profitSign}${formatProfitLoss(totalProfit, moneyLocale, DEFAULT_CURRENCY)}`, color: profitColor },
-            { label: "Nights", value: String(nightsPlayed), color: "#f5f0e8" },
-            { label: "Win Rate", value: `${Math.round(winRate * 100)}%`, color: winRate > 0.5 ? "#34d375" : winRate > 0 ? "#c8a438" : "#6b6080" },
-          ].map(({ label, value, color }) => (
-            <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 10, padding: "10px 8px", textAlign: "center" }}>
-              <p style={{ fontSize: 10, color: "#6b6080", margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.1em" }}>{label}</p>
-              <p style={{ fontSize: 16, fontWeight: 700, color, margin: 0, tabularNums: true } as React.CSSProperties}>{value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Achievements */}
-        {unlocked.length > 0 && (
-          <div>
-            <p style={{ fontSize: 10, color: "#6b6080", margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "0.15em" }}>Achievements</p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {unlocked.slice(0, 8).map((a) => (
-                <span key={a.id} style={{ fontSize: 18, lineHeight: 1 }}>{a.icon}</span>
-              ))}
-              {unlocked.length > 8 && (
-                <span style={{ fontSize: 11, color: "#6b6080", alignSelf: "center" }}>+{unlocked.length - 8}</span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* PokerGoat branding */}
-        <div style={{ marginTop: 20, textAlign: "right" }}>
-          <p style={{ fontSize: 9, color: "#3a3050", margin: 0, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" }}>PokerGoat</p>
-        </div>
-
-        {/* Gold bottom line */}
-        <div style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(200,164,56,0.3), transparent)", marginTop: 8 }} />
-      </div>
-
-      <Button
-        size="sm"
-        variant="secondary"
-        onClick={handleShare}
-        disabled={isGenerating}
-        className="min-h-11 w-full sm:min-h-10 sm:w-auto"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="mr-1.5" aria-hidden="true">
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-          <polyline points="16 6 12 2 8 6" />
-          <line x1="12" y1="2" x2="12" y2="15" />
-        </svg>
-        {isGenerating ? t("generating") : t("shareProfile")}
-      </Button>
-    </>
+    <Button
+      size="sm"
+      variant="secondary"
+      onClick={handleShare}
+      disabled={isGenerating}
+      className="min-h-11 w-full sm:min-h-10 sm:w-auto"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="mr-1.5" aria-hidden="true">
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+        <polyline points="16 6 12 2 8 6" />
+        <line x1="12" y1="2" x2="12" y2="15" />
+      </svg>
+      {isGenerating ? t("generating") : t("shareProfile")}
+    </Button>
   );
 }

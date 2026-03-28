@@ -19,7 +19,7 @@ function Landing() {
     <div className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-4">
       <main className="relative z-10 mx-auto flex max-w-2xl flex-col items-center gap-8 text-center">
         <div className="animate-fade-in flex flex-col items-center gap-3">
-          <span className="text-gold-500 text-xs font-semibold tracking-[0.25em] uppercase">
+          <span className="font-display text-gold-500 text-sm font-bold">
             PokerGoat
           </span>
           <h1 className="font-display text-4xl font-bold tracking-tight text-velvet-50 sm:text-5xl md:text-6xl">

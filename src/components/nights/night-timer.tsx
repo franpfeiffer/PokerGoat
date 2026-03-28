@@ -33,7 +33,7 @@ export function NightTimer({ startedAt, label }: NightTimerProps) {
 
   return (
     <div className="flex flex-col items-center">
-      <p className="text-xs text-velvet-400 uppercase tracking-wider">{label}</p>
+      <p className="text-xs text-velvet-400">{label}</p>
       <p className="text-xl font-bold tabular-nums text-gold-400 font-mono">
         {formatElapsed(elapsed)}
       </p>

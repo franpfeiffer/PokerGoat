@@ -43,7 +43,7 @@ export function ThemeSwitcher() {
 
   return (
     <div className="space-y-2">
-      <label className="text-xs font-semibold uppercase tracking-widest text-velvet-400">
+      <label className="text-xs font-semibold text-velvet-400">
         {t("theme")}
       </label>
       <div className="flex gap-2">

@@ -59,7 +59,7 @@ export function MvpVote({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-widest text-velvet-400">
+        <h3 className="text-xs font-semibold text-velvet-400">
           {t("title")}
         </h3>
         {totalVotes > 0 && (

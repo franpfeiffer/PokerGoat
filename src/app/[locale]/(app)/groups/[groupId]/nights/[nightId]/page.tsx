@@ -108,7 +108,7 @@ export default async function NightDetailPage({
       <div className={`grid gap-3 ${night.status === "in_progress" ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
         <Card>
           <CardContent className="text-center py-4">
-            <p className="text-xs text-velvet-400 uppercase tracking-wider">
+            <p className="text-xs text-velvet-400">
               {t("buyIn")}
             </p>
             <p className="text-xl font-bold tabular-nums text-velvet-100">
@@ -118,7 +118,7 @@ export default async function NightDetailPage({
         </Card>
         <Card>
           <CardContent className="text-center py-4">
-            <p className="text-xs text-velvet-400 uppercase tracking-wider">
+            <p className="text-xs text-velvet-400">
               {t("participants")}
             </p>
             <p className="text-xl font-bold tabular-nums text-velvet-100">

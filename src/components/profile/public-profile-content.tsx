@@ -86,7 +86,7 @@ export function PublicProfileContent({
 
           {bankAlias && (
             <div className="mt-3 flex items-center gap-2 animate-fade-in" style={{ animationDelay: "0.15s" }}>
-              <span className="text-xs text-velvet-400 uppercase tracking-widest">{t("bankAliasLabel")}:</span>
+              <span className="text-xs text-velvet-400">{t("bankAliasLabel")}:</span>
               <span className="text-sm font-mono text-velvet-200 truncate max-w-[160px]">{bankAlias}</span>
               <button
                 type="button"
@@ -161,7 +161,7 @@ function StatCard({
         <div className="animate-count-up" style={{ animationDelay: delay }}>
           {children}
         </div>
-        <span className="text-xs font-medium uppercase tracking-widest text-velvet-400">
+        <span className="text-xs font-medium text-velvet-400">
           {label}
         </span>
       </CardContent>

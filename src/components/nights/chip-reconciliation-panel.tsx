@@ -78,7 +78,7 @@ export function ChipReconciliationPanel({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-velvet-700/50 text-xs text-velvet-400 uppercase tracking-wider">
+            <tr className="border-b border-velvet-700/50 text-xs text-velvet-400">
               <th className="py-2 text-left font-medium">&nbsp;</th>
               <th className="py-2 text-right font-medium">
                 {t("reconciliation.expected")}

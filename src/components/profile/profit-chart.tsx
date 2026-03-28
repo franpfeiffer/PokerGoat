@@ -28,7 +28,7 @@ export function ProfitChart({
   return (
     <Card className="animate-fade-in" style={{ animationDelay: "0.3s" }}>
       <CardContent className="px-3 py-5 sm:px-4 sm:py-6">
-        <p className="mb-4 text-center text-xs font-medium uppercase tracking-widest text-velvet-400">
+        <p className="mb-4 text-center text-xs font-medium text-velvet-400">
           {t("profitHistory")}
         </p>
         <ChartInner data={data} locale={locale} currency={currency} />

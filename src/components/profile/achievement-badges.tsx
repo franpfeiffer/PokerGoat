@@ -32,7 +32,7 @@ export function AchievementBadges({ input }: AchievementBadgesProps) {
   return (
     <Card>
       <CardContent className="py-5 px-4 sm:py-6">
-        <h3 className="text-xs font-medium uppercase tracking-widest text-velvet-400 mb-4">
+        <h3 className="text-xs font-medium text-velvet-400 mb-4">
           {t("title")}
         </h3>
         <div className="flex flex-wrap gap-2">

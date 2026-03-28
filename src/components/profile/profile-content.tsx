@@ -418,7 +418,7 @@ export function ProfileContent({
               <div className="flex items-center justify-center gap-2">
                 {bankAlias ? (
                   <>
-                    <span className="text-xs text-velvet-400 uppercase tracking-widest mr-1">{t("bankAliasLabel")}:</span>
+                    <span className="text-xs text-velvet-400 mr-1">{t("bankAliasLabel")}:</span>
                     <span className="text-sm font-mono text-velvet-200 truncate max-w-[140px]">{bankAlias}</span>
                     <button
                       type="button"
@@ -561,7 +561,7 @@ function StatCard({
         <div className="animate-count-up" style={{ animationDelay: delay }}>
           {children}
         </div>
-        <span className="text-xs font-medium uppercase tracking-widest text-velvet-400">
+        <span className="text-xs font-medium text-velvet-400">
           {label}
         </span>
       </CardContent>

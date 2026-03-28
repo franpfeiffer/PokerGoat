@@ -58,7 +58,7 @@ export function HeadToHeadComparison({
       <Card>
         <CardContent className="flex flex-col gap-3 py-4 sm:flex-row sm:items-end">
           <div className="flex flex-1 flex-col gap-1">
-            <label className="text-xs font-semibold uppercase tracking-wider text-velvet-400">
+            <label className="text-xs font-semibold text-velvet-400">
               {t("playerA")}
             </label>
             <select
@@ -80,7 +80,7 @@ export function HeadToHeadComparison({
             vs
           </span>
           <div className="flex flex-1 flex-col gap-1">
-            <label className="text-xs font-semibold uppercase tracking-wider text-velvet-400">
+            <label className="text-xs font-semibold text-velvet-400">
               {t("playerB")}
             </label>
             <select
@@ -132,7 +132,7 @@ export function HeadToHeadComparison({
                   <p className="text-4xl font-bold tabular-nums text-gold-400">
                     {stats.winsA}
                   </p>
-                  <p className="mt-0.5 text-[10px] uppercase tracking-widest text-velvet-500">
+                  <p className="mt-0.5 text-[10px] text-velvet-500">
                     {t("wins")}
                   </p>
                 </div>
@@ -142,7 +142,7 @@ export function HeadToHeadComparison({
                   <p className="text-4xl font-bold tabular-nums text-velvet-500">
                     {stats.draws}
                   </p>
-                  <p className="mt-0.5 text-[10px] uppercase tracking-widest text-velvet-500">
+                  <p className="mt-0.5 text-[10px] text-velvet-500">
                     {t("draws")}
                   </p>
                 </div>
@@ -154,7 +154,7 @@ export function HeadToHeadComparison({
                   <p className="text-4xl font-bold tabular-nums text-gold-400">
                     {stats.winsB}
                   </p>
-                  <p className="mt-0.5 text-[10px] uppercase tracking-widest text-velvet-500">
+                  <p className="mt-0.5 text-[10px] text-velvet-500">
                     {t("wins")}
                   </p>
                 </div>
@@ -214,7 +214,7 @@ export function HeadToHeadComparison({
           {/* Night by night */}
           <Card>
             <CardContent className="py-4">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-velvet-400">
+              <h3 className="mb-3 text-xs font-semibold text-velvet-400">
                 {t("nightByNight")}
               </h3>
               <div className="space-y-1.5">
