@@ -61,7 +61,9 @@
     "createGroup": "Create group",
     "joinGroup": "Join group",
     "noGroups": "You don’t belong to any group yet",
-    "noGroupsAction": "Create one or join with an invite code"
+    "noGroupsAction": "Create one or join with an invite code",
+    "nightScheduled": "Scheduled night",
+    "nightInProgress": "Night in progress"
   },
   "groups": {
     "title": "Groups",
@@ -105,6 +107,7 @@
     "date": "Date",
     "buyIn": "Buy-in",
     "start": "Start",
+    "started": "Night started.",
     "finish": "Finish",
     "chipValue": "Chip value",
     "chipValues": "Chip values",
@@ -143,6 +146,7 @@
       "profit": "Profit",
       "loss": "Loss"
     },
+    "timerLabel": "Time playing",
     "noNights": "No poker nights yet",
     "noNightsAction": "Create the first night to get started",
     "chipBlackQty": "Black",
@@ -190,7 +194,22 @@
     "cumulative": "Cumulative",
     "profitEvolution": "Profit evolution",
     "winRate": "WR",
-    "roi": "ROI"
+    "roi": "ROI",
+    "streakWinning": "win streak",
+    "streakLosing": "losing streak",
+    "showAll": "All",
+    "hideAll": "None",
+    "winRateTooltip": "Percentage of nights where you finished with profit",
+    "roiTooltip": "Return on investment: net profit divided by total invested in buy-ins",
+    "avgProfitTooltip": "Average profit or loss per night played"
+  },
+  "activity": {
+    "title": "Recent activity",
+    "wonNight": "won the night",
+    "createdNight": "created the night",
+    "joinedGroup": "joined the group",
+    "in": "in",
+    "noActivity": "No recent activity"
   },
   "headToHead": {
     "title": "Head to head",
@@ -212,6 +231,17 @@
     "syncing": "Syncing changes…",
     "pending": "{count} pending changes to sync"
   },
+  "payment": {
+    "title": "Payment",
+    "recipient": "Recipient",
+    "amountLabel": "Amount to send",
+    "aliasLabel": "Alias / CVU",
+    "copy": "Copy",
+    "copied": "Copied",
+    "noDebt": "No debt",
+    "noAlias": "This player hasn't set up their alias/CVU",
+    "close": "Close"
+  },
   "share": {
     "share": "Share results",
     "generating": "Generating image…"
@@ -219,7 +249,11 @@
   "mvp": {
     "title": "Night MVP",
     "votes": "votes",
-    "tapToVote": "Tap a player to vote"
+    "tapToVote": "Tap a player to vote",
+    "voteSuccess": "Vote registered.",
+    "voteError": "Could not register vote",
+    "leaderboard": "MVP Hall of Fame",
+    "mvps": "MVPs"
   },
   "profile": {
     "title": "Profile",
@@ -234,14 +268,35 @@
     "save": "Save",
     "cancel": "Cancel",
     "resetAvatar": "Reset to Google photo",
-    "changeAvatar": "Change photo"
+    "changeAvatar": "Change photo",
+    "profitHistory": "Profit history",
+    "profitHistoryCumulative": "Cumulative",
+    "streakWinning": "win streak",
+    "streakLosing": "losing streak",
+    "vsGroup": "vs {name}",
+    "you": "You",
+    "groupAvg": "Group",
+    "avgProfit": "Avg/night",
+    "rankFirst": "🥇 You're #1 in the group",
+    "rankAboveAvg": "Rank #{rank} of {total} — above average",
+    "rankBelowAvg": "Rank #{rank} of {total} — below average",
+    "bankAliasLabel": "Alias / CVU",
+    "bankAliasPlaceholder": "your.alias or 0000003...CVU",
+    "bankAliasEmpty": "No alias/CVU configured",
+    "bankAliasEdit": "Edit alias/CVU",
+    "bankAliasCopy": "Copy alias/CVU"
   },
   "settings": {
     "title": "Settings",
     "language": "Language",
     "spanish": "Spanish",
     "english": "English",
-    "theme": "Theme"
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "notificationsDesc": "Get alerts when a night starts or there's activity in your group",
+    "notificationsEnabled": "Enabled",
+    "notificationsDisabled": "Disabled",
+    "notificationsDenied": "Blocked in browser. Enable permissions from your browser settings."
   },
   "sidePots": {
     "title": "Side Pot Calculator",
@@ -303,6 +358,66 @@
       "unlimited": "Unlimited groups and nights",
       "stats": "Advanced stats and charts",
       "priority": "Priority support"
+    }
+  },
+  "achievements": {
+    "title": "Achievements",
+    "locked": "Locked achievement",
+    "first_blood": {
+      "name": "First Blood",
+      "description": "Played your first poker night"
+    },
+    "veteran": {
+      "name": "Veteran",
+      "description": "Played 20 or more nights"
+    },
+    "centurion": {
+      "name": "Centurion",
+      "description": "Played 100 or more nights"
+    },
+    "shark": {
+      "name": "Shark",
+      "description": "Over 60% win rate in at least 5 nights"
+    },
+    "fish": {
+      "name": "Fish",
+      "description": "Under 25% win rate in at least 5 nights"
+    },
+    "consistent": {
+      "name": "Consistent",
+      "description": "Over 50% win rate in at least 10 nights"
+    },
+    "high_roller": {
+      "name": "High Roller",
+      "description": "Won more than $10,000 in a single night"
+    },
+    "comeback_kid": {
+      "name": "Comeback Kid",
+      "description": "Winning streak of 3 or more nights"
+    },
+    "hot_streak": {
+      "name": "On Fire",
+      "description": "Winning streak of 5 or more nights"
+    },
+    "ice_cold": {
+      "name": "Ice Cold",
+      "description": "Losing streak of 3 or more nights"
+    },
+    "mvp_star": {
+      "name": "MVP",
+      "description": "Received at least 1 MVP vote"
+    },
+    "mvp_legend": {
+      "name": "MVP Legend",
+      "description": "Received 10 or more MVP votes"
+    },
+    "profit_club": {
+      "name": "Profit Club",
+      "description": "Accumulated $5,000 or more in total profit"
+    },
+    "goat": {
+      "name": "G.O.A.T.",
+      "description": "$50,000+ profit, 60%+ win rate and 50+ nights"
     }
   }
 }

@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { eq, sql, gte, and, asc, desc } from "drizzle-orm";
 import { db } from "..";
-import { userProfiles, pokerNightResults, pokerNights, groupMembers } from "../schema";
+import { userProfiles, pokerNightResults, pokerNights, groupMembers, mvpVotes } from "../schema";
 
 const CACHE_TTL = 60;
 
@@ -288,6 +288,45 @@ export async function getUserGroupComparison(userId: string): Promise<GroupCompa
       };
     },
     [`user-group-comparison-${userId}`],
+    { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
+  );
+
+  return getCached();
+}
+
+export async function getUserAchievementData(userId: string) {
+  const getCached = unstable_cache(
+    async () => {
+      const [[statsRow], [mvpRow]] = await Promise.all([
+        db
+          .select({
+            nightsPlayed: sql<number>`count(${pokerNightResults.id})::int`,
+            totalProfit: sql<number>`coalesce(sum(${pokerNightResults.profitLoss}), 0)::numeric`,
+            wins: sql<number>`count(case when ${pokerNightResults.profitLoss} > 0 then 1 end)::int`,
+            biggestWin: sql<number>`coalesce(max(${pokerNightResults.profitLoss}), 0)::numeric`,
+          })
+          .from(pokerNightResults)
+          .where(eq(pokerNightResults.userId, userId)),
+        db
+          .select({
+            mvpCount: sql<number>`count(*)::int`,
+          })
+          .from(mvpVotes)
+          .where(eq(mvpVotes.candidateId, userId)),
+      ]);
+
+      const nightsPlayed = statsRow?.nightsPlayed ?? 0;
+      const wins = statsRow?.wins ?? 0;
+
+      return {
+        nightsPlayed,
+        totalProfit: Number(statsRow?.totalProfit ?? 0),
+        winRate: nightsPlayed > 0 ? wins / nightsPlayed : 0,
+        biggestWin: Number(statsRow?.biggestWin ?? 0),
+        mvpCount: mvpRow?.mvpCount ?? 0,
+      };
+    },
+    [`user-achievement-data-${userId}`],
     { revalidate: CACHE_TTL, tags: [`user-${userId}`] }
   );
 

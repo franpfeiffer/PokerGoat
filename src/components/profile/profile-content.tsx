@@ -11,7 +11,9 @@ import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
 import { ProfitChart } from "./profit-chart";
 import { GroupComparisonCard } from "./group-comparison-card";
+import { AchievementBadges } from "./achievement-badges";
 import type { GroupComparisonStats } from "@/lib/db/queries/users";
+import type { AchievementInput } from "@/lib/achievements";
 
 interface ProfileContentProps {
   userId: string;
@@ -28,6 +30,7 @@ interface ProfileContentProps {
   profitHistory: { date: string; profitLoss: number; cumulative: number }[];
   streak: { type: "winning" | "losing" | "none"; count: number };
   groupComparison: GroupComparisonStats | null;
+  achievementData: AchievementInput | null;
   locale: string;
   onProfileChange?: (patch: { displayName?: string; avatarUrl?: string | null; bankAlias?: string | null }) => void;
 }
@@ -43,6 +46,7 @@ export function ProfileContent({
   profitHistory,
   streak,
   groupComparison,
+  achievementData,
   locale,
   onProfileChange,
 }: ProfileContentProps) {
@@ -466,6 +470,9 @@ export function ProfileContent({
           </span>
         </StatCard>
       </div>
+
+      {/* Achievement badges */}
+      {achievementData && <AchievementBadges input={achievementData} />}
 
       {/* Group comparison */}
       {groupComparison && (

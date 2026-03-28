@@ -7,6 +7,7 @@ import { ProfileContent } from "./profile-content";
 import { getFullProfile } from "@/lib/actions/profile";
 import { Card, CardContent } from "@/components/ui/card";
 import type { GroupComparisonStats } from "@/lib/db/queries/users";
+import type { AchievementInput } from "@/lib/achievements";
 
 type ProfileState = {
   id: string;
@@ -24,6 +25,7 @@ export function ProfileLoader() {
   const [profitHistory, setProfitHistory] = useState<{ date: string; profitLoss: number; cumulative: number }[]>([]);
   const [streak, setStreak] = useState<{ type: "winning" | "losing" | "none"; count: number }>({ type: "none", count: 0 });
   const [groupComparison, setGroupComparison] = useState<GroupComparisonStats | null>(null);
+  const [achievementData, setAchievementData] = useState<AchievementInput | null>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
 
@@ -48,6 +50,7 @@ export function ProfileLoader() {
         setProfitHistory(data.profitHistory);
         setStreak(data.streak);
         setGroupComparison(data.groupComparison);
+        setAchievementData({ ...data.achievementData, streak: data.streak });
         setLoading(false);
       } catch {
         if (cancelled) return;
@@ -89,6 +92,7 @@ export function ProfileLoader() {
       profitHistory={profitHistory}
       streak={streak}
       groupComparison={groupComparison}
+      achievementData={achievementData}
       locale={locale}
       onProfileChange={(patch) => setProfile((p) => p ? { ...p, ...patch } : p)}
     />
