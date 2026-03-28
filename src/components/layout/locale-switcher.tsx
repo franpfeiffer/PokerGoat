@@ -11,7 +11,6 @@ export function LocaleSwitcher() {
   function switchLocale() {
     const nextLocale = locale === "es" ? "en" : "es";
     router.replace(pathname, { locale: nextLocale });
-    router.refresh();
   }
 
   return (

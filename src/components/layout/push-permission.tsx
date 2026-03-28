@@ -53,7 +53,7 @@ export function PushPermission() {
     }
 
     subscribe();
-  }, [session]);
+  }, [session?.user?.id]);
 
   return null;
 }

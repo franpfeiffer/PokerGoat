@@ -7,6 +7,8 @@ import { Avatar } from "@/components/ui/avatar";
 import { formatProfitLoss } from "@/lib/utils/currency";
 import { DEFAULT_CURRENCY } from "@/lib/constants";
 import { ProfitChart } from "./profit-chart";
+import { AchievementBadges } from "./achievement-badges";
+import type { AchievementInput } from "@/lib/achievements";
 
 interface PublicProfileContentProps {
   userId: string;
@@ -19,6 +21,7 @@ interface PublicProfileContentProps {
     winRate: number;
   };
   profitHistory: { date: string; profitLoss: number; cumulative: number }[];
+  achievementData?: AchievementInput | null;
 }
 
 export function PublicProfileContent({
@@ -28,6 +31,7 @@ export function PublicProfileContent({
   bankAlias,
   stats,
   profitHistory,
+  achievementData,
 }: PublicProfileContentProps) {
   const locale = useLocale();
   const t = useTranslations("profile");
@@ -124,6 +128,8 @@ export function PublicProfileContent({
           </span>
         </StatCard>
       </div>
+
+      {achievementData && <AchievementBadges input={achievementData} />}
 
       <ProfitChart data={profitHistory} locale={locale} currency="ARS" />
     </div>

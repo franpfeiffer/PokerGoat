@@ -32,7 +32,7 @@ export function Header() {
         }),
       }).catch(() => {});
     }
-  }, [session?.user?.id, session?.user?.name, session?.user?.email, session?.user?.image]);
+  }, [session?.user]);
 
   // Only fetch profile on mount to get custom avatar
   useEffect(() => {

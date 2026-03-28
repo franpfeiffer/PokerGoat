@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
-import { toPng } from "html-to-image";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { formatProfitLoss } from "@/lib/utils/currency";
@@ -33,6 +32,7 @@ export function ShareResults({
 
   const generateImage = useCallback(async () => {
     if (!cardRef.current) return null;
+    const { toPng } = await import("html-to-image");
     return toPng(cardRef.current, {
       pixelRatio: 2,
       backgroundColor: "#08080d",

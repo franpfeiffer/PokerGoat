@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getUserById, getUserStats, getUserProfitHistory } from "@/lib/db/queries/users";
+import { getUserById, getUserStats, getUserProfitHistory, getUserAchievementData, getUserStreak } from "@/lib/db/queries/users";
 import { PublicProfileContent } from "@/components/profile/public-profile-content";
 
 export async function generateMetadata({
@@ -30,9 +30,11 @@ export default async function PublicProfilePage({
     notFound();
   }
 
-  const [stats, profitHistory] = await Promise.all([
+  const [stats, profitHistory, achievementData, streak] = await Promise.all([
     getUserStats(userId),
     getUserProfitHistory(userId),
+    getUserAchievementData(userId),
+    getUserStreak(userId),
   ]);
 
   return (
@@ -44,6 +46,7 @@ export default async function PublicProfilePage({
         bankAlias={user.bankAlias}
         stats={stats}
         profitHistory={profitHistory}
+        achievementData={{ ...achievementData, streak }}
       />
     </div>
   );
