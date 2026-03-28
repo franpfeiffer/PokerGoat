@@ -28,16 +28,16 @@ export async function StatsWidget({ stats }: StatsWidgetProps) {
   return (
     <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4 mb-6">
       {/* Total Profit — accent card */}
-      <div className="relative col-span-2 lg:col-span-1 overflow-hidden rounded-xl border border-gold-500/20 bg-gradient-to-br from-gold-500/[0.06] to-gold-500/[0.02] px-4 py-4 flex flex-col gap-2 glow-pulse">
+      <div className="relative overflow-hidden rounded-xl border border-gold-500/20 bg-gradient-to-br from-gold-500/[0.06] to-gold-500/[0.02] px-3 py-3.5 flex flex-col items-center justify-center gap-1.5 glow-pulse">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent" />
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-semibold text-velvet-500">
-            {t("totalProfit")}
-          </span>
+        <div className="flex items-center gap-1.5">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gold-500/50" aria-hidden="true">
             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
             <polyline points="16 7 22 7 22 13" />
           </svg>
+          <span className="text-[10px] font-semibold text-velvet-500">
+            {t("totalProfit")}
+          </span>
         </div>
         <ProfitBadge
           amount={stats.allTime.totalProfit}
