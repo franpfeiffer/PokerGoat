@@ -32,29 +32,27 @@ export function RankBadge({ totalProfit, locale, size = "md" }: RankBadgeProps) 
       <span
         className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold ${rank.bgColor} ${rank.borderColor} ${rank.color}`}
       >
-        <span>{rank.icon}</span>
-        <span>{rankName}</span>
+          <span>{rankName}</span>
       </span>
     );
   }
 
   return (
-    <div className="relative w-full max-w-xs">
+    <div className="relative">
       <button
         type="button"
         onClick={() => setShowTooltip((v) => !v)}
         onBlur={() => setShowTooltip(false)}
-        className={`focus-ring flex w-full items-center gap-2.5 rounded-xl border px-3.5 py-2.5 transition-colors ${rank.bgColor} ${rank.borderColor} hover:brightness-110`}
+        className={`focus-ring flex items-center gap-2 rounded-xl border px-3 py-2 transition-colors ${rank.bgColor} ${rank.borderColor} hover:brightness-110`}
       >
-        <span className="text-xl leading-none">{rank.icon}</span>
-        <div className="flex flex-1 flex-col items-start gap-1 min-w-0">
+        <div className="flex flex-col items-center gap-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <span className={`text-sm font-bold leading-none ${rank.color}`}>
               {rankName}
             </span>
             {nextRank && nextRankName && (
               <span className="text-[10px] text-velvet-500 leading-none">
-                → {nextRank.icon} {nextRankName}
+                → {nextRankName}
               </span>
             )}
             {!nextRank && (

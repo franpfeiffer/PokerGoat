@@ -37,6 +37,7 @@ export function ShareResults({
     const { toPng } = await import("html-to-image");
     return toPng(cardRef.current, {
       pixelRatio: 3,
+      cacheBust: true,
     });
   }, []);
 

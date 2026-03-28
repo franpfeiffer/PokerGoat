@@ -30,16 +30,37 @@ export function ShareProfile({
   const locale = useLocale();
   const cardRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
 
   const moneyLocale = locale === "es" ? "es-AR" : "en-US";
   const rank = getRank(totalProfit);
   const unlocked = achievementData ? getUnlockedAchievements(achievementData) : [];
 
+  const getAvatarBase64 = useCallback(async () => {
+    if (!avatarUrl) return null;
+    if (avatarBase64) return avatarBase64;
+    try {
+      const res = await fetch(avatarUrl);
+      const blob = await res.blob();
+      return await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      return avatarUrl;
+    }
+  }, [avatarUrl, avatarBase64]);
+
   const generateImage = useCallback(async () => {
     if (!cardRef.current) return null;
+    const b64 = await getAvatarBase64();
+    setAvatarBase64(b64);
+    // Wait a tick for React to re-render with base64 avatar
+    await new Promise((r) => setTimeout(r, 100));
     const { toPng } = await import("html-to-image");
-    return toPng(cardRef.current, { pixelRatio: 3 });
-  }, []);
+    return toPng(cardRef.current, { pixelRatio: 3, cacheBust: true });
+  }, [getAvatarBase64]);
 
   const handleShare = async () => {
     setIsGenerating(true);
@@ -84,9 +105,9 @@ export function ShareProfile({
 
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
-          {avatarUrl ? (
+          {(avatarBase64 ?? avatarUrl) ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={avatarUrl} alt="" width={56} height={56} style={{ borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(200,164,56,0.3)" }} />
+            <img src={avatarBase64 ?? avatarUrl!} alt="" width={56} height={56} style={{ borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(200,164,56,0.3)" }} />
           ) : (
             <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#1e1a2e", border: "2px solid rgba(200,164,56,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: "#c8a438", fontWeight: 700 }}>
               {displayName[0]?.toUpperCase()}
