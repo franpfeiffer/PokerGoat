@@ -61,9 +61,7 @@
     "createGroup": "Crear grupo",
     "joinGroup": "Unirse a grupo",
     "noGroups": "Aún no perteneces a ningún grupo",
-    "noGroupsAction": "Crea uno o únete con un código de invitación",
-    "nightScheduled": "Noche programada",
-    "nightInProgress": "Noche en curso"
+    "noGroupsAction": "Crea uno o únete con un código de invitación"
   },
   "groups": {
     "title": "Grupos",
@@ -107,7 +105,6 @@
     "date": "Fecha",
     "buyIn": "Buy-in",
     "start": "Iniciar",
-    "started": "La noche empezó.",
     "finish": "Finalizar",
     "chipValue": "Valor de ficha",
     "chipValues": "Valores de fichas",
@@ -146,7 +143,6 @@
       "profit": "Ganancia",
       "loss": "Pérdida"
     },
-    "timerLabel": "Tiempo jugando",
     "noNights": "Aún no hay noches de poker",
     "noNightsAction": "Crea la primera noche para empezar",
     "chipBlackQty": "Negras",
@@ -194,22 +190,7 @@
     "cumulative": "Acumulado",
     "profitEvolution": "Evolución de ganancias",
     "winRate": "WR",
-    "roi": "ROI",
-    "streakWinning": "racha ganadora",
-    "streakLosing": "racha perdedora",
-    "showAll": "Todos",
-    "hideAll": "Ninguno",
-    "winRateTooltip": "Porcentaje de noches en las que terminaste con ganancia",
-    "roiTooltip": "Retorno sobre la inversión: ganancia neta dividida por el total invertido en buy-ins",
-    "avgProfitTooltip": "Ganancia o pérdida promedio por noche jugada"
-  },
-  "activity": {
-    "title": "Actividad reciente",
-    "wonNight": "ganó la noche",
-    "createdNight": "creó la noche",
-    "joinedGroup": "se unió al grupo",
-    "in": "en",
-    "noActivity": "Sin actividad reciente"
+    "roi": "ROI"
   },
   "headToHead": {
     "title": "Cara a cara",
@@ -235,25 +216,10 @@
     "share": "Compartir resultados",
     "generating": "Generando imagen…"
   },
-  "payment": {
-    "title": "Transferencia",
-    "recipient": "Destinatario",
-    "amountLabel": "Monto a enviar",
-    "aliasLabel": "Alias / CVU",
-    "copy": "Copiar",
-    "copied": "Copiado",
-    "noDebt": "Sin deuda",
-    "noAlias": "Este jugador no configuró su alias/CVU",
-    "close": "Cerrar"
-  },
   "mvp": {
     "title": "MVP de la noche",
     "votes": "votos",
-    "tapToVote": "Toca un jugador para votar",
-    "voteSuccess": "Voto registrado.",
-    "voteError": "No se pudo registrar el voto",
-    "leaderboard": "Hall of Fame MVP",
-    "mvps": "MVPs"
+    "tapToVote": "Toca un jugador para votar"
   },
   "profile": {
     "title": "Perfil",
@@ -268,35 +234,14 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "resetAvatar": "Restaurar foto de Google",
-    "changeAvatar": "Cambiar foto",
-    "profitHistory": "Historial de ganancias",
-    "profitHistoryCumulative": "Acumulado",
-    "streakWinning": "racha ganadora",
-    "streakLosing": "racha perdedora",
-    "vsGroup": "vs {name}",
-    "you": "Vos",
-    "groupAvg": "Grupo",
-    "avgProfit": "Promedio/noche",
-    "rankFirst": "🥇 Sos el #1 del grupo",
-    "rankAboveAvg": "Puesto #{rank} de {total} — por encima de la media",
-    "rankBelowAvg": "Puesto #{rank} de {total} — por debajo de la media",
-    "bankAliasLabel": "Alias / CVU",
-    "bankAliasPlaceholder": "tu.alias o 0000003...CVU",
-    "bankAliasEmpty": "Sin alias/CVU configurado",
-    "bankAliasEdit": "Editar alias/CVU",
-    "bankAliasCopy": "Copiar alias/CVU"
+    "changeAvatar": "Cambiar foto"
   },
   "settings": {
     "title": "Ajustes",
     "language": "Idioma",
     "spanish": "Español",
     "english": "Inglés",
-    "theme": "Tema",
-    "notifications": "Notificaciones",
-    "notificationsDesc": "Recibí alertas cuando empiece una noche o haya actividad en tu grupo",
-    "notificationsEnabled": "Activadas",
-    "notificationsDisabled": "Desactivadas",
-    "notificationsDenied": "Bloqueadas en el navegador. Habilitá los permisos desde la configuración del navegador."
+    "theme": "Tema"
   },
   "sidePots": {
     "title": "Calculadora de Side Pots",
