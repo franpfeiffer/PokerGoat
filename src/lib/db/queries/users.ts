@@ -330,6 +330,8 @@ export async function getUserAchievementData(userId: string) {
             rank: pokerNightResults.rank,
             profitLoss: pokerNightResults.profitLoss,
             nightId: pokerNightResults.nightId,
+            totalInvested: pokerNightResults.totalInvested,
+            buyInAmount: sql<number>`(select p.buy_in_amount::numeric from ${pokerNights} p where p.id = ${pokerNightResults.nightId})`,
           })
           .from(pokerNightResults)
           .where(eq(pokerNightResults.userId, userId))
@@ -339,14 +341,31 @@ export async function getUserAchievementData(userId: string) {
       const nightsPlayed = statsRow?.nightsPlayed ?? 0;
       const wins = statsRow?.wins ?? 0;
 
-      // Calculate first place streak and redemption from ordered night results
+      // Calculate first place streak, redemption, longest win streak, and banco central from ordered night results
       let firstPlaceStreak = 0;
       let currentFirstStreak = 0;
+      let longestWinStreak = 0;
+      let currentWinStreak = 0;
       let hadRedemption = false;
       let prevWasWorstNight = false;
+      let maxConsecutiveRebuyNights = 0;
       const worstProfit = nightRows.length > 0
         ? Math.min(...nightRows.map((r) => Number(r.profitLoss)))
         : 0;
+
+      // Per-night rebuy counts for banco_central detection
+      const rebuyCountPerNight = nightRows.map((r) => {
+        const invested = Number(r.totalInvested);
+        const buyIn = Number(r.buyInAmount);
+        if (buyIn <= 0) return 0;
+        return Math.max(0, Math.round((invested - buyIn) / buyIn));
+      });
+
+      // Sliding window: max rebuys in any 2 consecutive nights
+      for (let i = 0; i < rebuyCountPerNight.length - 1; i++) {
+        const sum = rebuyCountPerNight[i] + rebuyCountPerNight[i + 1];
+        if (sum > maxConsecutiveRebuyNights) maxConsecutiveRebuyNights = sum;
+      }
 
       for (const row of nightRows) {
         const pl = Number(row.profitLoss);
@@ -357,6 +376,13 @@ export async function getUserAchievementData(userId: string) {
           if (currentFirstStreak > firstPlaceStreak) firstPlaceStreak = currentFirstStreak;
         } else {
           currentFirstStreak = 0;
+        }
+
+        if (pl > 0) {
+          currentWinStreak++;
+          if (currentWinStreak > longestWinStreak) longestWinStreak = currentWinStreak;
+        } else {
+          currentWinStreak = 0;
         }
 
         if (prevWasWorstNight && pl > 0) hadRedemption = true;
@@ -375,6 +401,8 @@ export async function getUserAchievementData(userId: string) {
         totalRebuysSpent: Number(statsRow?.totalRebuysSpent ?? 0),
         firstPlaceStreak,
         hadRedemption,
+        longestWinStreak,
+        maxConsecutiveRebuyNights,
       };
     },
     [`user-achievement-data-${userId}`],

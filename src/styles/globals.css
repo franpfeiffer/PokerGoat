@@ -4,94 +4,62 @@
   --font-sans: var(--font-dm-sans);
   --font-display: var(--font-playfair);
 
-  --color-velvet-950: #08080d;
-  --color-velvet-900: #0f0f16;
-  --color-velvet-800: #18181f;
-  --color-velvet-700: #252530;
-  --color-velvet-600: #353545;
-  --color-velvet-500: #50506a;
-  --color-velvet-400: #7e7e98;
-  --color-velvet-300: #a0a0b8;
-  --color-velvet-200: #c4c4d4;
-  --color-velvet-100: #dddde8;
-  --color-velvet-50: #f0f0f5;
+  /* ── Velvet palette ─────────────────────────────── */
+  /* Deep purple-noir with a whisper of crimson warmth */
+  --color-velvet-950: #07060d;
+  --color-velvet-900: #0e0c18;
+  --color-velvet-800: #171422;
+  --color-velvet-700: #231f33;
+  --color-velvet-600: #332e48;
+  --color-velvet-500: #4e4868;
+  --color-velvet-400: #7c748e;
+  --color-velvet-300: #a098b2;
+  --color-velvet-200: #c4bfd4;
+  --color-velvet-100: #dddae8;
+  --color-velvet-50:  #f2f0f8;
 
-  --color-gold-700: #8a6c1a;
-  --color-gold-600: #a8862a;
-  --color-gold-500: #c49a38;
-  --color-gold-400: #dab454;
-  --color-gold-300: #e8ca72;
+  /* ── Gold palette ───────────────────────────────── */
+  /* Rich burnished gold — antique, not brash */
+  --color-gold-800: #5c420e;
+  --color-gold-700: #8a6518;
+  --color-gold-600: #aa8028;
+  --color-gold-500: #c89838;
+  --color-gold-400: #ddb050;
+  --color-gold-300: #eaca70;
+  --color-gold-200: #f5e0a8;
+  --color-gold-100: #faf2d8;
 
-  --color-profit: #34d375;
-  --color-profit-muted: #166534;
-  --color-loss: #f04848;
-  --color-loss-muted: #991b1b;
-  --color-even: #7e7e98;
+  /* ── Semantic ───────────────────────────────────── */
+  --color-profit:       #2dd472;
+  --color-profit-muted: #145e32;
+  --color-loss:         #e84040;
+  --color-loss-muted:   #8b1a1a;
+  --color-even:         #7c748e;
 
-  --color-suit-hearts: #dc2626;
+  --color-suit-hearts:   #dc2626;
   --color-suit-diamonds: #dc2626;
-  --color-suit-clubs: #f0f0f5;
-  --color-suit-spades: #f0f0f5;
+  --color-suit-clubs:    #f2f0f8;
+  --color-suit-spades:   #f2f0f8;
 
-  --color-background: var(--color-velvet-950);
-  --color-foreground: var(--color-velvet-50);
-  --color-surface: var(--color-velvet-900);
+  /* ── Composite tokens ───────────────────────────── */
+  --color-background:      var(--color-velvet-950);
+  --color-foreground:      var(--color-velvet-50);
+  --color-surface:         var(--color-velvet-900);
   --color-surface-elevated: var(--color-velvet-800);
-  --color-border: var(--color-velvet-700);
-  --color-muted: var(--color-velvet-400);
-  --color-accent: var(--color-gold-500);
+  --color-border:          var(--color-velvet-700);
+  --color-muted:           var(--color-velvet-400);
+  --color-accent:          var(--color-gold-500);
 
+  /* ── Radii ──────────────────────────────────────── */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
 }
 
-/* ── Theme: Midnight Blue ───────────────────────── */
-[data-theme="midnight"] {
-  --color-velvet-950: #060a12;
-  --color-velvet-900: #0c1424;
-  --color-velvet-800: #131e32;
-  --color-velvet-700: #1e2d46;
-  --color-velvet-600: #2d4162;
-  --color-velvet-500: #446082;
-  --color-velvet-400: #6a88a8;
-  --color-velvet-300: #92aec8;
-  --color-velvet-200: #bdd0e2;
-  --color-velvet-100: #dce8f0;
-  --color-velvet-50: #f0f4f8;
-
-  --color-gold-700: #1a6888;
-  --color-gold-600: #2087a8;
-  --color-gold-500: #38a8c4;
-  --color-gold-400: #54c0da;
-  --color-gold-300: #72d4e8;
-
-  --color-accent: var(--color-gold-500);
-}
-
-/* ── Theme: Emerald ────────────────────────────── */
-[data-theme="emerald"] {
-  --color-velvet-950: #060d08;
-  --color-velvet-900: #0c180f;
-  --color-velvet-800: #142118;
-  --color-velvet-700: #1e3225;
-  --color-velvet-600: #2e4838;
-  --color-velvet-500: #486850;
-  --color-velvet-400: #6e9078;
-  --color-velvet-300: #96b8a0;
-  --color-velvet-200: #c0d8c8;
-  --color-velvet-100: #ddeae0;
-  --color-velvet-50: #f0f5f0;
-
-  --color-gold-700: #6a8a1a;
-  --color-gold-600: #84a828;
-  --color-gold-500: #9ac438;
-  --color-gold-400: #b2da54;
-  --color-gold-300: #c8e872;
-
-  --color-accent: var(--color-gold-500);
-}
+/* ════════════════════════════════════════════════════
+   BASE
+════════════════════════════════════════════════════ */
 
 *,
 *::before,
@@ -104,6 +72,25 @@ html {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
+
+  /* Custom scrollbar — thin, jewel-toned */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-velvet-600) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-velvet-600);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-700);
 }
 
 body {
@@ -115,34 +102,42 @@ body {
   width: 100%;
   max-width: 100%;
   overflow-x: clip;
+
+  /* Subtle noise grain — depth without distraction */
+  background-image:
+    radial-gradient(
+      ellipse 80% 60% at 50% -10%,
+      rgba(139, 101, 24, 0.07) 0%,
+      transparent 60%
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  background-attachment: fixed;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display), serif;
   text-wrap: balance;
+  /* Subtle letter-spacing lift on headings */
+  letter-spacing: -0.01em;
 }
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
+/* ── Focus ring ────────────────────────────────────── */
 .focus-ring {
   outline: none;
 }
 .focus-ring:focus-visible {
   outline: 2px solid var(--color-gold-400);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
+/* ── Reduced motion ────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -150,123 +145,132 @@ h6 {
   }
 }
 
-/* ── Animations ─────────────────────────────────── */
+/* ════════════════════════════════════════════════════
+   ANIMATIONS
+════════════════════════════════════════════════════ */
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(12px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translateX(14px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes count-up {
-  from { opacity: 0; transform: translateY(3px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.97); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(100%); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.35s ease-out both;
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.animate-slide-in {
-  animation: slide-in-right 0.35s ease-out both;
+@keyframes pop {
+  0%   { transform: scale(0.92); opacity: 0; }
+  70%  { transform: scale(1.04); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-.animate-count-up {
-  animation: count-up 0.25s ease-out both;
-}
+.animate-fade-in      { animation: fade-in 0.35s ease-out both; }
+.animate-slide-in     { animation: slide-in-right 0.35s ease-out both; }
+.animate-count-up     { animation: count-up 0.25s ease-out both; }
+.animate-scale-in     { animation: scale-in 0.25s ease-out both; }
+.animate-slide-up     { animation: slide-up 0.4s cubic-bezier(0.32, 0.72, 0, 1) both; }
+.animate-slide-down   { animation: slide-down 0.3s ease-out both; }
+.animate-pop          { animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
-.animate-scale-in {
-  animation: scale-in 0.25s ease-out both;
-}
-
-.animate-slide-up {
-  animation: slide-up 0.4s cubic-bezier(0.32, 0.72, 0, 1) both;
-}
-
-/* ── Component classes ──────────────────────────── */
-
-.bg-card-pattern {
-  /* Clean — no gradient noise */
-}
-
-/* ── Shimmer effect ────────────────────────────── */
+/* ── Shimmer ───────────────────────────────────────── */
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
 }
 
 .shimmer {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(200, 164, 56, 0.06) 50%,
+    rgba(200, 152, 56, 0.08) 50%,
     transparent 100%
   );
   background-size: 200% 100%;
-  animation: shimmer 2.4s ease-in-out infinite;
+  animation: shimmer 2.6s ease-in-out infinite;
 }
 
-/* ── Glow pulse ──────────────────────────────────── */
+/* ── Gold shimmer text ─────────────────────────────── */
+@keyframes text-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-gold-400) 0%,
+    var(--color-gold-200) 40%,
+    var(--color-gold-400) 60%,
+    var(--color-gold-300) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 4s linear infinite;
+}
+
+/* ── Glow pulses ───────────────────────────────────── */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 164, 56, 0); }
-  50% { box-shadow: 0 0 12px 2px rgba(200, 164, 56, 0.12); }
-}
-
-.glow-pulse {
-  animation: glow-pulse 2.5s ease-in-out infinite;
+  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 152, 56, 0); }
+  50%       { box-shadow: 0 0 16px 3px rgba(196, 152, 56, 0.14); }
 }
 
 @keyframes glow-pulse-profit {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 117, 0); }
-  50% { box-shadow: 0 0 14px 2px rgba(52, 211, 117, 0.12); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45, 212, 114, 0); }
+  50%       { box-shadow: 0 0 18px 3px rgba(45, 212, 114, 0.13); }
 }
 
-.glow-pulse-profit {
-  animation: glow-pulse-profit 2.5s ease-in-out infinite;
+.glow-pulse        { animation: glow-pulse 2.8s ease-in-out infinite; }
+.glow-pulse-profit { animation: glow-pulse-profit 2.8s ease-in-out infinite; }
+
+/* ── Breathe ────────────────────────────────────────── */
+@keyframes breathe {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
 }
 
-/* ── Slide-down ──────────────────────────────────── */
-@keyframes slide-down {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.animate-breathe { animation: breathe 3s ease-in-out infinite; }
 
-.animate-slide-down {
-  animation: slide-down 0.3s ease-out both;
-}
+/* ════════════════════════════════════════════════════
+   COMPONENT CLASSES
+════════════════════════════════════════════════════ */
 
-/* ── Pop ─────────────────────────────────────────── */
-@keyframes pop {
-  0% { transform: scale(0.92); opacity: 0; }
-  70% { transform: scale(1.03); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.animate-pop {
-  animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
+/* ── Avatar ring ───────────────────────────────────── */
 .avatar-gold-ring {
   position: relative;
   border-radius: 9999px;
   padding: 2px;
-  background: var(--color-gold-500);
+  background: linear-gradient(
+    135deg,
+    var(--color-gold-600) 0%,
+    var(--color-gold-300) 50%,
+    var(--color-gold-600) 100%
+  );
 }
 
+/* ── Stat card top-edge glow ────────────────────────── */
 .stat-card-glow {
   position: relative;
   overflow: hidden;
@@ -276,20 +280,59 @@ h6 {
   content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
+  left: 10%;
+  right: 10%;
   height: 1px;
-  background: var(--color-gold-500);
-  opacity: 0.2;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold-500),
+    transparent
+  );
+  opacity: 0.3;
   pointer-events: none;
 }
 
-.profile-hero-bg {
-  /* Clean — no gradient */
+/* ── Gold divider ───────────────────────────────────── */
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold-700) 30%,
+    var(--color-gold-500) 50%,
+    var(--color-gold-700) 70%,
+    transparent
+  );
+  opacity: 0.4;
 }
 
-/* ── Payment modal ───────────────────────────────── */
+/* ── Velvet card surface — luxury fabric feel ────────── */
+.velvet-surface {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.025) 0%,
+      transparent 50%
+    ),
+    var(--color-surface);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.04) inset,
+    0 -1px 0 0 rgba(0, 0, 0, 0.3) inset,
+    0 4px 24px -8px rgba(0, 0, 0, 0.5);
+}
 
+/* ── Profile hero background ────────────────────────── */
+.profile-hero-bg {
+  background: radial-gradient(
+    ellipse 70% 50% at 50% 0%,
+    rgba(196, 152, 56, 0.06) 0%,
+    transparent 70%
+  );
+}
+
+/* ── Payment modal ───────────────────────────────────── */
 .payment-modal {
   background: transparent;
   border: none;
@@ -301,13 +344,16 @@ h6 {
 }
 
 .payment-modal::backdrop {
-  animation: backdrop-in 0.2s ease both;
+  animation: backdrop-in 0.22s ease both;
+  background: rgba(7, 6, 13, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 @keyframes modal-enter {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.97);
+    transform: translateY(14px) scale(0.97);
   }
   to {
     opacity: 1;
@@ -325,4 +371,10 @@ h6 {
   .payment-modal::backdrop {
     animation: none;
   }
+}
+
+/* ── Selection color ─────────────────────────────────── */
+::selection {
+  background: rgba(196, 152, 56, 0.28);
+  color: var(--color-velvet-50);
 }

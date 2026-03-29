@@ -1,4 +1,4 @@
-export type RankId = "fish" | "crab" | "octopus" | "shark";
+export type RankId = "plankton" | "fish" | "shark" | "megalodon";
 
 export interface Rank {
   id: RankId;
@@ -11,32 +11,32 @@ export interface Rank {
 
 const RANKS: Rank[] = [
   {
+    id: "plankton",
+    icon: "🌿",
+    minProfit: -Infinity,
+    color: "text-emerald-400",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500/30",
+  },
+  {
     id: "fish",
     icon: "🐟",
-    minProfit: -Infinity,
+    minProfit: 0,
     color: "text-blue-400",
     bgColor: "bg-blue-500/10",
     borderColor: "border-blue-500/30",
   },
   {
-    id: "crab",
-    icon: "🦀",
-    minProfit: 1000,
-    color: "text-orange-400",
-    bgColor: "bg-orange-500/10",
-    borderColor: "border-orange-500/30",
-  },
-  {
-    id: "octopus",
-    icon: "🐙",
-    minProfit: 5000,
-    color: "text-purple-400",
-    bgColor: "bg-purple-500/10",
-    borderColor: "border-purple-500/30",
-  },
-  {
     id: "shark",
     icon: "🦈",
+    minProfit: 5000,
+    color: "text-violet-400",
+    bgColor: "bg-violet-500/10",
+    borderColor: "border-violet-500/30",
+  },
+  {
+    id: "megalodon",
+    icon: "🦷",
     minProfit: 15000,
     color: "text-gold-400",
     bgColor: "bg-gold-500/10",
@@ -64,7 +64,7 @@ export function getRankProgress(totalProfit: number): number {
   const current = getRank(totalProfit);
   const next = getNextRank(totalProfit);
   if (!next) return 1;
-  const start = current.minProfit === -Infinity ? 0 : current.minProfit;
+  const start = current.minProfit === -Infinity ? Math.min(totalProfit, 0) : current.minProfit;
   const range = next.minProfit - start;
   const progress = totalProfit - start;
   return Math.min(Math.max(progress / range, 0), 1);

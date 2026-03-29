@@ -372,7 +372,7 @@ export function ProfileContent({
           </div>
 
           {/* Rank */}
-          <div className="mt-3 animate-fade-in" style={{ animationDelay: "0.15s" }}>
+          <div className="mt-4 w-full max-w-xs animate-fade-in" style={{ animationDelay: "0.15s" }}>
             <RankBadge totalProfit={stats.totalProfit} locale={locale} />
           </div>
 

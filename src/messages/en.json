@@ -388,16 +388,16 @@
   "rank": {
     "label": "Rank",
     "needForNext": "{amount} more to reach {rank}",
+    "plankton": "Plankton",
     "fish": "Fish",
-    "crab": "Crab",
-    "octopus": "Octopus",
-    "shark": "Shark"
+    "shark": "Shark",
+    "megalodon": "Megalodon"
   },
   "achievements": {
     "title": "Achievements",
     "locked": "Locked achievement",
     "first_blood": {
-      "name": "First Blood",
+      "name": "First Hand",
       "description": "Played your first poker night"
     },
     "veteran": {
@@ -417,7 +417,7 @@
       "description": "Under 25% win rate in at least 5 nights"
     },
     "consistent": {
-      "name": "Consistent",
+      "name": "Swiss Watch",
       "description": "Over 50% win rate in at least 10 nights"
     },
     "high_roller": {
@@ -433,7 +433,7 @@
       "description": "Winning streak of 5 or more nights"
     },
     "ice_cold": {
-      "name": "Ice Cold",
+      "name": "Deep in the Mud",
       "description": "Losing streak of 3 or more nights"
     },
     "mvp_star": {
@@ -445,7 +445,7 @@
       "description": "Received 10 or more MVP votes"
     },
     "profit_club": {
-      "name": "Profit Club",
+      "name": "In the Green",
       "description": "Accumulated $5,000 or more in total profit"
     },
     "goat": {
@@ -457,7 +457,7 @@
       "description": "Finished last at least 3 times"
     },
     "broke": {
-      "name": "Broke",
+      "name": "Insufficient Funds",
       "description": "Finished a night with 0 chips"
     },
     "all_in": {
@@ -465,16 +465,24 @@
       "description": "Bought back in at least 5 different nights"
     },
     "dominator": {
-      "name": "Dominator",
+      "name": "Table Owner",
       "description": "Finished 1st three nights in a row"
     },
     "deep_pockets": {
-      "name": "Deep Pockets",
+      "name": "Walking ATM",
       "description": "Spent $10,000+ total on rebuys"
     },
     "redemption": {
-      "name": "Redemption",
+      "name": "Resurrection",
       "description": "Won the night right after your worst loss"
+    },
+    "banco_central": {
+      "name": "Central Bank",
+      "description": "Made 6 or more rebuys across 2 consecutive nights"
+    },
+    "arca": {
+      "name": "ARCA",
+      "description": "Finished in the green 5 nights in a row"
     }
   }
 }

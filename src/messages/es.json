@@ -388,10 +388,10 @@
   "rank": {
     "label": "Rango",
     "needForNext": "Faltan {amount} para llegar a {rank}",
+    "plankton": "Plankton",
     "fish": "Fish",
-    "crab": "Cangrejo",
-    "octopus": "Pulpo",
-    "shark": "Shark"
+    "shark": "Shark",
+    "megalodon": "Megalodon"
   },
   "achievements": {
     "title": "Logros",
@@ -445,7 +445,7 @@
       "description": "Recibiste 10 o más votos de MVP"
     },
     "profit_club": {
-      "name": "Club de las ganancias",
+      "name": "En números negros",
       "description": "Acumulaste $5.000 o más en ganancias totales"
     },
     "goat": {
@@ -475,6 +475,14 @@
     "redemption": {
       "name": "Redención",
       "description": "Ganaste la noche justo después de tu peor pérdida"
+    },
+    "banco_central": {
+      "name": "Banco Central",
+      "description": "Hiciste 6 o más rebuys en 2 noches consecutivas"
+    },
+    "arca": {
+      "name": "ARCA",
+      "description": "Terminaste en positivo 5 noches seguidas"
     }
   }
 }

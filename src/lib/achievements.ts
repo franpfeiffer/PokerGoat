@@ -18,7 +18,9 @@ export type AchievementId =
   | "all_in"
   | "dominator"
   | "deep_pockets"
-  | "redemption";
+  | "redemption"
+  | "banco_central"
+  | "arca";
 
 export interface Achievement {
   id: AchievementId;
@@ -40,6 +42,8 @@ export interface AchievementInput {
   firstPlaceStreak?: number;
   totalRebuysSpent?: number;
   hadRedemption?: boolean;
+  longestWinStreak?: number;
+  maxConsecutiveRebuyNights?: number;
 }
 
 const DEFINITIONS: Array<{
@@ -169,6 +173,18 @@ const DEFINITIONS: Array<{
     icon: "🔄",
     tier: "silver",
     check: ({ hadRedemption = false }) => hadRedemption,
+  },
+  {
+    id: "banco_central",
+    icon: "🏛️",
+    tier: "gold",
+    check: ({ maxConsecutiveRebuyNights = 0 }) => maxConsecutiveRebuyNights >= 6,
+  },
+  {
+    id: "arca",
+    icon: "⛵",
+    tier: "gold",
+    check: ({ longestWinStreak = 0 }) => longestWinStreak >= 5,
   },
 ];
 

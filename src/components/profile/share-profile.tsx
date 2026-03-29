@@ -19,10 +19,10 @@ interface ShareProfileProps {
 }
 
 const RANK_COLORS: Record<string, string> = {
+  plankton: "#34d399",
   fish: "#60a5fa",
-  crab: "#fb923c",
-  octopus: "#c084fc",
-  shark: "#c8a438",
+  shark: "#a78bfa",
+  megalodon: "#c8a438",
 };
 
 async function loadImage(src: string): Promise<HTMLImageElement> {
